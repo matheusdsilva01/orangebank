@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
+use App\Models\Transaction;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $origin = User::factory()->has(Account::factory())->create();
+        $user = User::factory()->has(Account::factory())->create();
+        Account::factory()->for($user)->create();
+        Transaction::factory()->count(10)->create([
+            'from_account_id' => $origin->accounts->first()->id,
+            'to_account_id' => Account::factory()->create()->id,
         ]);
     }
 }
