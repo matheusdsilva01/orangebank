@@ -12,7 +12,7 @@ class CreateTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,8 @@ class CreateTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fromAccountId' => 'required|exists:accounts,id',
-            'toAccountId' => 'required|exists:accounts,id',
+            'fromAccountId' => 'required|numeric|exists:accounts,id',
+            'toAccountId' => 'required|numeric|exists:accounts,id',
             'amount' => 'required|numeric|min:0'
         ];
     }

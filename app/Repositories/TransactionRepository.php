@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Repositories;
+namespace App\Repositories;
 
 use App\Exceptions\AccountException;
 use App\Models\Account;
@@ -15,6 +15,22 @@ class TransactionRepository
     {
         $this->query = Account::query();
     }
+    public function withdraw(int $accountId, int $amount): void
+    {
+        $account = Account::query()->findOrFail($accountId);
+
+        if ($account->balance < $amount) {
+            throw AccountException::insufficientBalance();
+        }
+
+        $account->decrement('balance', $amount);
+    }
+
+    public function deposit(int $accountId, int $amount): void
+    {
+        $account = Account::query()->findOrFail($accountId);
+        $account->increment('balance', $amount);
+    }
 
     public function createTransaction(array $payload): Transaction
     {
@@ -24,15 +40,37 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-    public function internalTranfer($fromAccountId, $toAccountId, int $amount): Transaction
+
+    public function createTransfer(array $payload): Transaction
     {
-        $fromAccount = $this->query->findOrFail($fromAccountId);
-        $toAccount = $this->query->findOrFail($toAccountId);
-        if ($fromAccount->id === $toAccount->id) {
+        $fromAccount = Account::query()->findOrFail($payload['fromAccountId']);
+        $toAccount = Account::query()->findOrFail($payload['toAccountId']);
+
+        if ($fromAccount->user->id === $toAccount->user->id) {
+            return $this->internalTransfer(
+                $fromAccount,
+                $toAccount,
+                $payload['amount']
+            );
+        } else {
+            return $this->externalTransfer(
+                $fromAccount,
+                $toAccount,
+                $payload['amount']
+            );
+        }
+    }
+
+    /**
+     * @throws AccountException
+     */
+    public function internalTransfer($fromAccount, $toAccount, int $amount): Transaction
+    {
+        if ($fromAccount->id == $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
         }
 
-        if ($fromAccount->type === $toAccount->type) {
+        if ($fromAccount->type == $toAccount->type) {
             throw AccountException::cannotTransferBetweenSameTypeAccounts();
         }
 
@@ -40,10 +78,8 @@ class TransactionRepository
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->balance -= $amount;
-        $toAccount->balance += $amount;
-        $fromAccount->save();
-        $toAccount->save();
+        $this->withdraw($fromAccount->id, $amount);
+        $this->deposit($toAccount->id, $amount);
 
         return $this->createTransaction([
             'from_account_id' => $fromAccount->id,
@@ -57,10 +93,8 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-    public function externalTranfer(int $amount, $fromAccountId, $toAccountId): Transaction
+    public function externalTransfer($fromAccount, $toAccount, int $amount): Transaction
     {
-        $fromAccount = $this->query->findOrFail($fromAccountId);
-        $toAccount = $this->query->findOrFail($toAccountId);
         $tax = 5;
         $amountDiscount = $amount + ($tax / 100);
 

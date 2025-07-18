@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('type'); // 'investment', 'current'
-            $table->integer('balance');
+            $table->integer('balance')->default(0);
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
