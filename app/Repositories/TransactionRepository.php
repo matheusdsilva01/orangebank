@@ -15,7 +15,11 @@ class TransactionRepository
     {
         $this->query = Account::query();
     }
-    public function withdraw(int $accountId, int $amount): void
+
+    /**
+     * @throws AccountException
+     */
+    public function withdraw(string $accountId, float $amount): void
     {
         $account = Account::query()->findOrFail($accountId);
 
@@ -26,7 +30,7 @@ class TransactionRepository
         $account->decrement('balance', $amount);
     }
 
-    public function deposit(int $accountId, int $amount): void
+    public function deposit(string $accountId, float $amount): void
     {
         $account = Account::query()->findOrFail($accountId);
         $account->increment('balance', $amount);
@@ -40,12 +44,10 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-
     public function createTransfer(array $payload): Transaction
     {
         $fromAccount = Account::query()->findOrFail($payload['fromAccountId']);
         $toAccount = Account::query()->findOrFail($payload['toAccountId']);
-
         if ($fromAccount->user->id === $toAccount->user->id) {
             return $this->internalTransfer(
                 $fromAccount,
@@ -64,13 +66,12 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-    public function internalTransfer($fromAccount, $toAccount, int $amount): Transaction
+    public function internalTransfer($fromAccount, $toAccount, float $amount): Transaction
     {
-        if ($fromAccount->id == $toAccount->id) {
+        if ($fromAccount->id === $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
         }
-
-        if ($fromAccount->type == $toAccount->type) {
+        if ($fromAccount->type === $toAccount->type) {
             throw AccountException::cannotTransferBetweenSameTypeAccounts();
         }
 
@@ -81,23 +82,25 @@ class TransactionRepository
         $this->withdraw($fromAccount->id, $amount);
         $this->deposit($toAccount->id, $amount);
 
-        return $this->createTransaction([
+        $transaction = [
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,
             'type' => 'internal',
             'tax' => 0, // Assuming no tax for internal transfers
-        ]);
+        ];
+
+        return $this->createTransaction($transaction);
     }
 
     /**
      * @throws AccountException
      */
-    public function externalTransfer($fromAccount, $toAccount, int $amount): Transaction
+    public function externalTransfer($fromAccount, $toAccount, float $amount): Transaction
     {
-        $tax = 5;
+        $tax = 50;
         $amountDiscount = $amount + ($tax / 100);
-
+        // Transactions between users can only be made between current accounts
         if ($fromAccount->type !== 'current' && $toAccount->type !== 'current') {
             throw AccountException::onlyTransferBetweenCurrentAccountsFromDifferentUsers();
         }
@@ -105,18 +108,17 @@ class TransactionRepository
         if ($fromAccount->balance < $amountDiscount) {
             throw AccountException::insufficientBalance();
         }
+        $this->withdraw($fromAccount->id, $amountDiscount);
+        $this->deposit($toAccount->id, $amount);
 
-        $fromAccount->balance -= $amountDiscount;
-        $toAccount->balance += $amount;
-        $fromAccount->save();
-        $toAccount->save();
-
-        return $this->createTransaction([
+        $transaction = $this->createTransaction([
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,
             'type' => 'external',
-            'tax' => $tax
+            'tax' => $tax,
         ]);
+
+        return $transaction;
     }
 }

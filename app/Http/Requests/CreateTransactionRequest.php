@@ -23,9 +23,9 @@ class CreateTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fromAccountId' => 'required|numeric|exists:accounts,id',
-            'toAccountId' => 'required|numeric|exists:accounts,id',
-            'amount' => 'required|numeric|min:0'
+            'fromAccountId' => 'required|string|exists:accounts,id',
+            'toAccountId' => 'required|string|exists:accounts,id',
+            'amount' => 'required|numeric|min:0',
         ];
     }
 }

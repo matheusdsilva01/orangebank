@@ -22,8 +22,8 @@ class TransactionFactory extends Factory
         $tax = $type === 'internal' ? 0 : 5;
 
         return [
-            'from_account_id' => Account::factory(),
-            'to_account_id' => Account::factory(),
+            'from_account_id' => Account::factory()->create()->id,
+            'to_account_id' => Account::factory()->create()->id,
             'amount' => fake()->randomFloat(2, 1, 100),
             'type' => $type,
             'tax' => $tax,

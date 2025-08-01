@@ -8,4 +8,3 @@ Route::get('/', function () {
 })->name('home');
 
 Route::post('/transaction', [TransactionController::class, 'create'])->name('transaction.create');
-

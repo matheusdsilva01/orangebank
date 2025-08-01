@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $origin = User::factory()->has(Account::factory())->create(['password' => '123']);
-        $user = User::factory()->has(Account::factory())->create(['password' => '123']);
+        $origin = User::factory()->has(Account::factory())->create();
+        $user = User::factory()->has(Account::factory())->create();
         Account::factory()->for($user)->create();
-        Transaction::factory()->count(10)->create([
+        Transaction::factory()->create([
             'from_account_id' => $origin->accounts->first()->id,
             'to_account_id' => Account::factory()->create()->id,
         ]);

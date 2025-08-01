@@ -16,24 +16,24 @@ class AccountFactory extends Factory
      *
      * @return array<string, mixed>
      */
-
     public function definition(): array
     {
         return [
             'user_id' => User::factory(),
             'balance' => fake()->randomFloat(2, 0, 10000),
+            'number' => strtoupper(fake()->lexify('????????????')),
             'type' => fake()->randomElement(['current', 'investment']),
         ];
     }
 
-    public function createCurrent(): Factory
+    public function createCurrent(): Factory|AccountFactory
     {
         return $this->state([
             'type' => 'current',
         ]);
     }
 
-    public function createInvestment(): static
+    public function createInvestment(): Factory|AccountFactory
     {
         return $this->state([
             'type' => 'investment',

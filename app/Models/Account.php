@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Account extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $guarded = ['id'];
 
     protected $table = 'accounts';
 
@@ -20,7 +23,7 @@ class Account extends Authenticatable
     protected $fillable = [
         'user_id',
         'balance',
-        'type'
+        'type',
     ];
 
     public function user(): BelongsTo

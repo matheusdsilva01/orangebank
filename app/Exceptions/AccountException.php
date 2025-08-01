@@ -6,7 +6,6 @@ use Exception;
 
 class AccountException extends Exception
 {
-
     public static function cannotTransferToSelfAccount(): self
     {
         return new self('Cannot transfer to the same account.');
