@@ -13,7 +13,7 @@ class TransactionRepository
 
     public function __construct()
     {
-        $this->query = Account::query();
+        $this->query = Transaction::query();
     }
 
     /**
@@ -36,9 +36,9 @@ class TransactionRepository
         $account->increment('balance', $amount);
     }
 
-    public function createTransaction(array $payload): Transaction
+    public function createTransaction(Transaction $payload): Transaction
     {
-        return Transaction::query()->create($payload);
+        return $this->query->create($payload->toArray());
     }
 
     /**
@@ -66,7 +66,7 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-    public function internalTransfer($fromAccount, $toAccount, float $amount): Transaction
+    public function internalTransfer(Account $fromAccount, Account $toAccount, float $amount): Transaction
     {
         if ($fromAccount->id === $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
@@ -82,13 +82,13 @@ class TransactionRepository
         $this->withdraw($fromAccount->id, $amount);
         $this->deposit($toAccount->id, $amount);
 
-        $transaction = [
+        $transaction = new Transaction([
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,
             'type' => 'internal',
             'tax' => 0, // Assuming no tax for internal transfers
-        ];
+        ]);
 
         return $this->createTransaction($transaction);
     }
@@ -111,14 +111,13 @@ class TransactionRepository
         $this->withdraw($fromAccount->id, $amountDiscount);
         $this->deposit($toAccount->id, $amount);
 
-        $transaction = $this->createTransaction([
-            'from_account_id' => $fromAccount->id,
-            'to_account_id' => $toAccount->id,
-            'amount' => $amount,
-            'type' => 'external',
-            'tax' => $tax,
-        ]);
-
-        return $transaction;
+        $transaction = new Transaction([
+                'from_account_id' => $fromAccount->id,
+                'to_account_id' => $toAccount->id,
+                'amount' => $amount,
+                'type' => 'external',
+                'tax' => $tax,]
+        );
+        return $this->createTransaction($transaction);
     }
 }

@@ -4,19 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('from_account_id')
-                ->constrained('accounts')
+            $table->uuid('id')->primary();
+            $table->foreignUuid('from_account_id')
+                ->constrained('accounts', 'id')
                 ->onDelete('cascade');
-            $table->foreignId('to_account_id')
-                ->constrained('accounts')
+            $table->foreignUuid('to_account_id')
+                ->nullable()
+                ->constrained('accounts', 'id')
                 ->onDelete('cascade');
             $table->integer('amount');
             $table->string('type');

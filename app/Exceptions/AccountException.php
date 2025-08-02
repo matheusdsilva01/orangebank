@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class AccountException extends Exception
 {
@@ -24,6 +25,11 @@ class AccountException extends Exception
     public static function cannotTransferBetweenSameTypeAccounts(): self
     {
         return new self('Cannot transfer between accounts of the same type.');
+    }
+
+    public static function cannotWithdrawFromInvestmentAccount(): self
+    {
+        return new self('Cannot withdraw from investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**

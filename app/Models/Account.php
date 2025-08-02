@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Account extends Authenticatable
@@ -25,6 +26,11 @@ class Account extends Authenticatable
         'balance',
         'type',
     ];
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'account_id');
+    }
 
     public function user(): BelongsTo
     {
