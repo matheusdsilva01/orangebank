@@ -18,7 +18,7 @@ class AccountWithdrawTest extends TestCase
         $accountCurrent = Account::factory()->for($user)->createCurrent()->create();
         $payload = [
             'number' => $accountCurrent->number,
-            'amount' => 100.00
+            'amount' => 100.00,
         ];
         //  Act
         $this->postJson(route('account.withdraw', $payload));
@@ -44,7 +44,7 @@ class AccountWithdrawTest extends TestCase
         $accountInvestment = Account::factory()->for($user)->createInvestment()->create();
         $payload = [
             'number' => $accountInvestment->number,
-            'amount' => 100.00
+            'amount' => 100.00,
         ];
         //  Act
         $response = $this->postJson(route('account.withdraw', $payload));

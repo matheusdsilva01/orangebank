@@ -16,26 +16,6 @@ class TransactionRepository
         $this->query = Transaction::query();
     }
 
-    /**
-     * @throws AccountException
-     */
-    public function withdraw(string $accountId, float $amount): void
-    {
-        $account = Account::query()->findOrFail($accountId);
-
-        if ($account->balance < $amount) {
-            throw AccountException::insufficientBalance();
-        }
-
-        $account->decrement('balance', $amount);
-    }
-
-    public function deposit(string $accountId, float $amount): void
-    {
-        $account = Account::query()->findOrFail($accountId);
-        $account->increment('balance', $amount);
-    }
-
     public function createTransaction(Transaction $payload): Transaction
     {
         return $this->query->create($payload->toArray());
@@ -79,8 +59,8 @@ class TransactionRepository
             throw AccountException::insufficientBalance();
         }
 
-        $this->withdraw($fromAccount->id, $amount);
-        $this->deposit($toAccount->id, $amount);
+        $fromAccount->decrement('balance', $amount);
+        $toAccount->increment('balance', $amount);
 
         $transaction = new Transaction([
             'from_account_id' => $fromAccount->id,
@@ -96,7 +76,7 @@ class TransactionRepository
     /**
      * @throws AccountException
      */
-    public function externalTransfer($fromAccount, $toAccount, float $amount): Transaction
+    public function externalTransfer(Account $fromAccount, Account $toAccount, float $amount): Transaction
     {
         $tax = 50;
         $amountDiscount = $amount + ($tax / 100);
@@ -108,16 +88,18 @@ class TransactionRepository
         if ($fromAccount->balance < $amountDiscount) {
             throw AccountException::insufficientBalance();
         }
-        $this->withdraw($fromAccount->id, $amountDiscount);
-        $this->deposit($toAccount->id, $amount);
+
+        $fromAccount->decrement('balance', $amountDiscount);
+        $toAccount->increment('balance', $amount);
 
         $transaction = new Transaction([
-                'from_account_id' => $fromAccount->id,
-                'to_account_id' => $toAccount->id,
-                'amount' => $amount,
-                'type' => 'external',
-                'tax' => $tax,]
-        );
+            'from_account_id' => $fromAccount->id,
+            'to_account_id' => $toAccount->id,
+            'amount' => $amount,
+            'type' => 'external',
+            'tax' => $tax,
+        ]);
+
         return $this->createTransaction($transaction);
     }
 }

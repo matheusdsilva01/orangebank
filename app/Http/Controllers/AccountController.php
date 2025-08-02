@@ -29,9 +29,10 @@ class AccountController extends Controller
                 'type' => 'withdraw',
                 'tax' => 0,
                 'from_account_id' => $account->id,
-                'to_account_id' => null
+                'to_account_id' => null,
             ];
             $transaction = Transaction::query()->create($transaction);
+
             return response()->json($transaction, Response::HTTP_OK);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());

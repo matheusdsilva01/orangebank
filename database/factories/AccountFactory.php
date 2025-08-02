@@ -20,7 +20,7 @@ class AccountFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'balance' => fake()->randomFloat(2, 0, 10000),
+            'balance' => fake()->randomFloat(2, 100, 10000),
             'number' => strtoupper(fake()->lexify('????????????')),
             'type' => fake()->randomElement(['current', 'investment']),
         ];

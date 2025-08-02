@@ -18,5 +18,4 @@ class AccountWithdrawRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:1'],
         ];
     }
-
 }

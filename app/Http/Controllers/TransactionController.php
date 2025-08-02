@@ -21,6 +21,7 @@ class TransactionController extends Controller
         try {
             $payload = $request->validated();
             $response = $this->repository->createTransfer($payload);
+
             return response()->json($response, Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
