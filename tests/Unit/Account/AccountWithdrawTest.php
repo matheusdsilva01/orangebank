@@ -42,6 +42,7 @@ class AccountWithdrawTest extends TestCase
         //  Prepare
         $user = User::factory()->create();
         $accountInvestment = Account::factory()->for($user)->createInvestment()->create();
+
         $payload = [
             'number' => $accountInvestment->number,
             'amount' => 100.00,

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\AccountType;
 use App\Exceptions\AccountException;
 use App\Models\Account;
 use App\Models\Transaction;
@@ -81,7 +82,7 @@ class TransactionRepository
         $tax = 50;
         $amountDiscount = $amount + ($tax / 100);
         // Transactions between users can only be made between current accounts
-        if ($fromAccount->type !== 'current' && $toAccount->type !== 'current') {
+        if ($fromAccount->type !== AccountType::Current && $toAccount->type !== AccountType::Current) {
             throw AccountException::onlyTransferBetweenCurrentAccountsFromDifferentUsers();
         }
 

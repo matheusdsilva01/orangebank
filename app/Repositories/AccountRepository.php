@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\AccountType;
 use App\Exceptions\AccountException;
 use App\Models\Account;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,7 @@ class AccountRepository
     public function withdraw(string $accountNumber, float $amount): void
     {
         $account = $this->query->whereColumn($accountNumber, 'number')->first();
-        if ($account->type === 'investment') {
+        if ($account->type === AccountType::Investment) {
             throw AccountException::cannotWithdrawFromInvestmentAccount();
         }
         if ($account->balance < $amount) {

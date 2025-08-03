@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('type'); // 'investment', 'current'
+            $table->string('type'); // App\Enums\AccountType.php
             $table->string('number', 12)->unique();
             $table->integer('balance')->default(0);
             $table->foreignUuid('user_id')->constrained();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AccountType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +27,13 @@ class Account extends Authenticatable
         'balance',
         'type',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'type' => AccountType::class,
+        ];
+    }
 
     public function transactions(): HasMany
     {
