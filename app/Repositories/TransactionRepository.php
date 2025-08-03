@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\AccountType;
+use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Account;
 use App\Models\Transaction;
@@ -67,7 +68,7 @@ class TransactionRepository
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,
-            'type' => 'internal',
+            'type' => TransactionType::Internal,
             'tax' => 0, // Assuming no tax for internal transfers
         ]);
 
@@ -97,7 +98,7 @@ class TransactionRepository
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,
-            'type' => 'external',
+            'type' => TransactionType::External,
             'tax' => $tax,
         ]);
 

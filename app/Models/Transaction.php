@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionType;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,7 @@ class Transaction extends Model
     ];
 
     protected $casts = [
+        'type' => TransactionType::class,
         'created_at' => 'custom_datetime',
         'updated_at' => 'custom_datetime',
     ];

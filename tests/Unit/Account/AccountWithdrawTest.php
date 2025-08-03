@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Account;
 
+use App\Enums\TransactionType;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +29,7 @@ class AccountWithdrawTest extends TestCase
         $expectedTransaction = [
             'from_account_id' => $accountCurrent->id,
             'to_account_id' => null,
-            'type' => 'withdraw',
+            'type' => TransactionType::Withdraw,
             'tax' => 0,
             'amount' => $payload['amount'],
         ];

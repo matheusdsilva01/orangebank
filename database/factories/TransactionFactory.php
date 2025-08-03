@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TransactionType;
 use App\Models\Account;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,8 +19,8 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
-        $type = fake()->randomElement(['internal', 'external']);
-        $tax = $type === 'internal' ? 0 : 5;
+        $type = fake()->randomElement(TransactionType::class);
+        $tax = $type === TransactionType::External ? 5 : 0;
 
         return [
             'from_account_id' => Account::factory()->create()->id,

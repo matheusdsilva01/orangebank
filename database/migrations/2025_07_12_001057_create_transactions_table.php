@@ -21,7 +21,7 @@ return new class extends Migration
                 ->constrained('accounts', 'id')
                 ->onDelete('cascade');
             $table->integer('amount');
-            $table->string('type');
+            $table->string('type'); //  App\Enums\TransactionType.php
             $table->integer('tax');
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountWithdrawRequest;
 use App\Models\Account;
@@ -26,7 +27,7 @@ class AccountController extends Controller
             $account = Account::query()->where('number', $payload['number'])->firstOrFail();
             $transaction = [
                 'amount' => $payload['amount'],
-                'type' => 'withdraw',
+                'type' => TransactionType::Withdraw,
                 'tax' => 0,
                 'from_account_id' => $account->id,
                 'to_account_id' => null,
