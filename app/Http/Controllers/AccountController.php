@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
+use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
 use App\Models\Account;
 use App\Models\Transaction;
@@ -31,6 +32,27 @@ class AccountController extends Controller
                 'tax' => 0,
                 'from_account_id' => $account->id,
                 'to_account_id' => null,
+            ];
+            $transaction = Transaction::query()->create($transaction);
+
+            return response()->json($transaction, Response::HTTP_OK);
+        } catch (AccountException $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
+    }
+
+    public function deposit(AccountDepositRequest $request)
+    {
+        $payload = $request->validated();
+        try {
+            $this->repository->deposit($payload['number'], $payload['amount']);
+            $account = Account::query()->where('number', $payload['number'])->firstOrFail();
+            $transaction = [
+                'amount' => $payload['amount'],
+                'type' => TransactionType::Deposit,
+                'tax' => 0,
+                'from_account_id' => null,
+                'to_account_id' => $account->id,
             ];
             $transaction = Transaction::query()->create($transaction);
 

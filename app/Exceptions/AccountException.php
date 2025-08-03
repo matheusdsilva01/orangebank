@@ -32,6 +32,11 @@ class AccountException extends Exception
         return new self('Cannot withdraw from investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public static function cannotDepositToInvestmentAccount(): self
+    {
+        return new self('Cannot deposit to investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Report the exception.
      */

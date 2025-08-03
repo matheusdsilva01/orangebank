@@ -21,7 +21,7 @@ class AccountRepository
      */
     public function withdraw(string $accountNumber, float $amount): void
     {
-        $account = $this->query->whereColumn($accountNumber, 'number')->first();
+        $account = $this->query->where('number', $accountNumber)->first();
         if ($account->type === AccountType::Investment) {
             throw AccountException::cannotWithdrawFromInvestmentAccount();
         }
@@ -29,5 +29,17 @@ class AccountRepository
             throw AccountException::insufficientBalance();
         }
         $account->decrement('balance', $amount);
+    }
+
+    /**
+     * @throws AccountException
+     */
+    public function deposit(string $accountNumber, mixed $amount): void
+    {
+        $account = $this->query->where('number', $accountNumber)->first();
+        if ($account->type === AccountType::Investment) {
+            throw AccountException::cannotDepositToInvestmentAccount();
+        }
+        $account->increment('balance', $amount);
     }
 }
