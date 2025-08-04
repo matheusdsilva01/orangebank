@@ -23,8 +23,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'cpf' => '12345678900',
-        'birth_date' => '2001-09-24',
+        'cpf',
+        'birth_date',
         'password',
     ];
 

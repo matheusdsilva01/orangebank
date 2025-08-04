@@ -1,4 +1,4 @@
-{
+ {
   "stocks": [
     {
       "symbol": "BOIB3",
@@ -337,4 +337,4 @@
       "minimumInvestment": 100.00
     }
   ]
-} 
+}
