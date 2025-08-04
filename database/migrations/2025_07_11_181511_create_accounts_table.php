@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('balance')->default(0);
             $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
+            $table->unique(['type', 'user_id']);
         });
     }
 
