@@ -18,7 +18,7 @@ class AccountDepositTest extends TestCase
         $account = Account::factory()->for($user)->createCurrent()->create();
         $payload = [
             'number' => $account->number,
-            'amount' => 100.00
+            'amount' => 100.00,
         ];
         //  Act
         $this->postJson(route('account.deposit'), $payload);

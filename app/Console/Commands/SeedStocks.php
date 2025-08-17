@@ -2,35 +2,35 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use App\Models\Stock;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\progress;
 
-class SeedUsers extends Command
+class SeedStocks extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:seed-users';
+    protected $signature = 'app:seed-stocks';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Seed the user JSON on Database';
+    protected $description = 'Seed the stocks JSON on Database';
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $filepath = resource_path('/json/users-mock.json');
+        $filepath = resource_path('/json/assets-mock.json');
         if (! File::exists($filepath)) {
             $this->error("Json file with mock users not found in {$filepath}");
 
@@ -40,18 +40,17 @@ class SeedUsers extends Command
         try {
             $jsonData = File::json($filepath);
             $this->info('JSON Data receive from Mock');
-            $users = $jsonData['users'];
-            $progressBar = progress(label: 'Seeding users in DB', steps: count($users));
-            foreach ($users as $user) {
-                User::updateOrCreate(
-                    ['email' => $user['email'], 'cpf' => $user['cpf']],
+            $stocks = $jsonData['stocks'];
+            $progressBar = progress(label: 'Seeding stocks in DB', steps: count($stocks));
+            foreach ($stocks as $stock) {
+                Stock::updateOrCreate(
+                    ['symbol' => $stock['symbol']],
                     [
-                        'id' => $user['id'],
-                        'cpf' => $user['cpf'],
-                        'name' => $user['name'],
-                        'email' => $user['email'],
-                        'birth_date' => $user['birthDate'],
-                        'password' => '123456',
+                        'symbol' => $stock['symbol'],
+                        'name' => $stock['name'],
+                        'sector' => $stock['sector'],
+                        'current_price' => $stock['currentPrice'],
+                        'daily_variation' => $stock['dailyVariation'],
                     ]);
                 $progressBar->advance();
             }

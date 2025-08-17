@@ -23,14 +23,14 @@ class AccountFactory extends Factory
             'user_id' => User::factory(),
             'balance' => fake()->randomFloat(2, 100, 10000),
             'number' => strtoupper(fake()->lexify('????????????')),
-            'type' => fake()->randomElement(AccountType::class)
+            'type' => fake()->randomElement(AccountType::class),
         ];
     }
 
     public function createCurrent(): Factory|AccountFactory
     {
         return $this->state([
-            'type' => AccountType::Current
+            'type' => AccountType::Current,
         ]);
     }
 

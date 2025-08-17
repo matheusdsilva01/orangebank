@@ -37,6 +37,11 @@ class AccountException extends Exception
         return new self('Cannot deposit to investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public static function cannotBuyStockWithoutAnInvestmentAccount(): self
+    {
+        return new self('Cannot buy without an investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Report the exception.
      */

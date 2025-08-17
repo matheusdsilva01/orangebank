@@ -7,4 +7,3 @@ enum AccountType: string
     case Current = 'current';
     case Investment = 'investment';
 }
-

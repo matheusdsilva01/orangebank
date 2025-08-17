@@ -9,7 +9,7 @@ enum TransactionType: string
     case Withdraw = 'withdraw';
     case Deposit = 'deposit';
 
-    function getLabel(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::Internal => 'Interna',
