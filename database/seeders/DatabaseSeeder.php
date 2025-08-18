@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         Artisan::call('app:seed-users');
         Artisan::call('app:seed-stocks');
+        Artisan::call('app:seed-fixed-income');
         $origin = User::factory()->create();
         Account::factory()->for($origin)->createInvestment()->create();
         $user = User::factory()->create();

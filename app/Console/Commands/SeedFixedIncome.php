@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Stock;
+use App\Models\FixedIncome;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
@@ -43,14 +43,15 @@ class SeedFixedIncome extends Command
             $fixedIncome = $jsonData['fixedIncome'];
             $progressBar = progress(label: 'Seeding fixed income in DB', steps: count($fixedIncome));
             foreach ($fixedIncome as $item) {
-                Stock::updateOrCreate(
-                    ['' => $item['symbol']],
+                FixedIncome::updateOrCreate(
+                    ['name' => $item['name']],
                     [
-                        'symbol' => $item['symbol'],
                         'name' => $item['name'],
-                        'sector' => $item['sector'],
-                        'current_price' => $item['currentPrice'],
-                        'daily_variation' => $item['dailyVariation'],
+                        'type' => $item['type'],
+                        'rate' => $item['rate'],
+                        'rateType' => $item['rateType'],
+                        'maturity' => $item['maturity'],
+                        'minimumInvestment' => $item['minimumInvestment'],
                     ]);
                 $progressBar->advance();
             }

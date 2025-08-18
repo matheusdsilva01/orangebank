@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class Account extends Model
 {
@@ -50,6 +51,17 @@ class Account extends Model
                 'sale_price',
                 'purchase_date',
                 'sale_date',
+            ]);
+    }
+
+    public function fixedIncomes(): BelongsToMany
+    {
+        return $this->belongsToMany(FixedIncome::class)
+//            ->using(new class extends Pivot{
+//                use HasUuids;
+//            })
+            ->withPivot([
+                'value',
             ]);
     }
 
