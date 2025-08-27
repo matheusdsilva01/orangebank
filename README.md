@@ -13,7 +13,7 @@ Desenvolver uma **API RESTful (preferencialmente em .NET)** que simule as opera�
 
 ## 🧠 Contexto de Negócio
 
-A FCamara atende bancos de investimentos e multiplos que possuem expressão a nível Global. Este desafio foi inspirado no domínio de negócio real que atuamos diariamente com nossos clientes, tornando esta uma oportunidade de exercitar habilidades técnicas em um cenário próximo da realidade.
+A Empresa atende bancos de investimentos e multiplos que possuem expressão a nível Global. Este desafio foi inspirado no domínio de negócio real que atuamos diariamente com nossos clientes, tornando esta uma oportunidade de exercitar habilidades técnicas em um cenário próximo da realidade.
 
 ---
 
