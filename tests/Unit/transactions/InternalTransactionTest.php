@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\transactions;
 
-use App\Models\Account;
+use App\Models\Account\Account;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

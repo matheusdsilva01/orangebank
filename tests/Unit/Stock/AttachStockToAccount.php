@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Stock;
 
-use App\Models\Account;
+use App\Models\Account\Account;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

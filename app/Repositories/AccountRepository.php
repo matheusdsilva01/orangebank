@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\AccountType;
 use App\Exceptions\AccountException;
-use App\Models\Account;
+use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Builder;
 
 class AccountRepository

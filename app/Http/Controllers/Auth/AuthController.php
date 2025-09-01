@@ -28,8 +28,8 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'identifier' => 'The provided credentials do not match our records.',
-            'password' => 'The provided credentials do not match our records.',
+            'identifier' => __('auth.failed'),
+            'password' => __('auth.failed'),
         ]);
     }
 

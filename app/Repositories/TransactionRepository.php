@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Enums\AccountType;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
-use App\Models\Account;
+use App\Models\Account\Account;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Builder;
 

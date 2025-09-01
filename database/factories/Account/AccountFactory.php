@@ -1,14 +1,15 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Account;
 
 use App\Enums\AccountType;
-use App\Models\Account;
+use App\Models\Account\CurrentAccount;
+use App\Models\Account\InvestmentAccount;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Account>
+ * @extends Factory<InvestmentAccount|CurrentAccount>
  */
 class AccountFactory extends Factory
 {
@@ -23,21 +24,6 @@ class AccountFactory extends Factory
             'user_id' => User::factory(),
             'balance' => fake()->randomFloat(2, 100, 10000),
             'number' => strtoupper(fake()->lexify('????????????')),
-            'type' => fake()->randomElement(AccountType::class),
         ];
-    }
-
-    public function createCurrent(): Factory|AccountFactory
-    {
-        return $this->state([
-            'type' => AccountType::Current,
-        ]);
-    }
-
-    public function createInvestment(): Factory|AccountFactory
-    {
-        return $this->state([
-            'type' => AccountType::Investment,
-        ]);
     }
 }

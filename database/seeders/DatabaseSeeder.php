@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Account;
-use App\Models\Transaction;
+use App\Enums\AccountType;
+use App\Models\Account\CurrentAccount;
+use App\Models\Account\InvestmentAccount;
 use App\Models\User;
 use Artisan;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,16 +17,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::query()->get()->where('email', 'tabata15@example.org');
         Artisan::call('app:seed-users');
         Artisan::call('app:seed-stocks');
         Artisan::call('app:seed-fixed-income');
-        $origin = User::factory()->create();
-        Account::factory()->for($origin)->createInvestment()->create();
-        $user = User::factory()->create();
-        Account::factory()->for($user)->createCurrent()->create();
-        Transaction::factory()->create([
-            'from_account_id' => $origin->accounts->first()->id,
-            'to_account_id' => Account::factory()->create()->id,
+        $johnUser = User::factory()->create();
+        InvestmentAccount::factory()->for($johnUser)->create();
+        $user = User::factory()->create([
+            'email' => 'user@mail.com',
+            'password' => Hash::make('password'),
         ]);
+        CurrentAccount::factory()->for($user)->create();
+        InvestmentAccount::factory()->for($user)->create();
     }
 }

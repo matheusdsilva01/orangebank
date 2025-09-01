@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\FixedIncome;
 
-use App\Models\Account;
+use App\Models\Account\Account;
 use App\Models\FixedIncome;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Testing\RefreshDatabase;

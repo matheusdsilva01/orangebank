@@ -8,7 +8,8 @@
     <title>OrangeBank</title>
 </head>
 <body>
-    <main class="h-full">
+    <x-layout.header />
+    <main class="h-full max-w-7xl mx-auto px-2 py-4">
         {{ $slot  }}
     </main>
 </body>
