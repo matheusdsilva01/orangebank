@@ -54,7 +54,7 @@
                     </a>
                 </li>
                 <li class="border text-sm border-zinc-50 font-medium rounded-md hover:bg-indigo-400 hover:text-gray-50 transition-all cursor-pointer">
-                    <a href="/" class="py-2 px-3 flex gap-2 items-center">
+                    <a href="{{ route('transfer') }}" class="py-2 px-3 flex gap-2 items-center">
                         <x-heroicon-o-arrows-right-left class="size-5"/>
                         Transferir
                     </a>
@@ -67,10 +67,30 @@
                 </li>
             </ul>
         </section>
-        <section class="bg-fuchsia-200 p-6 col-span-full flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
+        <section
+            class="bg-fuchsia-200 p-6 col-span-full flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
             <div>
                 <h3 class="text-lg font-medium">Histórico de Movimentações</h3>
                 <p class="text-sm">Últimas 5 transações</p>
+                <section class="flex flex-col gap-4">
+                    @foreach($transactions as $transaction)
+                        <div class="flex items-center rounded-md p-4 justify-between border border-fuchsia-400 py-2">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ $transaction->toAccount->user->name }}</span>
+                                <span
+                                    class="text-xs text-gray-600">{{ $transaction->created_at->format('d/m/Y HH:mm') }}</span>
+                            </div>
+                            <div class="text-right">
+                            <span
+                                class="font-bold {{ $transaction->type === 'credit' ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $transaction->type === 'credit' ? '+' : '-' }}{{ Number::currency($transaction->amount, in: 'BRL') }}
+                            </span>
+                                <p class="text-xs text-gray-600">{{ $transaction->account_type === 'investment' ? 'Conta Investimento' : 'Conta Corrente' }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </section>
+
             </div>
         </section>
     </div>

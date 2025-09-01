@@ -80,7 +80,7 @@ class Account extends Model
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'account_id');
+        return $this->hasMany(Transaction::class, 'from_account_id');
     }
 
     public function stocks(): BelongsToMany

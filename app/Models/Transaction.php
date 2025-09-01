@@ -7,6 +7,8 @@ use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Account\Account;
 
 class Transaction extends Model
 {
@@ -33,4 +35,14 @@ class Transaction extends Model
         'created_at' => 'custom_datetime',
         'updated_at' => 'custom_datetime',
     ];
+
+    public function fromAccount(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'from_account_id');
+    }
+
+    public function toAccount(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'to_account_id');
+    }
 }

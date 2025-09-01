@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         Artisan::call('app:seed-stocks');
         Artisan::call('app:seed-fixed-income');
         $johnUser = User::factory()->create();
+        CurrentAccount::factory()->for($johnUser)->create();
         InvestmentAccount::factory()->for($johnUser)->create();
         $user = User::factory()->create([
             'email' => 'user@mail.com',

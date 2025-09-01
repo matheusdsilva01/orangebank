@@ -7,9 +7,9 @@ use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
 use App\Models\Account\Account;
-use App\Models\Account\CurrentAccount;
 use App\Models\Transaction;
 use App\Repositories\AccountRepository;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AccountController extends Controller
@@ -20,11 +20,28 @@ class AccountController extends Controller
     {
         $this->repository = $repository;
     }
+
     public function dashboard()
     {
         $currentAccount = auth()->user()->currentAccount()->get()->first();
         $investmentAccount = auth()->user()->investmentAccount()->get()->first();
-        return view('dashboard', compact('currentAccount', 'investmentAccount'));
+        $transactions = $currentAccount->transactions()->union($investmentAccount->transactions())->get();
+        return view('dashboard', compact('currentAccount', 'investmentAccount', 'transactions'));
+    }
+
+    public function transfer(Request $request)
+    {
+        $payload = $request->validate([
+            'amount' => ['required', 'numeric:', 'min:1', ],
+            'destination' => ['required', 'string', 'exists:accounts,number'],
+        ]);
+        $user = auth()->user();
+        try {
+            $user->currentAccount()->get()->first()->externalTransfer($payload);
+        } catch (AccountException $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
+        return redirect(route('dashboard'));
     }
 
     public function withdraw(AccountWithdrawRequest $request)
@@ -68,4 +85,5 @@ class AccountController extends Controller
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
     }
+
 }
