@@ -10,9 +10,9 @@ enum AccountType: string
     case Current = 'current';
     case Investment = 'investment';
 
-    function getModel(): string
+    public function getModel(): string
     {
-        return match($this) {
+        return match ($this) {
             AccountType::Current => CurrentAccount::class,
             AccountType::Investment => InvestmentAccount::class,
         };

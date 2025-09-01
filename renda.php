@@ -1,4 +1,5 @@
 <?php
+
 phpinfo();
 $valorInicial = 1000.00;
 $taxaAnual = 0.12;

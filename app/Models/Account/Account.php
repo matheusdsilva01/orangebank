@@ -30,12 +30,12 @@ class Account extends Model
      */
     protected $fillable = [
         'user_id',
-        'balance'
+        'balance',
     ];
 
     public function newInstance($attributes = [], $exists = false): static
     {
-        $model = !isset($attributes['type']) ?
+        $model = ! isset($attributes['type']) ?
             new static($attributes) :
             new (AccountType::from($attributes['type'])->getModel())($attributes);
 
@@ -53,7 +53,6 @@ class Account extends Model
 
         return $model;
     }
-
 
     public function newFromBuilder($attributes = [], $connection = null): static
     {

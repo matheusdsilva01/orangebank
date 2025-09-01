@@ -2,7 +2,6 @@
 
 namespace Database\Factories\Account;
 
-use App\Enums\AccountType;
 use App\Models\Account\CurrentAccount;
 use App\Models\Account\InvestmentAccount;
 use App\Models\User;

@@ -2,7 +2,6 @@
 
 namespace Database\Factories\Account;
 
-use App\Enums\AccountType;
 use App\Models\Account\InvestmentAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

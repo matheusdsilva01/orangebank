@@ -26,13 +26,14 @@ class AccountController extends Controller
         $currentAccount = auth()->user()->currentAccount()->get()->first();
         $investmentAccount = auth()->user()->investmentAccount()->get()->first();
         $transactions = $currentAccount->transactions()->union($investmentAccount->transactions())->get();
+
         return view('dashboard', compact('currentAccount', 'investmentAccount', 'transactions'));
     }
 
     public function transfer(Request $request)
     {
         $payload = $request->validate([
-            'amount' => ['required', 'numeric:', 'min:1', ],
+            'amount' => ['required', 'numeric:', 'min:1'],
             'destination' => ['required', 'string', 'exists:accounts,number'],
         ]);
         $user = auth()->user();
@@ -41,6 +42,7 @@ class AccountController extends Controller
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
+
         return redirect(route('dashboard'));
     }
 
@@ -85,5 +87,4 @@ class AccountController extends Controller
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
     }
-
 }

@@ -42,7 +42,7 @@ class FixedIncome extends Model implements Investable
 
         $dailyTax = pow(1.0 + $annualTax, (1.0 / 365.0)) - 1.0;
         $valorAtual = $this->price * (1 + $dailyTax);
-        $this->accounts()->each(function ($account) {
+        $this->accounts()->each(function ($account): void {
             dump($account);
         });
 
