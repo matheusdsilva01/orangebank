@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TransactionType;
 use App\Models\Account\Account;
 use Database\Factories\TransactionFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,18 @@ class Transaction extends Model
     use HasFactory, HasUuids;
 
     protected $table = 'transactions';
+
+    protected function isSender(): ?Attribute
+    {
+        if ($this->type !== TransactionType::External) {
+            return null;
+        }
+        $authUser = auth()->user();
+
+        return Attribute::make(
+            get: fn () => $this->fromAccountId === $authUser->id,
+        );
+    }
 
     /**
      * The attributes that are mass assignable.

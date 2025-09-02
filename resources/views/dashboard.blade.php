@@ -1,3 +1,4 @@
+@php use App\Enums\TransactionType; @endphp
 <x-layout.main>
     <div class="grid grid-cols-3 gap-4">
         <section class="grid md:grid-cols-2 gap-4 col-span-2">
@@ -75,6 +76,9 @@
                 <section class="flex flex-col gap-4">
                     @foreach($transactions as $transaction)
                         <div class="flex items-center rounded-md p-4 justify-between border border-fuchsia-400 py-2">
+                            <div>
+                                <x-dynamic-component :component="$transaction->type->getIcon()" class="size-4"/>
+                            </div>
                             <div class="flex flex-col">
                                 <span class="font-medium">{{ $transaction->toAccount->user->name }}</span>
                                 <span
@@ -82,8 +86,8 @@
                             </div>
                             <div class="text-right">
                             <span
-                                class="font-bold {{ $transaction->type === 'credit' ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $transaction->type === 'credit' ? '+' : '-' }}{{ Number::currency($transaction->amount, in: 'BRL') }}
+                                class="font-bold {{ $transaction->isSender ? 'text-red-600' : 'text-green-600' }}">
+                                {{ $transaction->isSender ? '-' : '+' }}{{ Number::currency($transaction->amount, in: 'BRL') }}
                             </span>
                                 <p class="text-xs text-gray-600">{{ $transaction->account_type === 'investment' ? 'Conta Investimento' : 'Conta Corrente' }}</p>
                             </div>

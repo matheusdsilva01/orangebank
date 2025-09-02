@@ -79,7 +79,8 @@ class Account extends Model
 
     public function transactions(): HasMany
     {
-        return $this->hasMany(Transaction::class, 'from_account_id');
+        return $this->hasMany(Transaction::class, 'from_account_id')
+            ->orWhere('to_account_id', $this->id);
     }
 
     public function stocks(): BelongsToMany

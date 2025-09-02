@@ -18,4 +18,13 @@ enum TransactionType: string
             self::Withdraw => 'Saque',
         };
     }
+
+    public function getIcon(): string
+    {
+        return match ($this) {
+            self::Internal => 'heroicon-o-arrows-right-left',
+            self::External, self::Withdraw => 'heroicon-o-arrow-up-tray',
+            self::Deposit => 'heroicon-o-arrow-down-tray',
+        };
+    }
 }
