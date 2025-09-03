@@ -17,4 +17,19 @@ enum AccountType: string
             AccountType::Investment => InvestmentAccount::class,
         };
     }
+    public static function fromModel(string $model): AccountType
+    {
+        return match ($model) {
+            CurrentAccount::class => AccountType::Current,
+            InvestmentAccount::class => AccountType::Investment,
+        };
+    }
+
+    public function getLabel(): string
+    {
+        return match ($this) {
+            AccountType::Current => 'Conta Corrente',
+            AccountType::Investment => 'Conta Investimento',
+        };
+    }
 }

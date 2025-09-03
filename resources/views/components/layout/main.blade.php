@@ -1,3 +1,9 @@
+@props(
+    [
+        'title' => null,
+        'backTo' => null
+    ]
+)
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +14,7 @@
     <title>OrangeBank</title>
 </head>
 <body>
-    <x-layout.header />
+    <x-layout.header :title="$title" :back-to="$backTo" />
     <main class="h-full max-w-7xl mx-auto px-2 py-4">
         {{ $slot  }}
     </main>

@@ -18,15 +18,41 @@ class Transaction extends Model
 
     protected $table = 'transactions';
 
-    protected function isSender(): ?Attribute
+    public function getIcon(): string
     {
-        if ($this->type !== TransactionType::External) {
-            return null;
-        }
-        $authUser = auth()->user();
+        return match ($this->type) {
+            TransactionType::Internal => 'heroicon-o-arrows-right-left',
+            TransactionType::External => ($this->is_sender) ? 'heroicon-o-arrow-up-tray' : 'heroicon-o-arrow-down-tray',
+            TransactionType::Deposit => 'heroicon-o-arrow-down-tray',
+            TransactionType::Withdraw => 'heroicon-o-arrow-up-tray',
+        };
+    }
+
+    protected function sender(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->fromAccount->user
+        );
+    }
+
+    protected function receive(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->toAccount->user
+        );
+    }
+
+    protected function isSender(): Attribute
+    {
 
         return Attribute::make(
-            get: fn () => $this->fromAccountId === $authUser->id,
+            get: function () {
+                if ($this->type !== TransactionType::External) {
+                    return null;
+                }
+                $authUser = auth()->user();
+                return $this->fromAccount->user->id === $authUser->id;
+            },
         );
     }
 

@@ -9,22 +9,22 @@ class AccountException extends Exception
 {
     public static function cannotTransferToSelfAccount(): self
     {
-        return new self('Cannot transfer to the same account.');
+        return new self('Cannot transfer to the same account.', Response::HTTP_FORBIDDEN);
     }
 
     public static function insufficientBalance(): self
     {
-        return new self('Insufficient balance for the transfer.');
+        return new self('Insufficient balance for the transfer.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public static function onlyTransferBetweenCurrentAccountsFromDifferentUsers(): self
     {
-        return new self('External transfers are only allowed between current accounts.');
+        return new self('External transfers are only allowed between current accounts.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public static function cannotTransferBetweenSameTypeAccounts(): self
     {
-        return new self('Cannot transfer between accounts of the same type.');
+        return new self('Cannot transfer between accounts of the same type.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public static function cannotWithdrawFromInvestmentAccount(): self
@@ -41,7 +41,10 @@ class AccountException extends Exception
     {
         return new self('Cannot buy without an investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
-
+    public static function internalTransfersCanOnlyBeMadeBetweenAccountsOfTheSameUser(): self
+    {
+        return new self('Internal transfers can only be made between accounts of the same user.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
     /**
      * Report the exception.
      */
