@@ -38,8 +38,8 @@ class AccountRepository
     public function deposit(float $amount): void
     {
         $account = auth()->user()->currentAccount;
-        if ($account->type === AccountType::Investment) {
-            throw AccountException::cannotDepositToInvestmentAccount();
+        if (!$account) {
+            throw AccountException::accountNotFound();
         }
         $account->increment('balance', $amount);
     }

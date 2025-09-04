@@ -47,6 +47,11 @@ class AccountException extends Exception
         return new self('Internal transfers can only be made between accounts of the same user.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public static function accountNotFound(): self
+    {
+        return new self('Account not found.', Response::HTTP_NOT_FOUND);
+    }
+
     /**
      * Report the exception.
      */

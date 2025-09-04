@@ -16,7 +16,7 @@
                 <h3 class="text-sm font-medium">Realizar depósito</h3>
                 <p>Digite o valor que deseja depositar em sua conta corrente</p>
             </div>
-            <form method="POST" action="{{route('deposit')}}" class="space-y-4">
+            <form method="POST" action="{{route('account.deposit')}}" class="space-y-4">
                 {{@csrf_field()}}
                 <div class="space-y-2">
                     <label
