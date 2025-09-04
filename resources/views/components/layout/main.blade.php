@@ -14,7 +14,7 @@
     <title>OrangeBank</title>
 </head>
 <body>
-    <x-layout.header :title="$title" :back-to="$backTo" />
+    <x-layout.header />
     <main class="h-full max-w-7xl mx-auto px-2 py-4">
         {{ $slot  }}
     </main>

@@ -1,4 +1,4 @@
-@props(
+@aware(
     [
         'title' => null,
         'backTo' => null
