@@ -48,7 +48,7 @@
                     </a>
                 </li>
                 <li class="border text-sm border-zinc-50 font-medium rounded-md hover:bg-indigo-400 hover:text-gray-50 transition-all cursor-pointer">
-                    <a href="/" class="py-2 px-3 flex gap-2 items-center">
+                    <a href="{{route('withdraw-form')}}" class="py-2 px-3 flex gap-2 items-center">
                         <x-heroicon-o-arrow-up-tray class="size-5"/>
                         Sacar
                     </a>
@@ -74,39 +74,9 @@
                 <p class="text-sm">Últimas 5 transações</p>
                 <section class="flex flex-col gap-4">
                     @foreach($transactions as $transaction)
-                        <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
-                            <div class="">
-                                <x-dynamic-component :component="$transaction->getIcon()" class="size-4"/>
-                            </div>
-                            <div class="flex flex-col">
-                                @if ($transaction->isSender)
-                                    <p class="font-medium">{{$transaction->receive->name}}</p>
-                                @elseif (is_null($transaction->isSender))
-                                    <p class="font-medium">Interna</p>
-                                @else
-                                    <p class="font-medium">{{$transaction->sender->name}}</p>
-                                @endif
-                                <span
-                                    class="text-xs text-gray-600">{{ $transaction->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }}</span>
-                            </div>
-                            <div class="ml-auto text-right">
-                                @if (isset($transaction->isSender))
-                                    <span
-                                        class="font-bold {{ $transaction->isSender ? 'text-red-600' : 'text-green-600' }}">
-                                        {{ $transaction->isSender ? '-' : '+' }}{{ Number::currency($transaction->amount, in: 'BRL') }}
-                                    </span>
-                                @else
-                                    <span class="font-bold text-blue-600">
-                                        {{ Number::currency($transaction->amount, in: 'BRL') }}
-                                    </span>
-                                @endif
-                                <p class="text-xs text-gray-600">{{ $transaction->fromAccount->getLabel() }}
-                                    para {{$transaction->toAccount->getLabel()}}</p>
-                            </div>
-                        </div>
+                        <x-dynamic-component :component="$transaction->getComponent()" :transaction="$transaction" />
                     @endforeach
                 </section>
-
             </div>
         </section>
     </div>

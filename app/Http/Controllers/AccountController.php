@@ -91,8 +91,9 @@ class AccountController extends Controller
     {
         $payload = $request->validated();
         try {
-            $this->repository->withdraw($payload['number'], $payload['amount']);
-            $account = Account::query()->where('number', $payload['number'])->firstOrFail();
+            $this->repository->withdraw($payload['amount']);
+            $user = auth()->user();
+            $account = $user->currentAccount;
             $transaction = [
                 'amount' => $payload['amount'],
                 'type' => TransactionType::Withdraw,
@@ -102,10 +103,16 @@ class AccountController extends Controller
             ];
             $transaction = Transaction::query()->create($transaction);
 
-            return response()->json($transaction, Response::HTTP_OK);
+            return redirect(route('dashboard'));
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
+    }
+
+    public function withdrawForm()
+    {
+        $currentAccount = auth()->user()->currentAccount;
+        return view('withdraw', compact('currentAccount'));
     }
 
     public function deposit(AccountDepositRequest $request)

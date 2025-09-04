@@ -19,9 +19,10 @@ class AccountRepository
     /**
      * @throws AccountException
      */
-    public function withdraw(string $accountNumber, float $amount): void
+    public function withdraw(float $amount): void
     {
-        $account = $this->query->where('number', $accountNumber)->first();
+        $user = auth()->user();
+        $account = $user->currentAccount;
         if ($account->type === AccountType::Investment) {
             throw AccountException::cannotWithdrawFromInvestmentAccount();
         }

@@ -14,6 +14,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/transfer', [AccountController::class, 'transferForm'])->name('transfer');
     Route::post('/internal-transfer', [AccountController::class, 'internalTransfer'])->name('transfer.internal');
     Route::post('/external-transfer', [AccountController::class, 'transfer'])->name('transfer.external');
+    Route::get('/withdraw', [AccountController::class, 'withdrawForm'])->name('withdraw-form');
+    Route::post('/withdraw', [AccountController::class, 'withdraw'])->name('withdraw');
 });
 
 Route::view('/login', 'auth.login')->name('login');

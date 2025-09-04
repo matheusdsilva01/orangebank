@@ -28,17 +28,27 @@ class Transaction extends Model
         };
     }
 
+    public function getComponent(): string
+    {
+        return match ($this->type) {
+            TransactionType::Internal => 'transaction-item.internal',
+            TransactionType::External => 'transaction-item.external',
+            TransactionType::Deposit => 'transaction-item.deposit',
+            TransactionType::Withdraw => 'transaction-item.withdraw',
+        };
+    }
+
     protected function sender(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->fromAccount->user
+            get: fn() => $this->fromAccount->user
         );
     }
 
     protected function receive(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->toAccount->user
+            get: fn() => $this->toAccount->user
         );
     }
 
