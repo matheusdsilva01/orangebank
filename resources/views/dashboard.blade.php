@@ -72,10 +72,12 @@
             <div>
                 <h3 class="text-lg font-medium">Histórico de Movimentações</h3>
                 <p class="text-sm">Últimas 5 transações</p>
-                <section class="flex flex-col gap-4">
-                    @foreach($transactions as $transaction)
+                <section class="flex flex-col gap-4 mt-2">
+                    @forelse($transactions as $transaction)
                         <x-dynamic-component :component="$transaction->getComponent()" :transaction="$transaction" />
-                    @endforeach
+                    @empty
+                        <p class="text-xl text-center">Nenhuma transação encontrada</p>
+                    @endforelse
                 </section>
             </div>
         </section>
