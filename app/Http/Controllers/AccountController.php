@@ -25,7 +25,7 @@ class AccountController extends Controller
         $investmentAccount = auth()->user()->investmentAccount()->get()->first();
         $accountIds = auth()->user()->accounts()->pluck('id');
 
-        $transactions = Transaction::where(function ($query) use ($accountIds) {
+        $transactions = Transaction::where(function ($query) use ($accountIds): void {
             $query->whereIn('from_account_id', $accountIds)
                 ->orWhereIn('to_account_id', $accountIds);
         })->latest()
@@ -38,6 +38,7 @@ class AccountController extends Controller
     public function transferForm(Request $request)
     {
         $type = $request->query('type', 'external');
+
         return view('transfer', compact('type'));
     }
 
@@ -110,6 +111,7 @@ class AccountController extends Controller
     public function withdrawForm()
     {
         $currentAccount = auth()->user()->currentAccount;
+
         return view('withdraw', compact('currentAccount'));
     }
 
@@ -137,6 +139,7 @@ class AccountController extends Controller
     public function depositForm()
     {
         $currentAccount = auth()->user()->currentAccount;
+
         return view('deposit', compact('currentAccount'));
     }
 }

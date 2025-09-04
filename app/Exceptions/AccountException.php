@@ -41,10 +41,12 @@ class AccountException extends Exception
     {
         return new self('Cannot buy without an investment account.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
     public static function internalTransfersCanOnlyBeMadeBetweenAccountsOfTheSameUser(): self
     {
         return new self('Internal transfers can only be made between accounts of the same user.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
     /**
      * Report the exception.
      */

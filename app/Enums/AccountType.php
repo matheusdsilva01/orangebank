@@ -17,6 +17,7 @@ enum AccountType: string
             AccountType::Investment => InvestmentAccount::class,
         };
     }
+
     public static function fromModel(string $model): AccountType
     {
         return match ($model) {

@@ -18,16 +18,6 @@ class Transaction extends Model
 
     protected $table = 'transactions';
 
-    public function getIcon(): string
-    {
-        return match ($this->type) {
-            TransactionType::Internal => 'heroicon-o-arrows-right-left',
-            TransactionType::External => ($this->is_sender) ? 'heroicon-o-arrow-up-tray' : 'heroicon-o-arrow-down-tray',
-            TransactionType::Deposit => 'heroicon-o-arrow-down-tray',
-            TransactionType::Withdraw => 'heroicon-o-arrow-up-tray',
-        };
-    }
-
     public function getComponent(): string
     {
         return match ($this->type) {
@@ -41,14 +31,14 @@ class Transaction extends Model
     protected function sender(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->fromAccount->user
+            get: fn () => $this->fromAccount->user
         );
     }
 
     protected function receive(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->toAccount->user
+            get: fn () => $this->toAccount->user
         );
     }
 
@@ -61,6 +51,7 @@ class Transaction extends Model
                     return null;
                 }
                 $authUser = auth()->user();
+
                 return $this->fromAccount->user->id === $authUser->id;
             },
         );

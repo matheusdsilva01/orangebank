@@ -53,7 +53,7 @@ class Account extends Model
             ->where('user_id', $fromAccount->user_id)
             ->get()
             ->first();
-        if (!$toAccount) {
+        if (! $toAccount) {
             throw AccountException::accountNotFound();
         }
 
@@ -81,7 +81,7 @@ class Account extends Model
 
     public function newInstance($attributes = [], $exists = false): static
     {
-        $model = !isset($attributes['type']) ?
+        $model = ! isset($attributes['type']) ?
             new static($attributes) :
             new (AccountType::from($attributes['type'])->getModel())($attributes);
 
@@ -95,14 +95,14 @@ class Account extends Model
 
         $model->mergeCasts($this->casts);
 
-        $model->fill((array)$attributes);
+        $model->fill((array) $attributes);
 
         return $model;
     }
 
     public function newFromBuilder($attributes = [], $connection = null): static
     {
-        $attributes = (array)$attributes;
+        $attributes = (array) $attributes;
         $model = $this->newInstance([
             'type' => $attributes['type'] ?? null,
         ], true);
