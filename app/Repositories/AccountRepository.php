@@ -35,9 +35,9 @@ class AccountRepository
     /**
      * @throws AccountException
      */
-    public function deposit(string $accountNumber, mixed $amount): void
+    public function deposit(float $amount): void
     {
-        $account = $this->query->where('number', $accountNumber)->first();
+        $account = auth()->user()->currentAccount;
         if ($account->type === AccountType::Investment) {
             throw AccountException::cannotDepositToInvestmentAccount();
         }

@@ -6,11 +6,9 @@ use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
-use App\Models\Account\Account;
 use App\Models\Transaction;
 use App\Repositories\AccountRepository;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class AccountController extends Controller
 {
@@ -101,7 +99,7 @@ class AccountController extends Controller
                 'from_account_id' => $account->id,
                 'to_account_id' => null,
             ];
-            $transaction = Transaction::query()->create($transaction);
+            Transaction::query()->create($transaction);
 
             return redirect(route('dashboard'));
         } catch (AccountException $e) {
@@ -119,8 +117,8 @@ class AccountController extends Controller
     {
         $payload = $request->validated();
         try {
-            $this->repository->deposit($payload['number'], $payload['amount']);
-            $account = Account::query()->where('number', $payload['number'])->firstOrFail();
+            $this->repository->deposit($payload['amount']);
+            $account = auth()->user()->investmentAccount;
             $transaction = [
                 'amount' => $payload['amount'],
                 'type' => TransactionType::Deposit,
@@ -128,11 +126,17 @@ class AccountController extends Controller
                 'from_account_id' => null,
                 'to_account_id' => $account->id,
             ];
-            $transaction = Transaction::query()->create($transaction);
+            Transaction::query()->create($transaction);
 
-            return response()->json($transaction, Response::HTTP_OK);
+            return redirect(route('dashboard'));
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
+    }
+
+    public function depositForm()
+    {
+        $currentAccount = auth()->user()->currentAccount;
+        return view('deposit', compact('currentAccount'));
     }
 }

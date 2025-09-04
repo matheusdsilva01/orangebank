@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('from_account_id')
+                ->nullable()
                 ->constrained('accounts', 'id')
                 ->onDelete('cascade');
             $table->foreignUuid('to_account_id')

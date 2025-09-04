@@ -20,7 +20,6 @@ class AccountDepositRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'number' => ['required', 'string', 'exists:accounts,number'],
             'amount' => ['required', 'numeric', 'min:1'],
         ];
     }

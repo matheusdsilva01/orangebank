@@ -42,7 +42,7 @@
             <h2 class="text- font-medium">Ações Rápidas</h2>
             <ul class="flex flex-col gap-4">
                 <li class="border text-sm border-zinc-50 font-medium rounded-md hover:bg-indigo-400 hover:text-gray-50 transition-all cursor-pointer">
-                    <a href="/" class="py-2 px-3 flex gap-2 items-center">
+                    <a href="{{route('deposit-form')}}" class="py-2 px-3 flex gap-2 items-center">
                         <x-heroicon-o-arrow-down-tray class="size-5"/>
                         Depositar
                     </a>
