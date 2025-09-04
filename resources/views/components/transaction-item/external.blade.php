@@ -1,8 +1,8 @@
 <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
-    <div>
-        <x-dynamic-component :component="$transaction->getIcon()" class="size-4"/>
-    </div>
     @if ($transaction->isSender)
+        <div>
+            <x-heroicon-o-arrow-up-tray class="size-4"/>
+        </div>
         <div class="flex flex-col">
                 <p class="font-medium">{{$transaction->receive->name}}</p>
             <span
@@ -17,6 +17,9 @@
                 para: {{ $transaction->toAccount->getLabel() }}</p>
         </div>
     @else
+        <div>
+            <x-heroicon-o-arrow-down-tray class="size-4"/>
+        </div>
         <div class="flex flex-col">
             <p class="font-medium">{{$transaction->sender->name}}</p>
             <span

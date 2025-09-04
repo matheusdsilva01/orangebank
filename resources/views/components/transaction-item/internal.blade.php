@@ -1,6 +1,6 @@
 <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
     <div>
-        <x-dynamic-component :component="$transaction->getIcon()" class="size-4"/>
+        <x-heroicon-o-arrows-right-left class="size-4"/>
     </div>
     <div class="flex flex-col">
         <p class="font-medium">Interna</p>
