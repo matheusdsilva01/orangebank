@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +19,8 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/withdraw', [AccountController::class, 'withdraw'])->name('account.withdraw');
     Route::get('/deposit', [AccountController::class, 'depositForm'])->name('deposit-form');
     Route::post('/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
+    Route::get('/assets', [AssetController::class, 'index'])->name('assets');
+    Route::get('/stock/{id}', [StockController::class, 'detail'])->name('stock.detail');
 });
 
 Route::view('/login', 'auth.login')->name('login');

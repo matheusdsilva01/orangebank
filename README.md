@@ -68,3 +68,16 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
    ```bash
    composer dev
    ```
+
+### Todo
+- [ ] Mover redirecionamento após requisições para a view
+- [ ] Adicionar tratamento de erros para os formulários
+
+## Ativos
+- Ações
+    Renda variável com base no dia anterior com flutuação aleatória entre −0,5% e +0,5%
+- Fundos de Investimento
+  - Renda Fixa (pré-fixado)
+    - Rentabilidade diária fixa até a data de vencimento
+  - Renda Variável (pós-fixado)
+    - Rentabilidade diária com base em fator aleatório entre −3% e +3%

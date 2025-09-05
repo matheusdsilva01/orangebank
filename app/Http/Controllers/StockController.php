@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stock;
 use App\Repositories\StockRepository;
 
 class StockController extends Controller
@@ -23,8 +24,9 @@ class StockController extends Controller
         return $this->stockRepository->paginate();
     }
 
-    public function show(string $id)
+    public function detail(string $id)
     {
-        return $this->stockRepository->getStockById($id);
+        $stock = Stock::find($id);
+        return view('stock-detail', compact('stock'));
     }
 }

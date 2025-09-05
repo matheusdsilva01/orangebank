@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\FixedIncomeType;
 use App\Models\FixedIncome;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -47,7 +48,7 @@ class SeedFixedIncome extends Command
                     ['name' => $item['name']],
                     [
                         'name' => $item['name'],
-                        'type' => $item['type'],
+                        'type' => FixedIncomeType::from($item['type']),
                         'rate' => $item['rate'],
                         'rateType' => $item['rateType'],
                         'maturity' => $item['maturity'],

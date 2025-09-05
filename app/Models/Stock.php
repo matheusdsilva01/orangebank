@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
+use App\Models\Account\InvestmentAccount;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +34,7 @@ class Stock extends Model implements Investable
 
     public function accounts(): BelongsToMany
     {
-        return $this->belongsToMany(Account::class)
+        return $this->belongsToMany(InvestmentAccount::class, 'account_id')
             ->withPivot([
                 'quantity',
                 'purchase_price',

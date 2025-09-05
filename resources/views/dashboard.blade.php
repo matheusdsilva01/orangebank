@@ -60,7 +60,7 @@
                     </a>
                 </li>
                 <li class="border text-sm border-zinc-50 font-medium rounded-md bg-indigo-400 hover:bg-indigo-400/80 text-gray-50 transition-all cursor-pointer">
-                    <a href="/" class="py-2 px-3 flex gap-2 items-center">
+                    <a href="{{route('assets')}}" class="py-2 px-3 flex gap-2 items-center">
                         <x-heroicon-o-arrow-trending-up class="size-5"/>
                         Investir
                     </a>

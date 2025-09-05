@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -27,6 +28,7 @@ class FixedIncome extends Model implements Investable
     protected function casts(): array
     {
         return [
+            'type' => FixedIncomeType::class,
             'maturity' => 'datetime',
         ];
     }

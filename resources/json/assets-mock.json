@@ -285,7 +285,7 @@
     {
       "id": "CDB001",
       "name": "CDB Banco A",
-      "type": "CDB",
+      "type": "cdb",
       "rate": 0.12,
       "rateType": "pre",
       "maturity": "2024-12-31",
@@ -294,7 +294,7 @@
     {
       "id": "CDB002",
       "name": "CDB Banco B",
-      "type": "CDB",
+      "type": "cdb",
       "rate": 0.105,
       "rateType": "pre",
       "maturity": "2025-06-30",
@@ -303,7 +303,7 @@
     {
       "id": "TD001",
       "name": "Tesouro Selic 2025",
-      "type": "Tesouro Direto",
+      "type": "direct_treasury",
       "rate": 0.115,
       "rateType": "pos",
       "maturity": "2025-01-01",
@@ -312,7 +312,7 @@
     {
       "id": "TD002",
       "name": "Tesouro IPCA+ 2026",
-      "type": "Tesouro Direto",
+      "type": "direct_treasury",
       "rate": 0.055,
       "rateType": "pos",
       "maturity": "2026-01-01",
@@ -321,7 +321,7 @@
     {
       "id": "CDB003",
       "name": "CDB Banco C",
-      "type": "CDB",
+      "type": "cdb",
       "rate": 0.13,
       "rateType": "pre",
       "maturity": "2024-09-30",
@@ -330,7 +330,7 @@
     {
       "id": "TD003",
       "name": "Tesouro Prefixado 2027",
-      "type": "Tesouro Direto",
+      "type": "direct_treasury",
       "rate": 0.12,
       "rateType": "pre",
       "maturity": "2027-01-01",
