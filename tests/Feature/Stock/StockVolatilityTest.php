@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Stock;
 
-use App\Models\Account\Account;
+use App\Models\Account\InvestmentAccount;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ class StockVolatilityTest extends TestCase
         $this->artisan('app:seed-stocks');
         $user = User::factory()->create();
 
-        $account = Account::factory()->recycle($user)->createInvestment()->create();
+        $account = InvestmentAccount::factory()->recycle($user)->create();
 
         $stock = Stock::query()->where('symbol', 'BOIB3')->first();
         $oldPrice = $stock->current_price;

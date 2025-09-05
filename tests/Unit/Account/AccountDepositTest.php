@@ -11,11 +11,6 @@ use Tests\TestCase;
 class AccountDepositTest extends TestCase
 {
     use RefreshDatabase;
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutMiddleware();
-    }
 
     public function test_to_be_to_do_deposit_to_current_account()
     {

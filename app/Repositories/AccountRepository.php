@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\AccountType;
 use App\Exceptions\AccountException;
 use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,8 +22,8 @@ class AccountRepository
     {
         $user = auth()->user();
         $account = $user->currentAccount;
-        if ($account->type === AccountType::Investment) {
-            throw AccountException::cannotWithdrawFromInvestmentAccount();
+        if (! $account) {
+            throw AccountException::accountNotFound();
         }
         if ($account->balance < $amount) {
             throw AccountException::insufficientBalance();
@@ -38,7 +37,7 @@ class AccountRepository
     public function deposit(float $amount): void
     {
         $account = auth()->user()->currentAccount;
-        if (!$account) {
+        if (! $account) {
             throw AccountException::accountNotFound();
         }
         $account->increment('balance', $amount);
