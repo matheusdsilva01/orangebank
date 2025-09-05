@@ -16,7 +16,7 @@
                 <h3 class="text-sm font-medium">Realizar saque</h3>
                 <p>Digite o valor que deseja sacar de sua conta corrente</p>
             </div>
-            <form method="POST" action="{{route('withdraw')}}" class="space-y-4">
+            <form method="POST" action="{{route('account.withdraw')}}" class="space-y-4">
                 {{@csrf_field()}}
                 <div class="space-y-2">
                     <label
