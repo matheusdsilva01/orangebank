@@ -3,6 +3,9 @@
 namespace App\Models\Account;
 
 use App\Enums\AccountType;
+use App\Models\FixedIncome;
+use App\Models\Stock;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class InvestmentAccount extends Account
 {
@@ -19,5 +22,28 @@ class InvestmentAccount extends Account
         static::addGlobalScope('investment', function ($builder): void {
             $builder->where('type', AccountType::Investment);
         });
+    }
+
+    public function fixedIncomes(): BelongsToMany
+    {
+        return $this->belongsToMany(FixedIncome::class, 'account_fixed_income', 'account_id')
+//            ->using(new class extends Pivot{
+//                use HasUuids;
+//            })
+            ->withPivot([
+                'value',
+            ]);
+    }
+
+    public function stocks(): BelongsToMany
+    {
+        return $this->belongsToMany(Stock::class, 'account_stock', 'account_id')
+            ->withPivot([
+                'quantity',
+                'purchase_price',
+                'sale_price',
+                'purchase_date',
+                'sale_date',
+            ]);
     }
 }

@@ -5,15 +5,12 @@ namespace App\Models\Account;
 use App\Enums\AccountType;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
-use App\Models\FixedIncome;
-use App\Models\Stock;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 
@@ -127,29 +124,6 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class, 'from_account_id')
             ->orWhere('to_account_id', $this->id);
-    }
-
-    public function stocks(): BelongsToMany
-    {
-        return $this->belongsToMany(Stock::class)
-            ->withPivot([
-                'quantity',
-                'purchase_price',
-                'sale_price',
-                'purchase_date',
-                'sale_date',
-            ]);
-    }
-
-    public function fixedIncomes(): BelongsToMany
-    {
-        return $this->belongsToMany(FixedIncome::class)
-//            ->using(new class extends Pivot{
-//                use HasUuids;
-//            })
-            ->withPivot([
-                'value',
-            ]);
     }
 
     public function user(): BelongsTo
