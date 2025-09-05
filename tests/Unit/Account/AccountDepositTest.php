@@ -2,7 +2,8 @@
 
 namespace Tests\Unit\Account;
 
-use App\Models\Account\Account;
+use App\Models\Account\CurrentAccount;
+use App\Models\Account\InvestmentAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,33 +16,34 @@ class AccountDepositTest extends TestCase
     {
         //  Prepare
         $user = User::factory()->create();
-        $account = Account::factory()->for($user)->createCurrent()->create();
+        $account = CurrentAccount::factory()->for($user)->create();
+        $previousBalance = $account->balance;
         $payload = [
-            'number' => $account->number,
             'amount' => 100.00,
         ];
+        $this->actingAs($user);
         //  Act
         $this->postJson(route('account.deposit'), $payload);
         //  Assert
-        $expectedBalance = $account->balance + $payload['amount'];
-        $this->assertEquals($account->refresh()->balance, $expectedBalance);
+        $expectedBalance = round($previousBalance + $payload['amount'], 2);
+        $this->assertEquals($expectedBalance, $account->refresh()->balance);
+        $this->assertDatabaseCount('transactions', 1);
     }
 
-    public function test_to_not_able_deposit_amount_to_investment_account()
+    public function test_to_not_deposit_without_current_account()
     {
         //  Prepare
         $user = User::factory()->create();
-        $accountInvestment = Account::factory()->for($user)->createInvestment()->create();
-
+        $accountInvestment = InvestmentAccount::factory()->for($user)->create();
+        $oldBalance = $accountInvestment->balance;
+        $this->actingAs($user);
         $payload = [
-            'number' => $accountInvestment->number,
             'amount' => 100.00,
         ];
         //  Act
         $response = $this->postJson(route('account.deposit', $payload));
         //  Assert
-        $oldBalance = $accountInvestment->balance;
-        $response->assertUnprocessable();
+        $response->assertNotFound();
         $this->assertEquals($accountInvestment->refresh()->balance, $oldBalance);
         $this->assertDatabaseEmpty('transactions');
     }

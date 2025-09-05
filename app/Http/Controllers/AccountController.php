@@ -120,7 +120,7 @@ class AccountController extends Controller
         $payload = $request->validated();
         try {
             $this->repository->deposit($payload['amount']);
-            $account = auth()->user()->investmentAccount;
+            $account = auth()->user()->currentAccount;
             $transaction = [
                 'amount' => $payload['amount'],
                 'type' => TransactionType::Deposit,

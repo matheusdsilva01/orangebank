@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Unit\transactions;
+namespace Tests\Unit\Transactions;
 
-use App\Models\Account\Account;
+use App\Models\Account\CurrentAccount;
+use App\Models\Account\InvestmentAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,24 +16,28 @@ class InternalTransactionTest extends TestCase
     {
         // Prepare
         $user = User::factory()->create();
-        $currentAccount = Account::factory()->for($user)->create(['type' => 'current']);
-        $investmentAccount = Account::factory()->for($user)->create(['type' => 'investment']);
-        $payload = [
-            'fromAccountId' => $currentAccount->id,
-            'toAccountId' => $investmentAccount->id,
-            'amount' => 100,
-        ];
-        // Act
-        $this->postJson(route('transaction.create'), $payload);
-        // Assert
+        $currentAccount = CurrentAccount::factory()->for($user)->create();
+        $investmentAccount = InvestmentAccount::factory()->for($user)->create();
+        $this->actingAs($user);
+
         $oldCurrentBalance = $currentAccount->balance;
         $oldInvestmentBalance = $investmentAccount->balance;
+
+        $payload = [
+            'mode' => 'current-investment',
+            'amount' => 100,
+        ];
+
+        // Act
+        $this->postJson(route('transfer.internal'), $payload);
+
+        // Assert
         $this->assertEquals($currentAccount->refresh()->balance, $oldCurrentBalance - $payload['amount']);
         $this->assertEquals($investmentAccount->refresh()->balance, $oldInvestmentBalance + $payload['amount']);
 
         $expected = [
-            'from_account_id' => $payload['fromAccountId'],
-            'to_account_id' => $payload['toAccountId'],
+            'from_account_id' => $currentAccount->id,
+            'to_account_id' => $investmentAccount->id,
             'amount' => $payload['amount'],
         ];
 

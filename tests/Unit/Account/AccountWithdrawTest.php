@@ -3,7 +3,8 @@
 namespace Tests\Unit\Account;
 
 use App\Enums\TransactionType;
-use App\Models\Account\Account;
+use App\Models\Account\CurrentAccount;
+use App\Models\Account\InvestmentAccount;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,16 +17,19 @@ class AccountWithdrawTest extends TestCase
     {
         //  Prepare
         $user = User::factory()->create();
-        $accountCurrent = Account::factory()->for($user)->createCurrent()->create();
+        $accountCurrent = CurrentAccount::factory()->for($user)->create();
+        $oldBalance = $accountCurrent->balance;
+
+        $this->actingAs($user);
+
         $payload = [
-            'number' => $accountCurrent->number,
             'amount' => 100.00,
         ];
         //  Act
         $this->postJson(route('account.withdraw', $payload));
         //  Assert
-        $oldBalance = $accountCurrent->balance;
         $expectedBalance = $oldBalance - $payload['amount'];
+
         $expectedTransaction = [
             'from_account_id' => $accountCurrent->id,
             'to_account_id' => null,
@@ -34,7 +38,7 @@ class AccountWithdrawTest extends TestCase
             'amount' => $payload['amount'],
         ];
 
-        $this->assertEquals($accountCurrent->refresh()->balance, $expectedBalance);
+        $this->assertEquals($expectedBalance, $accountCurrent->refresh()->balance);
         $this->assertDatabaseHas('transactions', $expectedTransaction);
     }
 
@@ -42,17 +46,20 @@ class AccountWithdrawTest extends TestCase
     {
         //  Prepare
         $user = User::factory()->create();
-        $accountInvestment = Account::factory()->for($user)->createInvestment()->create();
+        $accountInvestment = InvestmentAccount::factory()->for($user)->create();
+        $oldBalance = $accountInvestment->balance;
+
+        $this->actingAs($user);
 
         $payload = [
-            'number' => $accountInvestment->number,
             'amount' => 100.00,
         ];
+
         //  Act
-        $response = $this->postJson(route('account.withdraw', $payload));
+        $response = $this->postJson(route('account.withdraw'), $payload);
+
         //  Assert
-        $oldBalance = $accountInvestment->balance;
-        $response->assertUnprocessable();
+        $response->assertNotFound();
         $this->assertEquals($accountInvestment->refresh()->balance, $oldBalance);
         $this->assertDatabaseEmpty('transactions');
     }
