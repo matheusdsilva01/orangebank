@@ -32,7 +32,7 @@ class InvestmentAccount extends Account
 //            })
             ->withPivot([
                 'value',
-            ]);
+            ])->withTimestamps();
     }
 
     public function stocks(): BelongsToMany

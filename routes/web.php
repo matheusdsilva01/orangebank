@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\FixedIncomeController;
 use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/assets', [AssetController::class, 'index'])->name('assets');
     Route::get('/stock/{id}', [StockController::class, 'detail'])->name('stock.detail');
     Route::post('/stock/{id}', [StockController::class, 'buy'])->name('stock.buy');
+    Route::get('/fixed-income/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail');
+    Route::post('/fixed-income/{id}', [FixedIncomeController::class, 'buy'])->name('fixed-income.buy');
 });
 
 Route::view('/login', 'auth.login')->name('login');

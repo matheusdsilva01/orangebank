@@ -1,0 +1,53 @@
+<x-layout.main title="{{$fixedIncome->name}} - {{$fixedIncome->type->getLabel()}}" back-to="{{route('assets')}}">
+    <section class="max-w-6xl mx-auto grid grid-cols-3 gap-4 auto-rows-max">
+        <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border col-span-2 border-gray-400 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold">
+                        {{Number::currency($fixedIncome->minimumInvestment, in: 'BRL')}}
+                    </h2>
+                    <p class="text-lg text-green-600">
+                        {{$fixedIncome->rate}}%
+                    </p>
+                </div>
+                <div class="text-right text-sm text-muted-foreground">
+                    <p>Vencimento</p>
+                    <p>{{$fixedIncome->maturity->format('d/m/Y')}}</p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="bg-fuchsia-200 p-6 col-start-3 flex flex-col gap-4 rounded-xl border border-gray-400 shadow-sm">
+            <div class="flex items-center gap-1">
+                <x-heroicon-o-currency-dollar class="size-4 inline-flex"/>
+                <h2 class="text-sm font-medium">Disponível para investir</h2>
+            </div>
+            <p class="text-xl font-medium">
+                {{Number::currency($investmentAccount->balance, in: 'BRL')}}
+            </p>
+        </div>
+        <div
+            class="bg-fuchsia-200 p-6 col-start-3 row-start-2 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
+            <div class="flex items-center gap-1">
+                <x-carbon-piggy-bank class="size-4 inline-flex"/>
+                <h2 class="text- font-medium">Investir</h2>
+            </div>
+            <form method="POST" class="space-y-4">
+                {{csrf_field()}}
+                <div>
+                    <label class="text-sm font-medium mb-2 block" for="amount">Valor do investimento</label>
+                    <input class="w-full rounded-md border px-3 py-1.5 shadow-xs" id="amount"
+                           name="amount"
+                           required
+                           placeholder="Digite o valor desejado"
+                           step="0.01"
+                           type="number" inputmode="numeric" min="{{$fixedIncome->minimumInvestment}}">
+                </div>
+                <button type="submit"
+                        class="bg-fuchsia-600 hover:bg-fuchsia-500 text-gray-50 border border-white rounded-md w-full font-medium transition-all px-4 py-2 text-sm cursor-pointer">
+                    Adquirir
+                </button>
+            </form>
+        </div>
+    </section>
+</x-layout.main>
