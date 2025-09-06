@@ -31,18 +31,19 @@ class StockRepository
     /**
      * @throws AccountException
      */
-    public function buyToAccount(string $accountId, string $stockId, int $qtd): void
+    public function buyToAccount(string $id, int $quantity): void
     {
-        $account = Account::query()->findOrFail($accountId);
-        $stock = $this->query->findOrFail($stockId);
-        $amount = $stock->current_price * $qtd;
+        $account = auth()->user()->investmentAccount;
+        $stock = $this->query->findOrFail($id);
+        $amount = round($stock->current_price * $quantity, 2);
 
-        if ($account->type !== AccountType::Investment) {
+        if (!$account) {
             throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
         }
         if ($account->balance < $amount) {
             throw AccountException::insufficientBalance();
         }
-        $account->stocks()->attach($stockId, ['quantity' => $qtd, 'current_price' => $stock->current_price]);
+        $account->stocks()->attach($id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price]);
+        $account->decrement('balance', $amount);
     }
 }

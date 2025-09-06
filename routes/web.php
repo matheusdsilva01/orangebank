@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
     Route::get('/assets', [AssetController::class, 'index'])->name('assets');
     Route::get('/stock/{id}', [StockController::class, 'detail'])->name('stock.detail');
+    Route::post('/stock/{id}', [StockController::class, 'buy'])->name('stock.buy');
 });
 
 Route::view('/login', 'auth.login')->name('login');
