@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Stock;
 use App\Repositories\StockRepository;
+use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
@@ -14,9 +14,21 @@ class StockController extends Controller
         $this->stockRepository = $stockRepository;
     }
 
-    public function buy(string $accountId, string $stockId, int $qtd)
+    public function buy(Request $request)
     {
-        return $this->stockRepository->buyToAccount($accountId, $stockId, $qtd);
+        $params = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+        $payload = [
+            'id' => $request->route('id'),
+            'quantity' => $params['quantity'],
+        ];
+        try {
+            $this->stockRepository->buyToAccount($payload['id'], $payload['quantity']);
+            return redirect()->route('dashboard');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function index()
@@ -26,7 +38,7 @@ class StockController extends Controller
 
     public function detail(string $id)
     {
-        $stock = Stock::find($id);
+        $stock = $this->stockRepository->getStockById($id);
         return view('stock-detail', compact('stock'));
     }
 }
