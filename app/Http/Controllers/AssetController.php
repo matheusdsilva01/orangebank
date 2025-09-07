@@ -20,4 +20,17 @@ class AssetController extends Controller
 
         return view('assets.index', compact('stocks', 'type', 'fixedIncomes', 'investmentAccount'));
     }
+
+    public function myAssets(Request $request)
+    {
+        $investmentAccount = auth()->user()->investmentAccount;
+        $stocks = $investmentAccount->stocks;
+        $fixedIncomes = $investmentAccount->fixedIncomes;
+        $type = $request->query('type', 'stocks');
+
+        if (!in_array($type, ['stocks', 'fixed_income'])) {
+            return redirect()->route('my-assets', ['type' => 'stocks']);
+        }
+        return view('assets.my-assets', compact('stocks', 'fixedIncomes', 'investmentAccount', 'type'));
+    }
 }

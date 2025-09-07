@@ -20,13 +20,13 @@
         </section>
         <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
             <div>
-                <h3 class="text-sm font-medium">Ativos disponíveis</h3>
-                <p>Selecione um ativo para investir</p>
+                <h3 class="text-sm font-medium">Meus ativos</h3>
+                <p>Veja os ativos que você adquiriu no mercado</p>
             </div>
             <section class="flex rounded-md p-1 border border-zinc-400 gap-1.5">
-                <a href="{{route('assets', ['type' => 'stocks'])}}" data-selected="@bool($type==='stocks')"
+                <a href="{{route('my-assets', ['type' => 'stocks'])}}" data-selected="@bool($type==='stocks')"
                    class="py-1 px-2 rounded-xs cursor-pointer data-[selected=true]:bg-fuchsia-300 data-[selected=true]:shadow-sm">Ações</a>
-                <a href="{{route('assets', ['type' => 'fixed_income'])}}" data-selected="@bool($type==='fixed_income')"
+                <a href="{{route('my-assets', ['type' => 'fixed_income'])}}" data-selected="@bool($type==='fixed_income')"
                    class="py-1 px-2 rounded-xs cursor-pointer data-[selected=true]:bg-fuchsia-300 data-[selected=true]:shadow-sm">Renda
                     fixa</a>
             </section>
@@ -35,13 +35,13 @@
                     @forelse($stocks as $stock)
                         <x-card-stock :stock="$stock"/>
                     @empty
-                        <p class="text-sm text-gray-500">Nenhum ativo disponível no momento</
+                        <p class="text-sm text-gray-500">Você não adquiriu nenhuma ação</p>
                     @endforelse
                 @else
                     @forelse($fixedIncomes as $fixedIncome)
                         <x-card-fixed-income :fixed-income="$fixedIncome" />
                     @empty
-                        <p class="text-sm text-gray-500">Nenhum ativo disponível no momento</p>
+                        <p class="text-sm text-gray-500">Você não possui nenhum investimento em renda fixa</p>
                     @endforelse
                 @endif
             </section>
