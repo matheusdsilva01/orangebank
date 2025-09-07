@@ -9,8 +9,7 @@ enum FixedIncomeType: string
 
     public function getLabel(): string
     {
-        return match ($this)
-        {
+        return match ($this) {
             FixedIncomeType::CDB => 'CDB',
             FixedIncomeType::DirectTreasury => 'Tesouro Direto',
         };

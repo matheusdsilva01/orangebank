@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Interfaces\Investable;
-use App\Models\Account\Account;
 use App\Models\Account\InvestmentAccount;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,18 +64,5 @@ class Stock extends Model implements Investable
 
         // Retorna a nova variação em porcentagem
         return $novaVariacao * 100;
-    }
-
-    public function updateAccountsStocksPrice(): void
-    {
-        $accountStocks = $this->accounts()->get();
-        $currDayVariation = $this->daily_variation / 100;
-        //  talvez seja seja o caso de criar uma coluna de variation no pivot
-        //  por que aí eu calcularia uma única vez o quanto a ação variou desde a compra
-
-        //        foreach ($accountStocks as $accountStock) {
-        //            $currentPrice = $accountStock->current_price * (1 + $currDayVariation);
-        //            $accountStock->update(['current_price' => $currentPrice]);
-        //        }
     }
 }

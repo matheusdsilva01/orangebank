@@ -36,7 +36,7 @@ class FixedIncomeController extends Controller
         try {
             $account = auth()->user()->investmentAccount;
 
-            if (!$account) {
+            if (! $account) {
                 throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
             }
             if ($account->balance < $payload['amount']) {
@@ -44,6 +44,7 @@ class FixedIncomeController extends Controller
             }
             $account->fixedIncomes()->attach($payload['id'], ['value' => $payload['amount']]);
             $account->decrement('balance', $payload['amount']);
+
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

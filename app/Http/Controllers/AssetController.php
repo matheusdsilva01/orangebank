@@ -11,7 +11,7 @@ class AssetController extends Controller
     public function index(Request $request)
     {
         $type = $request->query('type', 'stocks');
-        if (!in_array($type, ['stocks', 'fixed_income'])) {
+        if (! in_array($type, ['stocks', 'fixed_income'])) {
             return redirect()->route('assets', ['type' => 'stocks']);
         }
         $stocks = Stock::all();
@@ -28,9 +28,10 @@ class AssetController extends Controller
         $fixedIncomes = $investmentAccount->fixedIncomes;
         $type = $request->query('type', 'stocks');
 
-        if (!in_array($type, ['stocks', 'fixed_income'])) {
+        if (! in_array($type, ['stocks', 'fixed_income'])) {
             return redirect()->route('my-assets', ['type' => 'stocks']);
         }
+
         return view('assets.my-assets', compact('stocks', 'fixedIncomes', 'investmentAccount', 'type'));
     }
 }

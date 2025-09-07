@@ -2,9 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Enums\AccountType;
 use App\Exceptions\AccountException;
-use App\Models\Account\Account;
 use App\Models\Stock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -37,7 +35,7 @@ class StockRepository
         $stock = $this->query->findOrFail($id);
         $amount = round($stock->current_price * $quantity, 2);
 
-        if (!$account) {
+        if (! $account) {
             throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
         }
         if ($account->balance < $amount) {

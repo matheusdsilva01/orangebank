@@ -33,7 +33,7 @@
             <section class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 @if($type === 'stocks')
                     @forelse($stocks as $stock)
-                        <x-card-stock :stock="$stock"/>
+                        <x-card-stock-purchased :stock="$stock"/>
                     @empty
                         <p class="text-sm text-gray-500">Você não adquiriu nenhuma ação</p>
                     @endforelse

@@ -25,6 +25,7 @@ class StockController extends Controller
         ];
         try {
             $this->stockRepository->buyToAccount($payload['id'], $payload['quantity']);
+
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -39,6 +40,7 @@ class StockController extends Controller
     public function detail(string $id)
     {
         $stock = $this->stockRepository->getStockById($id);
+
         return view('stock-detail', compact('stock'));
     }
 }
