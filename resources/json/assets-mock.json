@@ -305,7 +305,7 @@
       "name": "Tesouro Selic 2025",
       "type": "direct_treasury",
       "rate": 0.115,
-      "rateType": "pos",
+      "rateType": "post",
       "maturity": "2025-01-01",
       "minimumInvestment": 100.00
     },
@@ -314,7 +314,7 @@
       "name": "Tesouro IPCA+ 2026",
       "type": "direct_treasury",
       "rate": 0.055,
-      "rateType": "pos",
+      "rateType": "post",
       "maturity": "2026-01-01",
       "minimumInvestment": 100.00
     },

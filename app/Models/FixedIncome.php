@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
@@ -29,29 +30,47 @@ class FixedIncome extends Model implements Investable
     {
         return [
             'type' => FixedIncomeType::class,
+            'rateType' => FixedIncomeRateType::class,
             'maturity' => 'datetime',
         ];
     }
 
     public function accounts(): BelongsToMany
     {
-        return $this->belongsToMany(Account::class);
+        return $this->belongsToMany(Account::class)
+            ->withPivot([
+                'amount_earned',
+                'amount_investment',
+            ]);
+    }
+
+    private function randomFactor(): float
+    {
+        $selicAnual = 0.11 + (mt_rand() / mt_getrandmax()) * 0.01;
+        return pow(1 + $selicAnual, 1 / 365) - 1;
     }
 
     public function calculateVolatility(): float
     {
-        $annualTax = (float) $this->rate;
+        $annualTax = (float)$this->rate;
+        if ($this->rateType === FixedIncomeRateType::Pre) {
+            $dailyTax = pow(1.0 + $annualTax, (1.0 / 365));
 
-        $dailyTax = pow(1.0 + $annualTax, (1.0 / 365.0)) - 1.0;
-        $valorAtual = $this->price * (1 + $dailyTax);
-        $this->accounts()->each(function ($account): void {
-            dump($account);
-        });
+            $this->accounts()->each(function ($account) use ($dailyTax): void {
+                $account->pivot->amount_earned *= $dailyTax;
+                $account->pivot->save();
+            });
 
-        return $dailyTax;
+            return $dailyTax;
+        } else {
+            $randomVariation = $this->randomFactor();
+            $dailyTax = pow(1.0 + $annualTax, (1.0 / 365));
+            $totalDailyTax = $randomVariation + $dailyTax;
+            $this->accounts()->each(function ($account) use ($totalDailyTax): void {
+                $account->pivot->amount_earned *= $totalDailyTax;
+                $account->pivot->save();
+            });
+            return $totalDailyTax;
+        }
     }
 }
-/*
- *  investi 1000 no CDB001
- *
- */

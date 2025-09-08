@@ -19,12 +19,13 @@ class AttachFixedIncomeTest extends TestCase
         $user = User::factory()->create();
         $account = InvestmentAccount::factory()->for($user)->create();
         $fixedIncome = FixedIncome::query()->where('name', 'CDB Banco A')->first();
-        $account->fixedIncomes()->attach($fixedIncome, ['value' => 1000.00]);
+        $account->fixedIncomes()->attach($fixedIncome, ['amount_earned' => 1000.00, 'amount_investment' => 1000.00]);
 
         $this->assertDatabaseHas('account_fixed_income', [
             'account_id' => $account->id,
             'fixed_income_id' => $fixedIncome->id,
-            'value' => 1000.00,
+            'amount_earned' => 1000.00,
+            'amount_investment' => 1000.00,
         ]);
     }
 }

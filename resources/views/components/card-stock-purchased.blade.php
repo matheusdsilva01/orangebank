@@ -39,7 +39,7 @@
             </div>
             <div class="text-right">
                 <div>
-                    <span class="text-xs">Meus ganhos: </span>
+                    <span class="text-xs">Rentabilidade: </span>
                     <p class="text-lg font-bold">
                         {{Number::currency($stock->current_price - $stock->pivot->purchase_price, in: 'BRL')}}
                     </p>

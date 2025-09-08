@@ -39,7 +39,7 @@
                     @endforelse
                 @else
                     @forelse($fixedIncomes as $fixedIncome)
-                        <x-card-fixed-income :fixed-income="$fixedIncome" />
+                        <x-card-fixed-income-purchased :fixed-income="$fixedIncome" />
                     @empty
                         <p class="text-sm text-gray-500">Você não possui nenhum investimento em renda fixa</p>
                     @endforelse

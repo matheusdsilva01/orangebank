@@ -31,7 +31,8 @@ class InvestmentAccount extends Account
 //                use HasUuids;
 //            })
             ->withPivot([
-                'value',
+                'amount_earned',
+                'amount_investment',
             ])->withTimestamps();
     }
 

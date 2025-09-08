@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Models\FixedIncome;
 use Illuminate\Console\Command;
@@ -50,7 +51,7 @@ class SeedFixedIncome extends Command
                         'name' => $item['name'],
                         'type' => FixedIncomeType::from($item['type']),
                         'rate' => $item['rate'],
-                        'rateType' => $item['rateType'],
+                        'rateType' => FixedIncomeRateType::from($item['rateType']),
                         'maturity' => $item['maturity'],
                         'minimumInvestment' => $item['minimumInvestment'],
                     ]);

@@ -42,7 +42,7 @@ class FixedIncomeController extends Controller
             if ($account->balance < $payload['amount']) {
                 throw AccountException::insufficientBalance();
             }
-            $account->fixedIncomes()->attach($payload['id'], ['value' => $payload['amount']]);
+            $account->fixedIncomes()->attach($payload['id'], ['amount_investment' => $payload['amount'], 'amount_earned' => $payload['amount']]);
             $account->decrement('balance', $payload['amount']);
 
             return redirect()->route('dashboard');

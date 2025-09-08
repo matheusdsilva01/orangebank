@@ -11,11 +11,30 @@
                     <p class="font-semibold">{{$fixedIncome->name}}</p>
                     <p class="text-sm text-muted-foreground">{{$fixedIncome->type->getLabel()}}</p>
                 </a>
-                <p class="text-sm">{{$fixedIncome->maturity->format('d/m/Y')}}</p>
+                <div class="text-right">
+                    <div>
+                        <span class="text-xs">Vencimento:</span>
+                        <p class="text-sm">{{$fixedIncome->maturity->format('d/m/Y')}}</p>
+                    </div>
+                </div>
             </div>
             <div class="flex items-center justify-between">
-                <p class="text-lg font-bold">{{Number::currency($fixedIncome->minimumInvestment, in: 'BRL')}}</p>
-                <p class="text-sm text-green-600 font-medium">{{$fixedIncome->rate}}%</p>
+                <div>
+                    <div>
+                        <span class="text-xs">Investimento mínimo:</span>
+                        <p class="text-lg font-bold">{{Number::currency($fixedIncome->minimumInvestment, in: 'BRL')}}</p>
+                    </div>
+                    <div>
+                        <span class="text-xs">Tipo de renda:</span>
+                        <p class="text-sm font-medium">{{$fixedIncome->rateType->getLabel()}}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div>
+                        <span class="text-xs">Rentabilidade:</span>
+                        <p class="text-sm text-green-600 font-medium">{{$fixedIncome->rate}}%</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
