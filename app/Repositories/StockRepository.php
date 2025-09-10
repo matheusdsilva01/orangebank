@@ -44,4 +44,9 @@ class StockRepository
         $account->stocks()->attach($id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price]);
         $account->decrement('balance', $amount);
     }
+
+    public function getStockHistory(string $id)
+    {
+        return $this->query->findOrFail($id)->histories;
+    }
 }

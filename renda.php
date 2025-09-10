@@ -1,6 +1,5 @@
 <?php
 
-phpinfo();
 $valorInicial = 1000.00;
 $taxaAnual = 0.12;
 $diasSimulados = 0;
@@ -11,7 +10,7 @@ function avancarDia(): void
     global $diasSimulados, $taxaAnual, $valorAtual;
     $diasSimulados += 1;
     $taxaDiaria = pow(1.0 + $taxaAnual, (1.0 / 365.0)) - 1.0;
-    $valorAtual = $valorAtual * (1 + $taxaDiaria);
+    $valorAtual = round($valorAtual * (1 + $taxaDiaria), 4);
 }
 
 while ($diasSimulados < 365) {
@@ -19,5 +18,5 @@ while ($diasSimulados < 365) {
 }
 
 $rentabilidadeTotal = $valorAtual - $valorInicial;
-echo 'Valor atual do CDB Banco A: R$'.$valorAtual.PHP_EOL;
-echo 'Rentabilidade acumulada: R$'.$rentabilidadeTotal.PHP_EOL;
+echo 'Valor atual do CDB Banco A: R$'.round($valorAtual.PHP_EOL, 2);
+echo 'Rentabilidade acumulada: R$'.round($rentabilidadeTotal.PHP_EOL, 2);

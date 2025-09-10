@@ -1,4 +1,4 @@
-<x-layout.main title="{{$fixedIncome->name}} - {{$fixedIncome->type->getLabel()}}" back-to="{{route('assets')}}">
+<x-layout.main title="{{$fixedIncome->name}} - {{$fixedIncome->type->getLabel()}}" back-to="{{route('assets', ['type' => 'fixed_income'])}}">
     <section class="max-w-6xl mx-auto grid grid-cols-3 gap-4 auto-rows-max">
         <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border col-span-2 border-gray-400 shadow-sm">
             <div class="grid grid-cols-1 md:grid-cols-2 auto-rows-auto">

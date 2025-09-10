@@ -1,6 +1,6 @@
-<x-layout.main back-to="{{route('assets')}}" title="{{$stock->name}} - {{$stock->symbol}}">
-    <section class="max-w-6xl mx-auto grid grid-cols-3 gap-4 auto-rows-max">
-        <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border col-span-2 border-gray-400 shadow-sm">
+<x-layout.main back-to="{{route('assets', ['type' => 'stocks'])}}" title="{{$stock->name}} - {{$stock->symbol}}">
+    <section class="max-w-6xl mx-auto grid grid-cols-3 grid-rows-4 gap-4">
+        <div class="bg-fuchsia-200 col-span-2 row-span-1 p-6 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 data-slot="card-title" class="text-3xl font-bold">
@@ -22,8 +22,7 @@
                 </div>
             </div>
         </div>
-        <div
-            class="bg-fuchsia-200 p-6 col-span-1 row-span-2 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
+        <div class="bg-fuchsia-200 row-span-2 p-6 flex flex-col gap-6 h-fit rounded-xl border border-gray-400 shadow-sm">
             <div class="flex items-center gap-1">
                 <x-heroicon-o-document-currency-dollar class="size-4 inline-flex"/>
                 <h2 class="text- font-medium">Comprar ação</h2>
@@ -43,6 +42,9 @@
                     Adquirir
                 </button>
             </form>
+        </div>
+        <div class="bg-fuchsia-200 col-span-2 row-span-3 p-6 gap-6 rounded-xl border border-gray-400 shadow-sm">
+            {{$chart->render()}}
         </div>
     </section>
 </x-layout.main>

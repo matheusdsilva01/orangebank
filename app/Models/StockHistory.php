@@ -22,4 +22,11 @@ class StockHistory extends Model
     {
         return $this->belongsTo(Stock::class);
     }
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'custom_datetime'
+        ];
+    }
 }
