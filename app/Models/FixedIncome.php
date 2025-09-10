@@ -6,6 +6,7 @@ use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,6 +54,7 @@ class FixedIncome extends Model implements Investable
     public function calculateVolatility(): float
     {
         $annualTax = (float)$this->rate;
+
         if ($this->rateType === FixedIncomeRateType::Pre) {
             $dailyTax = pow(1.0 + $annualTax, (1.0 / 365));
 

@@ -4,7 +4,7 @@
         <div>
             <span class="text-xs">Valor investido: </span>
             <p class="text-lg font-bold">
-                {{Number::currency($fixedIncome->pivot->amount_earned, in: 'BRL')}}
+                {{Number::currency($fixedIncome->pivot->amount_investment, in: 'BRL')}}
             </p>
         </div>
         <div class="text-right">
@@ -23,6 +23,10 @@
             <div>
                 <span class="text-xs">Tipo:</span>
                 <p class="font-semibold">{{$fixedIncome->type->getLabel()}}</p>
+            </div>
+            <div>
+                <span class="text-xs">Renda obtida:</span>
+                <p class="font-semibold">{{Number::currency($fixedIncome->pivot->amount_earned, in: 'BRL')}}</p>
             </div>
         </div>
         <div class="text-right">
