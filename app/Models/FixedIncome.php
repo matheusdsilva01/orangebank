@@ -6,6 +6,7 @@ use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
+use App\Models\Account\InvestmentAccount;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,7 +39,7 @@ class FixedIncome extends Model implements Investable
 
     public function accounts(): BelongsToMany
     {
-        return $this->belongsToMany(Account::class)
+        return $this->belongsToMany(InvestmentAccount::class, 'account_fixed_income', 'fixed_income_id', 'account_id')
             ->withPivot([
                 'amount_earned',
                 'amount_investment',
@@ -56,17 +57,23 @@ class FixedIncome extends Model implements Investable
         $annualTax = (float)$this->rate;
 
         if ($this->rateType === FixedIncomeRateType::Pre) {
-            $dailyTax = pow(1.0 + $annualTax, (1.0 / 365));
+            $this->accounts()->each(function ($account) use ($annualTax): void {
+                $currentGain = $account->pivot->amount_earned - $account->pivot->amount_investment;
+                $expectedDailyIncome = ($account->pivot->amount_investment * $annualTax) / 365.0;
+                // implement a way to calculate the exact days elapsed since the investment
+                // was made(created_at column in pivot table)
+                $daysElapsed = round($currentGain / $expectedDailyIncome) + 1;
 
-            $this->accounts()->each(function ($account) use ($dailyTax): void {
-                $account->pivot->amount_earned *= $dailyTax;
+                $amountEarned =
+                    $account->pivot->amount_investment + ($expectedDailyIncome * $daysElapsed);
+                $account->pivot->amount_earned = $amountEarned;
                 $account->pivot->save();
             });
 
-            return $dailyTax;
+            return $annualTax / 365.0;
         } else {
             $randomVariation = $this->randomFactor();
-            $dailyTax = pow(1.0 + $annualTax, (1.0 / 365));
+            $dailyTax = 1.0 + $annualTax * (1.0 / 365);
             $totalDailyTax = $randomVariation + $dailyTax;
             $this->accounts()->each(function ($account) use ($totalDailyTax): void {
                 $account->pivot->amount_earned *= $totalDailyTax;
