@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('account_fixed_income', function (Blueprint $table) {
             $table->uuid('account_id');
             $table->uuid('fixed_income_id');
-            $table->float('amount_earned');
-            $table->float('amount_investment');
+            $table->decimal('amount_earned', 19, 4);
+            $table->decimal('amount_investment', 19, 4);
             $table->timestamps();
         });
     }
