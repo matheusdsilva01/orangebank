@@ -17,7 +17,7 @@ class AccountWithdrawTest extends TestCase
     {
         //  Prepare
         $user = User::factory()->create();
-        $accountCurrent = CurrentAccount::factory()->for($user)->create();
+        $accountCurrent = CurrentAccount::factory(['balance' => 1200.50])->for($user)->create();
         $oldBalance = $accountCurrent->balance;
 
         $this->actingAs($user);
