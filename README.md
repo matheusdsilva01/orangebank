@@ -24,7 +24,7 @@ API deve conter funcionalidades que permitam:
 - Criar contas de usuários
 - Consultar saldo
 - Realizar **depósitos**, **saques** e **transferências** entre contas
-- Investir em ativos:
+- Investir em ativos(sem testes):
   - Renda variável (ações fictícias)
   - Fundos de investimento
   - Renda fixa:
@@ -44,9 +44,9 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
 
 ## ⚙️ Instalação e Execução
 ### Pré-requisitos
-- Node.js (versão 14 ou superior)
+- Node.js (versão 20 ou superior)
 - npm (gerenciador de pacotes do Node.js)
-- Banco de dados (SQLite, PostgreSQL, MySQL, etc.)
+- Banco de dados (MySQL)
 - Git (para clonar o repositório)
 - PHP (versão 8.2 ou superior)
 - Composer (gerenciador de dependências do PHP)
@@ -69,9 +69,19 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
    composer dev
    ```
 
-### Todo
-- [ ] Mover redirecionamento após requisições para a view
-- [ ] Adicionar tratamento de erros para os formulários
+### Melhorias Futuras
+- [ ] Adicionar livewire para melhorar a interatividade na camada de view
+  - [ ] Mover redirecionamento após requisições para a camada de view
+  - [ ] Adicionar feedback visual(toast, helpers messages) para operações bem-sucedidas ou falhas
+- [ ] Adicionar tratamento de erros para as exceções disparadas
+- [ ] Corrigir redirecionamento após compras de ativos
+- [ ] Adicionar Taxa de corretagem na compra de ações
+- [ ] Adicionar testes unitários para as funcionalidades de investimentos(Ações, e Renda Fixa)
+- [ ] Agrupamento de rotas no arquivo de rotas(web.php)
+- [ ] Corrigir ci de testes para SQLite
+- [ ] Adicionar UML de classes ao projeto
+- [ ] Adicionar Dockerfile e docker-compose para facilitar a configuração do ambiente de desenvolvimento
+- [ ] Melhorar a separação de responsabilidades entre as camadas do projeto (Controllers, Repositories, View)
 
 ## Ativos
 - Ações
@@ -81,3 +91,6 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
     - Rentabilidade diária fixa até a data de vencimento
   - Renda Variável (pós-fixado)
     - Rentabilidade diária com base em fator aleatório entre −3% e +3%
+
+  #### Venda
+    Taxa de imposto de renda sobre lucro na venda de ativos: 15% para ações e 22% para renda fixa
