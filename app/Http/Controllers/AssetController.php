@@ -25,7 +25,7 @@ class AssetController extends Controller
     {
         $investmentAccount = auth()->user()->investmentAccount;
         $stocks = $investmentAccount->stocks()->wherePivotNull('sale_date')->get();
-        $fixedIncomes = $investmentAccount->fixedIncomes;
+        $fixedIncomes = $investmentAccount->fixedIncomes()->wherePivotNull('sale_date')->get();
         $type = $request->query('type', 'stocks');
 
         if (! in_array($type, ['stocks', 'fixed_income'])) {

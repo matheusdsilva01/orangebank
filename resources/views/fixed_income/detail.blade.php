@@ -40,7 +40,7 @@
                 <x-carbon-piggy-bank class="size-4 inline-flex"/>
                 <h2 class="text- font-medium">Investir</h2>
             </div>
-            <form method="POST" class="space-y-4">
+            <form method="POST" action="{{route('fixed-income.buy', ['id' => $fixedIncome->id])}}" class="space-y-4">
                 {{csrf_field()}}
                 <div>
                     <label class="text-sm font-medium mb-2 block" for="amount">Valor do investimento</label>

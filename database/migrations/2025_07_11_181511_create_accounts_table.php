@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('type'); // App\Enums\AccountType.php
             $table->string('number', 12)->unique();
-            $table->integer('balance')->default(0);
+            $table->decimal('balance', 19, 4)->default(0);
             $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
             $table->unique(['type', 'user_id']);

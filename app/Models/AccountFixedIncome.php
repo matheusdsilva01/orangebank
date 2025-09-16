@@ -18,7 +18,7 @@ class AccountFixedIncome extends Pivot
         'fixed_income_id',
         'amount_investment',
         'amount_earned',
-        'purchase_date',
+        'purchased_date',
         'sale_date',
     ];
 

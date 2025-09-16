@@ -31,6 +31,7 @@ class InvestmentAccount extends Account
         return $this->belongsToMany(FixedIncome::class, 'account_fixed_income', 'account_id')
             ->using(AccountFixedIncome::class)
             ->withPivot([
+                'id',
                 'amount_earned',
                 'amount_investment',
                 'purchased_date',

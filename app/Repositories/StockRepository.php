@@ -43,7 +43,7 @@ class StockRepository
         if ($account->balance < $amount) {
             throw AccountException::insufficientBalance();
         }
-        $account->stocks()->attach($id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price]);
+        $account->stocks()->attach($id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price, 'purchase_date' => now()]);
         $account->decrement('balance', $amount);
     }
 

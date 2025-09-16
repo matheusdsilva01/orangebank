@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/fixed-income/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail');
     Route::get('/fixed-purchased/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail-purchased');
     Route::post('/fixed-income/{id}', [FixedIncomeController::class, 'buy'])->name('fixed-income.buy');
+    Route::post('fixed-purchased/{id}/sell', [FixedIncomeController::class, 'sell'])->name('fixed-income.sell');
 });
 
 Route::view('/login', 'auth.login')->name('login');
