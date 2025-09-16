@@ -46,7 +46,8 @@ class FixedIncomeController extends Controller
             }
             $account->fixedIncomes()->attach($payload['id'], ['amount_investment' => $payload['amount'], 'amount_earned' => $payload['amount'], 'purchased_date' => now()]);
             $account->decrement('balance', $payload['amount']);
-            return redirect()->route('my-assets',['type' => 'fixed_income']);
+
+            return redirect()->route('my-assets', ['type' => 'fixed_income']);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -64,6 +65,7 @@ class FixedIncomeController extends Controller
             $fixedIncomePurchased->save();
             $investmentAccount = auth()->user()->investmentAccount;
             $investmentAccount->increment('balance', $fixedIncomePurchased->amount_earned - $taxOnProfit);
+
             return redirect()->route('my-assets', ['type' => 'fixed_income']);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

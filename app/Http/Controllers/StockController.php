@@ -44,7 +44,7 @@ class StockController extends Controller
         $stock = $this->stockRepository->getStockById($id);
         $stockHistory = $this->stockRepository->getStockHistory($id);
         $data = $stockHistory->pluck('daily_price');
-        $labels = $stockHistory->pluck('created_at')->map(fn($item) => $item->format('d/m/Y'))->toArray();
+        $labels = $stockHistory->pluck('created_at')->map(fn ($item) => $item->format('d/m/Y'))->toArray();
         $chart = Chartjs::build()
             ->name('line_chart_test')
             ->type('line')
@@ -52,13 +52,13 @@ class StockController extends Controller
             ->labels($labels)
             ->datasets([
                 [
-                    "label" => "Preço Diário",
-                    'backgroundColor' => "rgba(219, 39, 119, 0.31)",
-                    'borderColor' => "rgba(219, 39, 119, 0.7)",
-                    "pointBorderColor" => "rgba(219, 39, 119, 0.7)",
-                    "pointBackgroundColor" => "rgba(219, 39, 119, 0.7)",
-                    "pointHoverBackgroundColor" => "#fff",
-                    "pointHoverBorderColor" => "rgba(220,220,220,1)",
+                    'label' => 'Preço Diário',
+                    'backgroundColor' => 'rgba(219, 39, 119, 0.31)',
+                    'borderColor' => 'rgba(219, 39, 119, 0.7)',
+                    'pointBorderColor' => 'rgba(219, 39, 119, 0.7)',
+                    'pointBackgroundColor' => 'rgba(219, 39, 119, 0.7)',
+                    'pointHoverBackgroundColor' => '#fff',
+                    'pointHoverBorderColor' => 'rgba(220,220,220,1)',
                     'data' => $data,
                 ],
             ])
@@ -74,17 +74,18 @@ class StockController extends Controller
                     'x' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Data'
-                        ]
+                            'text' => 'Data',
+                        ],
                     ],
                     'y' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Preço(R$)'
-                        ]
-                    ]
-                ]
+                            'text' => 'Preço(R$)',
+                        ],
+                    ],
+                ],
             ]);
+
         return view('stock-detail', compact('stock', 'stockHistory', 'chart'));
     }
 
@@ -105,29 +106,30 @@ class StockController extends Controller
             : $stock->current_price * $stockPurchaseDetail->quantity;
         $stockHistory = $stock->histories()->orderBy('created_at')->get();
         $data = $stockHistory->pluck('daily_price');
-        $labels = $stockHistory->pluck('created_at')->map(fn($item) => $item->format('d/m/Y'))->toArray();
+        $labels = $stockHistory->pluck('created_at')->map(fn ($item) => $item->format('d/m/Y'))->toArray();
 
         $chart = Chartjs::build()
             ->name('stock_performance_chart')
             ->type('line')
             ->size(['width' => 400, 'height' => 200])
             ->labels($labels)
-            ->datasets([["label" => "Preço Diário",
-                'backgroundColor' => "rgba(217, 70, 239, 0.1)",
-                'borderColor' => "rgba(217, 70, 239, 1)",
-                "pointBorderColor" => "rgba(217, 70, 239, 1)",
-                "pointBackgroundColor" => "rgba(217, 70, 239, 1)",
-                "pointHoverBackgroundColor" => "#fff",
-                "pointHoverBorderColor" => "rgba(217, 70, 239, 1)",
+            ->datasets([['label' => 'Preço Diário',
+                'backgroundColor' => 'rgba(217, 70, 239, 0.1)',
+                'borderColor' => 'rgba(217, 70, 239, 1)',
+                'pointBorderColor' => 'rgba(217, 70, 239, 1)',
+                'pointBackgroundColor' => 'rgba(217, 70, 239, 1)',
+                'pointHoverBackgroundColor' => '#fff',
+                'pointHoverBorderColor' => 'rgba(217, 70, 239, 1)',
                 'data' => $data,
-                'fill' => true,],])
+                'fill' => true, ], ])
             ->options(['responsive' => true,
                 'plugins' => ['legend' => ['display' => true,
-                    'position' => 'top',],],
+                    'position' => 'top', ], ],
                 'scales' => ['x' => ['title' => ['display' => true,
                     'text' => 'Data']],
                     'y' => ['title' => ['display' => true,
                         'text' => 'Preço (R$)']]]]);
+
         return view('stock-detail-purchased', compact('stock', 'user', 'investmentAccount', 'stockPurchaseDetail', 'currentValue', 'investedValue', 'profitLoss', 'profitLossPercentage', 'stockSalePriceDiscount', 'chart'));
     }
 
@@ -154,6 +156,7 @@ class StockController extends Controller
         $purchase->sale_date = now();
         $account->save();
         $purchase->save();
+
         return redirect()->route('my-assets', ['type' => 'stocks']);
     }
 }

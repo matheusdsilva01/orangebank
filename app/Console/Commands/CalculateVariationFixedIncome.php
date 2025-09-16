@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\FixedIncome;
 use Illuminate\Console\Command;
+
 use function Laravel\Prompts\progress;
 
 class CalculateVariationFixedIncome extends Command

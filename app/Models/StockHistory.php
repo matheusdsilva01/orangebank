@@ -26,7 +26,7 @@ class StockHistory extends Model
     protected function casts(): array
     {
         return [
-            'created_at' => 'custom_datetime'
+            'created_at' => 'custom_datetime',
         ];
     }
 }

@@ -9,8 +9,7 @@ enum FixedIncomeRateType: string
 
     public function getLabel(): string
     {
-        return match ($this)
-        {
+        return match ($this) {
             FixedIncomeRateType::Post => 'Pós-fixado',
             FixedIncomeRateType::Pre => 'Pré-fixado',
         };

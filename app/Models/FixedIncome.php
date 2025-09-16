@@ -5,9 +5,7 @@ namespace App\Models;
 use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
-use App\Models\Account\Account;
 use App\Models\Account\InvestmentAccount;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,12 +48,13 @@ class FixedIncome extends Model implements Investable
     private function randomFactor(): float
     {
         $selicAnual = 0.11 + (mt_rand() / mt_getrandmax()) * 0.01;
+
         return pow(1 + $selicAnual, 1 / 365) - 1;
     }
 
     public function calculateVolatility(): float
     {
-        $annualTax = (float)$this->rate;
+        $annualTax = (float) $this->rate;
 
         if ($this->rateType === FixedIncomeRateType::Pre) {
             $this->accounts()->each(function ($account) use ($annualTax): void {
@@ -80,6 +79,7 @@ class FixedIncome extends Model implements Investable
                 $account->pivot->amount_earned *= $totalDailyTax;
                 $account->pivot->save();
             });
+
             return $totalDailyTax;
         }
     }
