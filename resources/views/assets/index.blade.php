@@ -9,7 +9,7 @@
                 <h2 class="text-2xl font-bold text-primary">
                     {{Number::currency($investmentAccount->balance, in: 'BRL')}}
                 </h2>
-                <p class="text-xs">Patrimõnio investido</p>
+                <p class="text-xs">Patrimônio disponível para investir</p>
             </div>
         </div>
         <section class="flex rounded-md p-1 border bg-fuchsia-200 border-zinc-400 gap-1.5">

@@ -41,6 +41,7 @@ class FixedIncome extends Model implements Investable
     {
         return $this->belongsToMany(InvestmentAccount::class, 'account_fixed_income', 'fixed_income_id', 'account_id')
             ->withPivot([
+                'id',
                 'amount_earned',
                 'amount_investment',
             ]);

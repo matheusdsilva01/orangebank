@@ -27,7 +27,8 @@
     </header>
     <div>
         <div class="flex justify-between">
-            <div>
+            <a href="{{route('stock.detail-purchased', ['id' => $stock->pivot->id])}}">
+                <span class="absolute inset-0"></span>
                 <div>
                     <span class="text-xs">Nome: </span>
                     <p class="text-sm font-semibold">{{$stock->name}}</p>
@@ -36,7 +37,11 @@
                     <span class="text-xs">Código: </span>
                     <p class="font-semibold">{{$stock->symbol}}</p>
                 </div>
-            </div>
+                <div>
+                    <span class="text-xs">Data da compra: </span>
+                    <p class="font-semibold">{{$stock->created_at->format('d/m/Y H:i')}}</p>
+                </div>
+            </a>
             <div class="text-right">
                 <div>
                     <span class="text-xs">Rentabilidade: </span>

@@ -3,8 +3,10 @@
 namespace App\Repositories;
 
 use App\Exceptions\AccountException;
+use App\Models\AccountStock;
 use App\Models\Stock;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class StockRepository
@@ -16,7 +18,7 @@ class StockRepository
         $this->query = Stock::query();
     }
 
-    public function getStockById(string $stockId)
+    public function getStockById(string $stockId): Stock
     {
         return $this->query->findOrFail($stockId);
     }

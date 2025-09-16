@@ -25,7 +25,7 @@ class AccountDepositTest extends TestCase
         //  Act
         $this->postJson(route('account.deposit'), $payload);
         //  Assert
-        $expectedBalance = round($previousBalance + $payload['amount'], 2);
+        $expectedBalance = $previousBalance + $payload['amount'];
         $this->assertEquals($expectedBalance, $account->refresh()->balance);
         $this->assertDatabaseCount('transactions', 1);
     }

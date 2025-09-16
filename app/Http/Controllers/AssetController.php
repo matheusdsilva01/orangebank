@@ -24,7 +24,7 @@ class AssetController extends Controller
     public function myAssets(Request $request)
     {
         $investmentAccount = auth()->user()->investmentAccount;
-        $stocks = $investmentAccount->stocks;
+        $stocks = $investmentAccount->stocks()->wherePivotNull('sale_date')->get();
         $fixedIncomes = $investmentAccount->fixedIncomes;
         $type = $request->query('type', 'stocks');
 

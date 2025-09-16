@@ -44,9 +44,9 @@ class FixedIncomeController extends Controller
             }
             $account->fixedIncomes()->attach($payload['id'], ['amount_investment' => $payload['amount'], 'amount_earned' => $payload['amount']]);
             $account->decrement('balance', $payload['amount']);
-
-            return redirect()->route('dashboard');
+            return redirect()->route('my-assets',['type' => 'fixed_income']);
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
