@@ -15,7 +15,7 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
     Route::get('/transfer', [AccountController::class, 'transferForm'])->name('transfer');
     Route::post('/internal-transfer', [AccountController::class, 'internalTransfer'])->name('transfer.internal');
-    Route::post('/external-transfer', [AccountController::class, 'transfer'])->name('transfer.external');
+    Route::post('/external-transfer', [AccountController::class, 'externalTransfer'])->name('transfer.external');
     Route::get('/withdraw', [AccountController::class, 'withdrawForm'])->name('withdraw-form');
     Route::post('/withdraw', [AccountController::class, 'withdraw'])->name('account.withdraw');
     Route::get('/deposit', [AccountController::class, 'depositForm'])->name('deposit-form');

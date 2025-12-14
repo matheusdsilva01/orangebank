@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateExternalTransfer;
+use App\Actions\CreateInternalTransfer;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
+use App\Models\Account\CurrentAccount;
 use App\Models\Transaction;
 use App\Repositories\AccountRepository;
+use App\Actions\CreateTransaction;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -42,15 +46,20 @@ class AccountController extends Controller
         return view('transfer', compact('type'));
     }
 
-    public function transfer(Request $request)
+    public function externalTransfer(Request $request, CreateExternalTransfer $createExternalTransfer)
     {
         $payload = $request->validate([
             'amount' => ['required', 'numeric:', 'min:1'],
             'destination' => ['required', 'string', 'exists:accounts,number'],
         ]);
         $user = auth()->user();
+
         try {
-            $user->currentAccount()->get()->first()->externalTransfer($payload);
+            $createExternalTransfer->handle([
+                'fromAccount' => $user->currentAccount,
+                'toAccount' => CurrentAccount::query()->where('number', $payload['destination'])->first(),
+                'amount' => $payload['amount']
+            ]);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
@@ -58,27 +67,29 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function internalTransfer(Request $request)
+    public function internalTransfer(Request $request, CreateInternalTransfer $createInternalTransfer)
     {
         $params = $request->validate([
             'amount' => ['required', 'numeric:', 'min:1'],
             'mode' => ['required', 'in:current-investment,investment-current'],
         ]);
-
-        $payload = [
-            'amount' => $params['amount'],
-            'origin' => explode('-', $params['mode'])[0],
-            'destination' => explode('-', $params['mode'])[1],
-        ];
-
         $user = auth()->user();
 
         try {
-            if ($payload['origin'] === 'current') {
-                $user->currentAccount()->get()->first()->internalTransfer($payload);
+            if ($params['mode'] === 'current-investment') {
+                $attributes = [
+                    'fromAccount' => $user->currentAccount,
+                    'toAccount' => $user->investmentAccount,
+                    'amount' => $params['amount']
+                ];
             } else {
-                $user->investmentAccount()->get()->first()->internalTransfer($payload);
+                $attributes = [
+                    'fromAccount' => $user->investmentAccount,
+                    'toAccount' => $user->currentAccount,
+                    'amount' => $params['amount']
+                ];
             }
+            $createInternalTransfer->handle($attributes);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
@@ -86,7 +97,7 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function withdraw(AccountWithdrawRequest $request)
+    public function withdraw(AccountWithdrawRequest $request, CreateTransaction $createTransaction)
     {
         $payload = $request->validated();
         try {
@@ -100,7 +111,7 @@ class AccountController extends Controller
                 'from_account_id' => $account->id,
                 'to_account_id' => null,
             ];
-            Transaction::query()->create($transaction);
+            $createTransaction->handle($transaction);
 
             return redirect(route('dashboard'));
         } catch (AccountException $e) {
@@ -115,7 +126,7 @@ class AccountController extends Controller
         return view('withdraw', compact('currentAccount'));
     }
 
-    public function deposit(AccountDepositRequest $request)
+    public function deposit(AccountDepositRequest $request, CreateTransaction $createTransaction)
     {
         $payload = $request->validated();
         try {
@@ -128,7 +139,7 @@ class AccountController extends Controller
                 'from_account_id' => null,
                 'to_account_id' => $account->id,
             ];
-            Transaction::query()->create($transaction);
+            $createTransaction->handle($transaction);
 
             return redirect(route('dashboard'));
         } catch (AccountException $e) {

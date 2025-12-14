@@ -37,45 +37,6 @@ class Account extends Model
         return AccountType::fromModel($this::class)->getLabel();
     }
 
-    /**
-     * @throws AccountException
-     */
-    public function internalTransfer(array $payload): Transaction
-    {
-        $amount = $payload['amount'];
-        $destinationType = $payload['destination'];
-        $fromAccount = $this;
-        $toAccount = AccountType::from($destinationType)
-            ->getModel()::query()
-            ->where('user_id', $fromAccount->user_id)
-            ->get()
-            ->first();
-        if (! $toAccount) {
-            throw AccountException::accountNotFound();
-        }
-
-        if ($toAccount->user_id !== $fromAccount->user_id) {
-            throw AccountException::internalTransfersCanOnlyBeMadeBetweenAccountsOfTheSameUser();
-        }
-        if ($toAccount::class === $fromAccount::class) {
-            throw AccountException::cannotTransferBetweenSameTypeAccounts();
-        }
-        if ($fromAccount->balance < $amount) {
-            throw AccountException::insufficientBalance();
-        }
-
-        $fromAccount->decrement('balance', $amount);
-        $toAccount->increment('balance', $amount);
-
-        return Transaction::create([
-            'from_account_id' => $this->id,
-            'to_account_id' => $toAccount->id,
-            'amount' => $amount,
-            'type' => TransactionType::Internal,
-            'tax' => 0,
-        ]);
-    }
-
     public function newInstance($attributes = [], $exists = false): static
     {
         $model = ! isset($attributes['type']) ?

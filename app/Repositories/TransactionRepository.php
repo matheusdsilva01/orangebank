@@ -30,6 +30,7 @@ class TransactionRepository
     {
         $fromAccount = Account::query()->findOrFail($payload['fromAccountId']);
         $toAccount = Account::query()->findOrFail($payload['toAccountId']);
+
         if ($fromAccount->user->id === $toAccount->user->id) {
             return $this->internalTransfer(
                 $fromAccount,
