@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    <form action="{{route('fixed-income.sell', ['id' => $fixedIncome->pivot->id])}}" method="POST">
+    <form action="{{route('fixed-income.sell', ['accountFixedIncome' => $fixedIncome->pivot->id])}}" method="POST">
         @csrf
         <button
             class="rounded w-full bg-fuchsia-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-fuchsia-500 cursor-pointer"

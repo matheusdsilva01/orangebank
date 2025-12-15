@@ -27,7 +27,7 @@
                 <x-heroicon-o-document-currency-dollar class="size-4 inline-flex"/>
                 <h2 class="text- font-medium">Comprar ação</h2>
             </div>
-            <form method="POST" action="{{route('stock.buy', ['id' => $stock->id])}}" class="space-y-4">
+            <form method="POST" action="{{route('stock.buy', ['stock' => $stock->id])}}" class="space-y-4">
                 {{csrf_field()}}
                 <div>
                     <label class="text-sm font-medium mb-2 block" for="quantity">Quantidade</label>

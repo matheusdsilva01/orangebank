@@ -23,14 +23,13 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/my-assets', [AssetController::class, 'myAssets'])->name('my-assets');
     Route::get('/assets', [AssetController::class, 'index'])->name('assets');
     Route::get('/stock/{id}', [StockController::class, 'detail'])->name('stock.detail');
-    Route::post('/stock/sell', [StockController::class, 'sell'])->name('stock.sell');
     Route::get('/stock-purchased/{id}', [StockController::class, 'detailPurchased'])->name('stock.detail-purchased');
-    Route::post('/stock/{id}', [StockController::class, 'buy'])->name('stock.buy');
-    Route::post('/stock-purchased/{id}/sell', [StockController::class, 'sell'])->name('stock.sell-purchased');
+    Route::post('/stock/{stock}', [StockController::class, 'buy'])->name('stock.buy');
+    Route::post('/stock-purchased/{accountStock}/sell', [StockController::class, 'sell'])->name('stock.sell-purchased');
     Route::get('/fixed-income/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail');
     Route::get('/fixed-purchased/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail-purchased');
     Route::post('/fixed-income/{id}', [FixedIncomeController::class, 'buy'])->name('fixed-income.buy');
-    Route::post('fixed-purchased/{id}/sell', [FixedIncomeController::class, 'sell'])->name('fixed-income.sell');
+    Route::post('fixed-purchased/{accountFixedIncome}/sell', [FixedIncomeController::class, 'sell'])->name('fixed-income.sell');
 });
 
 Route::view('/login', 'auth.login')->name('login');

@@ -24,5 +24,6 @@ class BuyStockAction
 
         $account->stocks()->attach($stock->id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price, 'purchase_date' => Carbon::now()]);
         $account->decrement('balance', $amount);
+        $account->save();
     }
 }

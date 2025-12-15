@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Actions\BuyStockAction;
+use App\Actions\SellStockAction;
+use App\Http\Requests\BuyStockRequest;
 use App\Models\AccountStock;
 use App\Models\Stock;
 use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
@@ -10,32 +12,6 @@ use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
-    public function buy(Request $request, BuyStockAction $buyStockAction)
-    {
-        $params = $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
-        $stockId = $request->route('id');
-
-        try {
-            $payload = [
-                'account' => auth()->user()->investmentAccount,
-                'stock' => Stock::findOrFail($stockId),
-                'quantity' => $params['quantity'],
-            ];
-            $buyStockAction->handle($payload);
-
-            return redirect()->route('my-assets', ['type' => 'stocks']);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
-
-    public function index()
-    {
-        return Stock::query()->paginate();
-    }
-
     public function detail(string $id)
     {
         $stock = Stock::findOrFail($id);
@@ -130,29 +106,38 @@ class StockController extends Controller
         return view('stock-detail-purchased', compact('stock', 'user', 'investmentAccount', 'stockPurchaseDetail', 'currentValue', 'investedValue', 'profitLoss', 'profitLossPercentage', 'stockSalePriceDiscount', 'chart'));
     }
 
-    public function sell(Request $request)
+    public function buy(BuyStockRequest $request, Stock $stock, BuyStockAction $buyStockAction)
     {
-        $id = $request->route('id');
-        $purchase = AccountStock::query()->findOrFail($id);
-        $stock = $purchase->stock;
-        $profitLoss = $stock->current_price - $purchase->purchase_price;
-        $account = auth()->user()->investmentAccount;
+        $params = $request->validated();
+        try {
+            $payload = [
+                'account' => auth()->user()->investmentAccount,
+                'stock' => $stock,
+                'quantity' => $params['quantity'],
+            ];
+            $buyStockAction->handle($payload);
 
-        if ($profitLoss > 0) {
-            // IR 15% sobre o lucro
-            $tax = ($profitLoss * $purchase->quantity) * 0.15;
-
-            $salePrice = ($stock->current_price * $purchase->quantity) - $tax;
-            $account->balance += $salePrice * $purchase->quantity;
-        } else {
-            $salePrice = $stock->current_price * $purchase->quantity;
-            $account->balance += $salePrice;
+            return redirect()->route('my-assets', ['type' => 'stocks']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
+    }
 
-        $purchase->sale_price = $salePrice;
-        $purchase->sale_date = now();
-        $account->save();
-        $purchase->save();
+    public function index()
+    {
+        return Stock::query()->paginate();
+    }
+
+    public function sell(AccountStock $accountStock, SellStockAction $sellStockAction)
+    {
+        $payload = [
+            'accountStock' => $accountStock,
+        ];
+        try {
+            $sellStockAction->handle($payload);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
 
         return redirect()->route('my-assets', ['type' => 'stocks']);
     }

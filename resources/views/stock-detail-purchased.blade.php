@@ -156,7 +156,7 @@
                     <div class="bg-fuchsia-100 rounded-xl shadow-sm p-6 border border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Ações</h2>
                         <div class="space-y-3">
-                            <form action="{{route('stock.sell-purchased', ['id' => $stockPurchaseDetail->id])}}" method="POST">
+                            <form action="{{route('stock.sell-purchased', ['accountStock' => $stockPurchaseDetail])}}" method="POST">
                                 @csrf
                                 <button
                                     type="submit"
