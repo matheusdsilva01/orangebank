@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Enums\AccountType;
 use App\Interfaces\Investable;
-use App\Models\Account\InvestmentAccount;
+use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property-read AccountStock $pivot
+ */
 class Stock extends Model implements Investable
 {
     use HasFactory, HasUuids;
@@ -31,18 +35,21 @@ class Stock extends Model implements Investable
         'daily_variation',
     ];
 
+    /**
+     * @return BelongsToMany<Account>
+     */
     public function accounts(): BelongsToMany
     {
-        return $this->belongsToMany(InvestmentAccount::class, 'account_id')
-            ->withPivot([
-                'quantity',
-                'purchase_price',
-                'sale_price',
-                'purchase_date',
-                'sale_date',
-            ]);
+        return $this->belongsToMany(
+            Account::class,
+        )
+            ->using(AccountStock::class)
+            ->where('accounts.type', AccountType::Investment);
     }
 
+    /**
+     * @return HasMany<StockHistory>
+     */
     public function histories(): HasMany
     {
         return $this->hasMany(StockHistory::class);

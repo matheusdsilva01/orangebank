@@ -4,25 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateExternalTransfer;
 use App\Actions\CreateInternalTransfer;
-use App\Enums\TransactionType;
+use App\Actions\DepositAction;
+use App\Actions\WithdrawAction;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
+use App\Http\Requests\ExternalTransferRequest;
+use App\Http\Requests\InternalTransferRequest;
 use App\Models\Account\CurrentAccount;
 use App\Models\Transaction;
-use App\Repositories\AccountRepository;
-use App\Actions\CreateTransaction;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    private AccountRepository $repository;
-
-    public function __construct(AccountRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function dashboard()
     {
         $currentAccount = auth()->user()->currentAccount()->get()->first();
@@ -46,19 +40,16 @@ class AccountController extends Controller
         return view('transfer', compact('type'));
     }
 
-    public function externalTransfer(Request $request, CreateExternalTransfer $createExternalTransfer)
+    public function externalTransfer(ExternalTransferRequest $request, CreateExternalTransfer $createExternalTransfer)
     {
-        $payload = $request->validate([
-            'amount' => ['required', 'numeric:', 'min:1'],
-            'destination' => ['required', 'string', 'exists:accounts,number'],
-        ]);
+        $payload = $request->validated();
         $user = auth()->user();
 
         try {
             $createExternalTransfer->handle([
                 'fromAccount' => $user->currentAccount,
                 'toAccount' => CurrentAccount::query()->where('number', $payload['destination'])->first(),
-                'amount' => $payload['amount']
+                'amount' => $payload['amount'],
             ]);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
@@ -67,12 +58,9 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function internalTransfer(Request $request, CreateInternalTransfer $createInternalTransfer)
+    public function internalTransfer(InternalTransferRequest $request, CreateInternalTransfer $createInternalTransfer)
     {
-        $params = $request->validate([
-            'amount' => ['required', 'numeric:', 'min:1'],
-            'mode' => ['required', 'in:current-investment,investment-current'],
-        ]);
+        $params = $request->validated();
         $user = auth()->user();
 
         try {
@@ -80,13 +68,13 @@ class AccountController extends Controller
                 $attributes = [
                     'fromAccount' => $user->currentAccount,
                     'toAccount' => $user->investmentAccount,
-                    'amount' => $params['amount']
+                    'amount' => $params['amount'],
                 ];
             } else {
                 $attributes = [
                     'fromAccount' => $user->investmentAccount,
                     'toAccount' => $user->currentAccount,
-                    'amount' => $params['amount']
+                    'amount' => $params['amount'],
                 ];
             }
             $createInternalTransfer->handle($attributes);
@@ -97,21 +85,38 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function withdraw(AccountWithdrawRequest $request, CreateTransaction $createTransaction)
+    public function withdraw(AccountWithdrawRequest $request, WithdrawAction $withdrawAction)
     {
-        $payload = $request->validated();
+        $attributes = $request->validated();
+
         try {
-            $this->repository->withdraw($payload['amount']);
             $user = auth()->user();
             $account = $user->currentAccount;
-            $transaction = [
-                'amount' => $payload['amount'],
-                'type' => TransactionType::Withdraw,
-                'tax' => 0,
-                'from_account_id' => $account->id,
-                'to_account_id' => null,
+            $attributes = [
+                'amount' => $attributes['amount'],
+                'account' => $account,
             ];
-            $createTransaction->handle($transaction);
+
+            $withdrawAction->handle($attributes);
+
+            return redirect(route('dashboard'));
+        } catch (AccountException $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
+        }
+    }
+
+    public function deposit(AccountDepositRequest $request, DepositAction $depositAction)
+    {
+        $payload = $request->validated();
+
+        try {
+            $user = auth()->user();
+            $account = $user->currentAccount;
+            $attributes = [
+                'amount' => $payload['amount'],
+                'account' => $account,
+            ];
+            $depositAction->handle($attributes);
 
             return redirect(route('dashboard'));
         } catch (AccountException $e) {
@@ -124,27 +129,6 @@ class AccountController extends Controller
         $currentAccount = auth()->user()->currentAccount;
 
         return view('withdraw', compact('currentAccount'));
-    }
-
-    public function deposit(AccountDepositRequest $request, CreateTransaction $createTransaction)
-    {
-        $payload = $request->validated();
-        try {
-            $this->repository->deposit($payload['amount']);
-            $account = auth()->user()->currentAccount;
-            $transaction = [
-                'amount' => $payload['amount'],
-                'type' => TransactionType::Deposit,
-                'tax' => 0,
-                'from_account_id' => null,
-                'to_account_id' => $account->id,
-            ];
-            $createTransaction->handle($transaction);
-
-            return redirect(route('dashboard'));
-        } catch (AccountException $e) {
-            return response()->json(['message' => $e->getMessage()], $e->getCode());
-        }
     }
 
     public function depositForm()

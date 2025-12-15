@@ -30,4 +30,12 @@ class AccountStock extends Pivot
     {
         return $this->belongsTo(Stock::class, 'stock_id');
     }
+
+    public function casts(): array
+    {
+        return [
+            'purchase_date' => 'datetime',
+            'sale_date' => 'datetime',
+        ];
+    }
 }

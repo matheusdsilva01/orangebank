@@ -9,7 +9,7 @@ use App\Models\Transaction;
 class CreateExternalTransfer
 {
     public function __construct(
-        private CreateTransaction $createTransaction
+        private CreateTransactionAction $createTransactionAction
     ) {}
 
     /**
@@ -34,7 +34,7 @@ class CreateExternalTransfer
         $fromAccount->decrement('balance', $amountDiscount);
         $toAccount->increment('balance', $amount);
 
-        return $this->createTransaction->handle([
+        return $this->createTransactionAction->handle([
             'from_account_id' => $fromAccount->id,
             'to_account_id' => $toAccount->id,
             'amount' => $amount,

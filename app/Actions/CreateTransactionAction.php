@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Models\Transaction;
 
-class CreateTransaction
+class CreateTransactionAction
 {
     public function handle(array $data): Transaction
     {

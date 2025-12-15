@@ -2,31 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\BuyStockAction;
 use App\Models\AccountStock;
-use App\Repositories\StockRepository;
+use App\Models\Stock;
 use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
-    private StockRepository $stockRepository;
-
-    public function __construct(StockRepository $stockRepository)
-    {
-        $this->stockRepository = $stockRepository;
-    }
-
-    public function buy(Request $request)
+    public function buy(Request $request, BuyStockAction $buyStockAction)
     {
         $params = $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
-        $payload = [
-            'id' => $request->route('id'),
-            'quantity' => $params['quantity'],
-        ];
+        $stockId = $request->route('id');
+
         try {
-            $this->stockRepository->buyToAccount($payload['id'], $payload['quantity']);
+            $payload = [
+                'account' => auth()->user()->investmentAccount,
+                'stock' => Stock::findOrFail($stockId),
+                'quantity' => $params['quantity'],
+            ];
+            $buyStockAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'stocks']);
         } catch (\Exception $e) {
@@ -36,13 +33,13 @@ class StockController extends Controller
 
     public function index()
     {
-        return $this->stockRepository->paginate();
+        return Stock::query()->paginate();
     }
 
     public function detail(string $id)
     {
-        $stock = $this->stockRepository->getStockById($id);
-        $stockHistory = $this->stockRepository->getStockHistory($id);
+        $stock = Stock::findOrFail($id);
+        $stockHistory = Stock::findOrFail($id)->histories;
         $data = $stockHistory->pluck('daily_price');
         $labels = $stockHistory->pluck('created_at')->map(fn ($item) => $item->format('d/m/Y'))->toArray();
         $chart = Chartjs::build()

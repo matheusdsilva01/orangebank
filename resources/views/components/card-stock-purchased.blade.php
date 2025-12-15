@@ -39,7 +39,7 @@
                 </div>
                 <div>
                     <span class="text-xs">Data da compra: </span>
-                    <p class="font-semibold">{{$stock->created_at->format('d/m/Y H:i')}}</p>
+                    <p class="font-semibold">{{$stock->pivot->purchase_date->format('d/m/Y H:i')}}</p>
                 </div>
             </a>
             <div class="text-right">

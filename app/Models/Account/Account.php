@@ -3,8 +3,6 @@
 namespace App\Models\Account;
 
 use App\Enums\AccountType;
-use App\Enums\TransactionType;
-use App\Exceptions\AccountException;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

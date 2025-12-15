@@ -52,6 +52,11 @@ class AccountException extends Exception
         return new self('Account not found.', Response::HTTP_NOT_FOUND);
     }
 
+    public static function invalidDepositAmount(): self
+    {
+        return new self('Invalid deposit amount.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Report the exception.
      */

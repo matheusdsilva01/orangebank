@@ -9,7 +9,7 @@ use App\Models\Transaction;
 class CreateInternalTransfer
 {
     public function __construct(
-        private CreateTransaction $createTransaction
+        private CreateTransactionAction $createTransactionAction
     ) {}
 
     /**
@@ -25,7 +25,7 @@ class CreateInternalTransfer
             throw AccountException::cannotTransferToSelfAccount();
         }
 
-        if ($fromAccount::class === $toAccount::class)   {
+        if ($fromAccount::class === $toAccount::class) {
             throw AccountException::cannotTransferBetweenSameTypeAccounts();
         }
 
@@ -43,6 +43,7 @@ class CreateInternalTransfer
             'type' => TransactionType::Internal,
             'tax' => 0,
         ];
-        return $this->createTransaction->handle($transaction);
+
+        return $this->createTransactionAction->handle($transaction);
     }
 }
