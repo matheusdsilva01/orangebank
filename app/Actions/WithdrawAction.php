@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\WithdrawDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
@@ -15,25 +16,22 @@ class WithdrawAction
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): Transaction
+    public function handle(WithdrawDTO $withdrawDTO): Transaction
     {
-        $amount = $attributes['amount'];
-        $account = $attributes['account'];
-
-        if (! $account) {
+        if (! $withdrawDTO->account) {
             throw AccountException::accountNotFound();
         }
 
-        if ($account->balance < $amount) {
+        if ($withdrawDTO->account->balance < $withdrawDTO->amount) {
             throw AccountException::insufficientBalance();
         }
 
-        $account->decrement('balance', $amount);
+        $withdrawDTO->account->decrement('balance',$withdrawDTO->amount);
         $transaction = [
-            'amount' => $amount,
+            'amount' => $withdrawDTO->amount,
             'type' => TransactionType::Withdraw,
             'tax' => 0,
-            'from_account_id' => $account->id,
+            'from_account_id' => $withdrawDTO->account->id,
             'to_account_id' => null,
         ];
 

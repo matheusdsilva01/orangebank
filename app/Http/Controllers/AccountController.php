@@ -6,6 +6,8 @@ use App\Actions\CreateExternalTransfer;
 use App\Actions\CreateInternalTransfer;
 use App\Actions\DepositAction;
 use App\Actions\WithdrawAction;
+use App\Dto\DepositDTO;
+use App\Dto\WithdrawDTO;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
 use App\Http\Requests\AccountWithdrawRequest;
@@ -92,10 +94,15 @@ class AccountController extends Controller
         try {
             $user = auth()->user();
             $account = $user->currentAccount;
-            $attributes = [
-                'amount' => $attributes['amount'],
-                'account' => $account,
-            ];
+
+            if (!$account) {
+                throw AccountException::accountNotFound();
+            }
+
+            $attributes = new WithdrawDTO(
+                $attributes['amount'],
+                $account
+            );
 
             $withdrawAction->handle($attributes);
 
@@ -112,10 +119,15 @@ class AccountController extends Controller
         try {
             $user = auth()->user();
             $account = $user->currentAccount;
-            $attributes = [
-                'amount' => $payload['amount'],
-                'account' => $account,
-            ];
+
+            if (!$account) {
+                throw new AccountException('Current account not found', 404);
+            }
+
+            $attributes = new DepositDTO(
+                $payload['amount'],
+                $account
+            );
             $depositAction->handle($attributes);
 
             return redirect(route('dashboard'));

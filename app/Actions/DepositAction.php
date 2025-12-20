@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\DepositDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
@@ -15,26 +16,23 @@ class DepositAction
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): Transaction
+    public function handle(DepositDTO $depositDTO): Transaction
     {
-        $amount = $attributes['amount'];
-        $account = $attributes['account'];
-
-        if (! $account) {
+        if (! $depositDTO->account) {
             throw AccountException::accountNotFound();
         }
 
-        if ($amount <= 0) {
+        if ($depositDTO->amount <= 0) {
             throw AccountException::invalidDepositAmount();
         }
 
-        $account->increment('balance', $amount);
+        $depositDTO->account->increment('balance', $depositDTO->amount);
         $transaction = [
-            'amount' => $amount,
+            'amount' => $depositDTO->amount,
             'type' => TransactionType::Deposit,
             'tax' => 0,
             'from_account_id' => null,
-            'to_account_id' => $account->id,
+            'to_account_id' => $depositDTO->account->id,
         ];
 
         return $this->createTransactionAction->handle($transaction);
