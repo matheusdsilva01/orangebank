@@ -9,6 +9,7 @@
         "php": "^8.2",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "blade-ui-kit/blade-icons": "^1.8",
+        "brick/money": "^0.10.3",
         "codeat3/blade-carbon-icons": "^2.36",
         "codeat3/blade-eos-icons": "^1.15",
         "icehouse-ventures/laravel-chartjs": "^4.2",
@@ -22,7 +23,7 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3",
+        "pestphp/pest": "^4.3",
         "rector/rector": "^2.1"
     },
     "autoload": {

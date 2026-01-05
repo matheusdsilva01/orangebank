@@ -7,6 +7,8 @@ use App\Actions\CreateInternalTransfer;
 use App\Actions\DepositAction;
 use App\Actions\WithdrawAction;
 use App\Dto\DepositDTO;
+use App\Dto\ExternalTransferDTO;
+use App\Dto\InternalTransferDTO;
 use App\Dto\WithdrawDTO;
 use App\Exceptions\AccountException;
 use App\Http\Requests\AccountDepositRequest;
@@ -46,13 +48,14 @@ class AccountController extends Controller
     {
         $payload = $request->validated();
         $user = auth()->user();
+        $attributes = new ExternalTransferDTO(
+            $payload['amount'],
+            $user->currentAccount,
+            CurrentAccount::query()->where('number', $payload['destination'])->first(),
+        );
 
         try {
-            $createExternalTransfer->handle([
-                'fromAccount' => $user->currentAccount,
-                'toAccount' => CurrentAccount::query()->where('number', $payload['destination'])->first(),
-                'amount' => $payload['amount'],
-            ]);
+            $createExternalTransfer->handle($attributes);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
@@ -79,6 +82,13 @@ class AccountController extends Controller
                     'amount' => $params['amount'],
                 ];
             }
+
+            $attributes = new InternalTransferDTO(
+                $attributes['amount'],
+                $attributes['fromAccount'],
+                $attributes['toAccount'],
+            );
+
             $createInternalTransfer->handle($attributes);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
@@ -95,7 +105,7 @@ class AccountController extends Controller
             $user = auth()->user();
             $account = $user->currentAccount;
 
-            if (!$account) {
+            if (! $account) {
                 throw AccountException::accountNotFound();
             }
 
@@ -120,7 +130,7 @@ class AccountController extends Controller
             $user = auth()->user();
             $account = $user->currentAccount;
 
-            if (!$account) {
+            if (! $account) {
                 throw new AccountException('Current account not found', 404);
             }
 

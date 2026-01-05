@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AccountType;
 use App\Interfaces\Investable;
 use App\Models\Account\Account;
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,12 +66,18 @@ class Stock extends Model implements Investable
             $randomNumber <= 7 => rand(2, 3) / 100,
             $randomNumber <= 9 => rand(3, 4) / 100,
             $randomNumber <= 10 => rand(4, 5) / 100,
-        } * $sign;
-        $newPrice = round($this->current_price * (1 + $novaVariacao), 2);
-        $this->update(['daily_variation' => $novaVariacao * 100, 'current_price' => $newPrice]);
+        };
+        $novaVariacao = 1 + $novaVariacao;
+        if ($sign > 0) {
+            dump(Money::of($this->current_price, 'BRL')->getAmount()->toFloat());
+            $newPrice = round($this->current_price * $novaVariacao, PHP_ROUND_HALF_EVEN);
+        } else {
+            $newPrice = round($this->current_price / $novaVariacao, PHP_ROUND_HALF_EVEN);
+        }
+        $this->update(['daily_variation' => $novaVariacao, 'current_price' => $newPrice]);
 
-        $this->histories()->create(['daily_price' => $newPrice, 'daily_variation' => $novaVariacao * 100]);
+        $this->histories()->create(['daily_price' => $newPrice, 'daily_variation' => $novaVariacao * $sign]);
 
-        return $novaVariacao * 100;
+        return $novaVariacao * $sign;
     }
 }

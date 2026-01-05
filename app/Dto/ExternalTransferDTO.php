@@ -4,10 +4,11 @@ namespace App\Dto;
 
 use App\Models\Account\CurrentAccount;
 
-final class WithdrawDTO
+class ExternalTransferDTO
 {
     public function __construct(
         public float $amount,
-        public CurrentAccount $account,
+        public CurrentAccount $fromAccount,
+        public CurrentAccount $toAccount,
     ) {}
 }

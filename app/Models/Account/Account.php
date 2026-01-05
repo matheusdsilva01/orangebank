@@ -35,6 +35,22 @@ class Account extends Model
         return AccountType::fromModel($this::class)->getLabel();
     }
 
+    /**
+     * Debit the account by a given amount.
+     */
+    public function debit(float $amount): void
+    {
+        $this->decrement('balance', $amount);
+    }
+
+    /**
+     * Credit the account by a given amount.
+     */
+    public function credit(float $amount): void
+    {
+        $this->increment('balance', $amount);
+    }
+
     public function newInstance($attributes = [], $exists = false): static
     {
         $model = ! isset($attributes['type']) ?

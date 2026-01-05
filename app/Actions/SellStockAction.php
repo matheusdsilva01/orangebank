@@ -13,7 +13,7 @@ class SellStockAction
 
         if ($profitLoss > 0) {
             // IR 15% sobre o lucro
-            $tax = ($profitLoss * $accountStock->quantity) * 0.15;
+            $tax = ($profitLoss * $accountStock->quantity) * config('finance.tax_ir_stock_profit');
 
             $salePrice = ($stock->current_price * $accountStock->quantity) - $tax;
             $account->balance += $salePrice * $accountStock->quantity;

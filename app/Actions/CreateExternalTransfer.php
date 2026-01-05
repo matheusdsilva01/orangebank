@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\ExternalTransferDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
@@ -15,24 +16,24 @@ class CreateExternalTransfer
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): Transaction
+    public function handle(ExternalTransferDTO $externalTransferDTO): Transaction
     {
-        $fromAccount = $attributes['fromAccount'];
-        $toAccount = $attributes['toAccount'];
-        $amount = $attributes['amount'];
-        $tax = 50;
+        $fromAccount = $externalTransferDTO->fromAccount;
+        $toAccount = $externalTransferDTO->toAccount;
+        $amount = $externalTransferDTO->amount;
+        $tax = config('finance.tax_external_transfer');
 
         if (! $toAccount) {
             throw AccountException::accountNotFound();
         }
-        $amountDiscount = $amount + ($tax / 100);
+        $amountDiscount = $amount + $tax;
 
         if ($fromAccount->balance < $amountDiscount) {
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->decrement('balance', $amountDiscount);
-        $toAccount->increment('balance', $amount);
+        $fromAccount->withdraw($amountDiscount);
+        $toAccount->deposit($amount);
 
         return $this->createTransactionAction->handle([
             'from_account_id' => $fromAccount->id,

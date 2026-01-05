@@ -26,7 +26,7 @@ class DepositAction
             throw AccountException::invalidDepositAmount();
         }
 
-        $depositDTO->account->increment('balance', $depositDTO->amount);
+        $depositDTO->account->deposit($depositDTO->amount);
         $transaction = [
             'amount' => $depositDTO->amount,
             'type' => TransactionType::Deposit,

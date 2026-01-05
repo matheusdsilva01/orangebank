@@ -26,7 +26,7 @@ class WithdrawAction
             throw AccountException::insufficientBalance();
         }
 
-        $withdrawDTO->account->decrement('balance',$withdrawDTO->amount);
+        $withdrawDTO->account->withdraw($withdrawDTO->amount);
         $transaction = [
             'amount' => $withdrawDTO->amount,
             'type' => TransactionType::Withdraw,

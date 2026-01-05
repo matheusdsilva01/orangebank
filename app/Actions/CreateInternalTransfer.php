@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\InternalTransferDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
@@ -15,11 +16,11 @@ class CreateInternalTransfer
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): Transaction
+    public function handle(InternalTransferDTO $attributes): Transaction
     {
-        $fromAccount = $attributes['fromAccount'];
-        $toAccount = $attributes['toAccount'];
-        $amount = $attributes['amount'];
+        $fromAccount = $attributes->fromAccount;
+        $toAccount = $attributes->toAccount;
+        $amount = $attributes->amount;
 
         if ($fromAccount->id === $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
@@ -33,8 +34,8 @@ class CreateInternalTransfer
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->decrement('balance', $amount);
-        $toAccount->increment('balance', $amount);
+        $fromAccount->debit($amount);
+        $toAccount->credit($amount);
 
         $transaction = [
             'from_account_id' => $fromAccount->id,
