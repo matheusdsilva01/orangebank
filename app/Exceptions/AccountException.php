@@ -57,6 +57,11 @@ class AccountException extends Exception
         return new self('Invalid deposit amount.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public static function cannotMakeExternalTransferToSameUser(): self
+    {
+        return new self('Cannot make external transfer to the same user.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Report the exception.
      */

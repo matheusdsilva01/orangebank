@@ -8,16 +8,18 @@ class CurrentAccount extends Account
 {
     public function deposit(float $amount): void
     {
-        $this->increment('balance', $amount);
+        $this->balance = $this->balance->plus($amount);
+        $this->save();
     }
 
     public function withdraw(float $amount): void
     {
-        if ($amount > $this->balance) {
+        if ($this->balance->isLessThan($amount)) {
             throw new \InvalidArgumentException('Insufficient funds for withdrawal.');
         }
 
-        $this->decrement('balance', $amount);
+        $this->balance = $this->balance->minus($amount);
+        $this->save();
     }
 
     public static function boot(): void

@@ -2,10 +2,12 @@
 
 namespace App\Actions;
 
+use App\Dto\CreateTransactionDTO;
 use App\Dto\WithdrawDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
+use App\Support\MoneyHelper;
 
 class WithdrawAction
 {
@@ -22,19 +24,17 @@ class WithdrawAction
             throw AccountException::accountNotFound();
         }
 
-        if ($withdrawDTO->account->balance < $withdrawDTO->amount) {
+        if ($withdrawDTO->account->balance->isLessThan($withdrawDTO->amount)) {
             throw AccountException::insufficientBalance();
         }
 
         $withdrawDTO->account->withdraw($withdrawDTO->amount);
-        $transaction = [
-            'amount' => $withdrawDTO->amount,
-            'type' => TransactionType::Withdraw,
-            'tax' => 0,
-            'from_account_id' => $withdrawDTO->account->id,
-            'to_account_id' => null,
-        ];
 
-        return $this->createTransactionAction->handle($transaction);
+        return $this->createTransactionAction->handle(new CreateTransactionDTO(
+            fromAccountId: $withdrawDTO->account->id,
+            toAccountId: null,
+            amount: (string) MoneyHelper::of($withdrawDTO->amount)->getUnscaledAmount(),
+            type: TransactionType::Withdraw
+        ));
     }
 }

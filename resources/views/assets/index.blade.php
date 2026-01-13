@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <x-layout.main back-to="{{route('dashboard')}}" title="Investimentos">
     <section class="max-w-5xl mx-auto space-y-8">
         <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
@@ -7,14 +8,15 @@
             </div>
             <div>
                 <h2 class="text-2xl font-bold text-primary">
-                    {{Number::currency($investmentAccount->balance, in: 'BRL')}}
+                    {{MoneyHelper::format($investmentAccount->balance)}}
                 </h2>
                 <p class="text-xs">Patrimônio disponível para investir</p>
             </div>
         </div>
         <section class="flex rounded-md p-1 border bg-fuchsia-200 border-zinc-400 gap-1.5">
             <a href="{{route('my-assets')}}" data-selected="@bool(Route::current()->getName()==='my-assets')"
-               class="py-1 px-2 rounded-xs cursor-pointer data-[selected=true]:bg-fuchsia-300 data-[selected=true]:shadow-sm">Meus investimentos</a>
+               class="py-1 px-2 rounded-xs cursor-pointer data-[selected=true]:bg-fuchsia-300 data-[selected=true]:shadow-sm">Meus
+                investimentos</a>
             <a href="{{route('assets')}}" data-selected="@bool(Route::current()->getName()==='assets')"
                class="py-1 px-2 rounded-xs cursor-pointer data-[selected=true]:bg-fuchsia-300 data-[selected=true]:shadow-sm">Mercado</a>
         </section>

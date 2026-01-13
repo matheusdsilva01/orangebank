@@ -21,7 +21,7 @@ class AccountFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'balance' => fake()->randomFloat(2, 100, 10000),
+            'balance' => (string) fake()->numberBetween(10000000, 80000000), // between 10.000,00 and 80.000,00
             'number' => strtoupper(fake()->lexify('????????????')),
         ];
     }

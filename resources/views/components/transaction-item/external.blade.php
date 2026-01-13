@@ -1,17 +1,24 @@
+@php use App\Models\Transaction;use App\Support\MoneyHelper; @endphp
+@props(
+    [
+        /** @var Transaction $transaction */
+        'transaction',
+    ]
+ )
 <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
     @if ($transaction->isSender)
         <div>
             <x-heroicon-o-arrow-up-tray class="size-4"/>
         </div>
         <div class="flex flex-col">
-                <p class="font-medium">{{$transaction->receive->name}}</p>
+            <p class="font-medium">{{$transaction->receive->name}}</p>
             <span
                 class="text-xs text-gray-600">{{ $transaction->created_at->timezone('America/Sao_Paulo')->format('d/m/Y H:i') }}</span>
         </div>
         <div class="ml-auto text-right">
             <span
                 class="font-bold text-red-600">
-                {{ Number::currency(-$transaction->amount, in: 'BRL') }}
+                {{ MoneyHelper::format($transaction->amount->multipliedBy('-1')) }}
             </span>
             <p class="text-xs text-gray-600">De: {{ $transaction->fromAccount->getLabel() }}
                 para: {{ $transaction->toAccount->getLabel() }}</p>
@@ -28,7 +35,7 @@
         <div class="ml-auto text-right">
             <span
                 class="font-bold text-green-600">
-                {{ Number::currency($transaction->amount, in: 'BRL') }}
+                {{ MoneyHelper::format($transaction->amount) }}
             </span>
             <p class="text-xs text-gray-600">
                 De: Conta Corrente

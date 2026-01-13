@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->integer('amount');
             $table->string('type'); //  App\Enums\TransactionType.php
-            $table->integer('tax');
+            $table->string('tax');
             $table->timestamps();
         });
     }

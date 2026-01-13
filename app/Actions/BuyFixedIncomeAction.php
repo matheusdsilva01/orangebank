@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\BuyFixedIncomeDTO;
 use App\Exceptions\AccountException;
 
 class BuyFixedIncomeAction
@@ -9,16 +10,16 @@ class BuyFixedIncomeAction
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): void
+    public function handle(BuyFixedIncomeDTO $attributes): void
     {
-        $stock = $attributes['stock'];
-        $account = $attributes['account'];
-        $amount = $attributes['amount'];
+        $stock = $attributes->stock;
+        $account = $attributes->account;
+        $amount = $attributes->amount;
 
         if (! $account) {
             throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
         }
-        if ($account->balance < $attributes['amount']) {
+        if ($account->balance->isLessThan($amount)) {
             throw AccountException::insufficientBalance();
         }
 
@@ -30,7 +31,6 @@ class BuyFixedIncomeAction
                 'purchased_date' => now(),
             ]
         );
-        $account->decrement('balance', $amount);
-        $account->save();
+        $account->debit($amount);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\BuyFixedIncomeAction;
 use App\Actions\SellFixedIncomeAction;
+use App\Dto\BuyFixedIncomeDTO;
+use App\Dto\SellFixedIncomeDTO;
 use App\Http\Requests\BuyFixedIncomeRequest;
 use App\Models\AccountFixedIncome;
 use App\Models\FixedIncome;
@@ -25,12 +27,8 @@ class FixedIncomeController extends Controller
 
         try {
             $account = auth()->user()->investmentAccount;
-            $payload = [
-                'stock' => FixedIncome::findOrFail($stockId),
-                'account' => $account,
-                'amount' => $params['amount'],
-            ];
 
+            $payload = new BuyFixedIncomeDTO(FixedIncome::findOrFail($stockId), $params['amount'], $account);
             $buyFixedIncomeAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'fixed_income']);
@@ -42,10 +40,10 @@ class FixedIncomeController extends Controller
     public function sell(AccountFixedIncome $accountFixedIncome, SellFixedIncomeAction $sellFixedIncomeAction)
     {
         try {
-            $payload = [
-                'fixedIncomePurchased' => $accountFixedIncome,
-                'account' => auth()->user()->investmentAccount,
-            ];
+            $payload = new SellFixedIncomeDTO(
+                $accountFixedIncome,
+                auth()->user()->investmentAccount,
+            );
             $sellFixedIncomeAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'fixed_income']);

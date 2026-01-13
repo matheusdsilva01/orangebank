@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <x-layout.main>
     <div class="grid grid-cols-3 gap-4">
         <section class="grid md:grid-cols-2 gap-4 col-span-2">
@@ -8,7 +9,7 @@
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-primary">
-                        {{Number::currency($currentAccount->balance, in: 'BRL')}}
+                        {{MoneyHelper::format($currentAccount->balance)}}
                     </h2>
                     <p class="text-xs">Disponível para saque</p></div>
             </div>
@@ -19,7 +20,7 @@
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-primary">
-                        {{Number::currency($investmentAccount->balance, in: 'BRL')}}
+                        {{MoneyHelper::format($investmentAccount->balance)}}
                     </h2>
                     <p class="text-xs">Patrimõnio investido</p>
                 </div>
@@ -32,7 +33,7 @@
                 </div>
                 <div>
                     <h2 class="text-2xl font-bold text-primary">
-                        {{Number::currency($investmentAccount->balance + $currentAccount->balance, in: 'BRL')}}
+                        {{MoneyHelper::format($investmentAccount->balance->plus($currentAccount->balance))}}
                     </h2>
                 </div>
             </div>
@@ -74,7 +75,7 @@
                 <p class="text-sm">Últimas 5 transações</p>
                 <section class="flex flex-col gap-4 mt-2">
                     @forelse($transactions as $transaction)
-                        <x-dynamic-component :component="$transaction->getComponent()" :transaction="$transaction" />
+                        <x-dynamic-component :component="$transaction->getComponent()" :transaction="$transaction"/>
                     @empty
                         <p class="text-xl text-center">Nenhuma transação encontrada</p>
                     @endforelse

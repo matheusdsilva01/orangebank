@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
     <div>
         <x-heroicon-o-arrows-right-left class="size-4"/>
@@ -9,7 +10,7 @@
     </div>
     <div class="ml-auto text-right">
         <span class="font-bold text-blue-600">
-            {{ Number::currency($transaction->amount, in: 'BRL') }}
+            {{ MoneyHelper::format($transaction->amount) }}
         </span>
         <p class="text-xs text-gray-600">De: {{ $transaction->fromAccount->getLabel() }}
             para: {{ $transaction->toAccount->getLabel() }}</p>

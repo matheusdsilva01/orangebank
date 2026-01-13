@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dto\BuyStockDTO;
 use App\Exceptions\AccountException;
 use Carbon\Carbon;
 
@@ -10,11 +11,11 @@ class BuyStockAction
     /**
      * @throws AccountException
      */
-    public function handle(array $attributes): void
+    public function handle(BuyStockDTO $dto): void
     {
-        $account = $attributes['account'];
-        $stock = $attributes['stock'];
-        $quantity = $attributes['quantity'];
+        $account = $dto->account;
+        $stock = $dto->stock;
+        $quantity = $dto->quantity;
 
         $amount = round($stock->current_price * $quantity, 2);
 

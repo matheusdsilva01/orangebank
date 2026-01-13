@@ -2,9 +2,12 @@
 
 namespace App\Models\Account;
 
+use App\Casts\MoneyCast;
 use App\Enums\AccountType;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Support\MoneyHelper;
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 
+/**
+ * @property Money $balance
+ */
 class Account extends Model
 {
     use HasFactory, HasUuids;
@@ -30,6 +36,14 @@ class Account extends Model
         'balance',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'type' => AccountType::class,
+            'balance' => MoneyCast::class,
+        ];
+    }
+
     public function getLabel(): string
     {
         return AccountType::fromModel($this::class)->getLabel();
@@ -40,7 +54,8 @@ class Account extends Model
      */
     public function debit(float $amount): void
     {
-        $this->decrement('balance', $amount);
+        $this->balance = $this->balance->minus(MoneyHelper::of($amount));
+        $this->save();
     }
 
     /**
@@ -48,7 +63,8 @@ class Account extends Model
      */
     public function credit(float $amount): void
     {
-        $this->increment('balance', $amount);
+        $this->balance = $this->balance->plus(MoneyHelper::of($amount));
+        $this->save();
     }
 
     public function newInstance($attributes = [], $exists = false): static
@@ -86,13 +102,6 @@ class Account extends Model
         $model->fireModelEvent('retrieved', false);
 
         return $model;
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'type' => AccountType::class,
-        ];
     }
 
     public function transactions(): HasMany

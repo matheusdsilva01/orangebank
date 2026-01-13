@@ -13,8 +13,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('symbol');
             $table->string('sector');
-            $table->float('current_price');
-            $table->float('daily_variation');
+            $table->string('current_price');
+            $table->string('daily_variation');
             $table->timestamps();
         });
     }

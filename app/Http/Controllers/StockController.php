@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\BuyStockAction;
 use App\Actions\SellStockAction;
+use App\Dto\BuyStockDTO;
+use App\Dto\SellStockDTO;
 use App\Http\Requests\BuyStockRequest;
 use App\Models\AccountStock;
 use App\Models\Stock;
@@ -110,11 +112,11 @@ class StockController extends Controller
     {
         $params = $request->validated();
         try {
-            $payload = [
-                'account' => auth()->user()->investmentAccount,
-                'stock' => $stock,
-                'quantity' => $params['quantity'],
-            ];
+            $payload = new BuyStockDTO(
+                $stock,
+                $params['quantity'],
+                auth()->user()->investmentAccount
+            );
             $buyStockAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'stocks']);
@@ -130,9 +132,10 @@ class StockController extends Controller
 
     public function sell(AccountStock $accountStock, SellStockAction $sellStockAction)
     {
-        $payload = [
-            'accountStock' => $accountStock,
-        ];
+        $payload = new SellStockDTO(
+            $accountStock,
+            $accountStock->stock
+        );
         try {
             $sellStockAction->handle($payload);
         } catch (\Exception $e) {

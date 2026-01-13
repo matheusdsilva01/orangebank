@@ -3,12 +3,13 @@
 use App\Models\Account\CurrentAccount;
 use App\Models\Account\InvestmentAccount;
 use App\Models\User;
+use App\Support\MoneyHelper;
 
 test('should to do transaction between current account to investment account of same user', function (): void {
     // Prepare
     $user = User::factory()->create();
-    $currentAccount = CurrentAccount::factory()->for($user)->create();
-    $investmentAccount = InvestmentAccount::factory()->for($user)->create();
+    $currentAccount = CurrentAccount::factory()->for($user)->create(['balance' => '1100000']);
+    $investmentAccount = InvestmentAccount::factory()->for($user)->create(['balance' => '10000']);
     $this->actingAs($user);
 
     $oldCurrentBalance = $currentAccount->balance;
@@ -23,13 +24,13 @@ test('should to do transaction between current account to investment account of 
     $this->postJson(route('transfer.internal'), $payload);
 
     // Assert
-    expect($oldCurrentBalance - $payload['amount'])->toEqual((float) $currentAccount->refresh()->balance);
-    expect($oldInvestmentBalance + $payload['amount'])->toEqual((float) $investmentAccount->refresh()->balance);
+    expect($oldCurrentBalance->minus($payload['amount'])->isEqualTo($currentAccount->refresh()->balance))
+        ->and($oldInvestmentBalance->plus($payload['amount']))->toEqual($investmentAccount->refresh()->balance);
 
     $expected = [
         'from_account_id' => $currentAccount->id,
         'to_account_id' => $investmentAccount->id,
-        'amount' => $payload['amount'],
+        'amount' => '1000000',
     ];
     $this->assertDatabaseHas('transactions', $expected);
 });

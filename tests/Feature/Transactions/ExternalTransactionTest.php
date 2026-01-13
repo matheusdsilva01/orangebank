@@ -2,6 +2,8 @@
 
 use App\Models\Account\CurrentAccount;
 use App\Models\User;
+use App\Support\MoneyHelper;
+use Brick\Math\RoundingMode;
 
 test('should to do external transaction between current account to another current account of different users', function (): void {
     // Prepare
@@ -25,15 +27,16 @@ test('should to do external transaction between current account to another curre
     $this->postJson(route('transfer.external'), $payload);
 
     // Assert
-    $amountWithTaxDiscount = $payload['amount'] + (50 / 100);
+    // (50 / 100) 0,5% tax discount
+    $amountWithTaxDiscount = MoneyHelper::of($payload['amount'])->dividedBy(1.0005, RoundingMode::HALF_EVEN)->getAmount();
 
     $expected = [
         'from_account_id' => $currentAccountUserSender->id,
         'to_account_id' => $currentAccountUserReceiver->id,
-        'amount' => $payload['amount'],
+        'amount' => '1000000',
     ];
 
-    expect($currentAccountUserSender->refresh()->balance)->toEqual($oldBalanceSender - $amountWithTaxDiscount);
-    expect($currentAccountUserReceiver->refresh()->balance)->toEqual($oldBalanceReceiver + $payload['amount']);
+    expect($currentAccountUserSender->refresh()->balance)->toEqual($oldBalanceSender->minus($amountWithTaxDiscount))
+        ->and($currentAccountUserReceiver->refresh()->balance)->toEqual($oldBalanceReceiver->plus(MoneyHelper::of($payload['amount'])->getAmount()));
     $this->assertDatabaseHas('transactions', $expected);
 });

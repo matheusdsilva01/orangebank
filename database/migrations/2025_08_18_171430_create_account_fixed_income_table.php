@@ -12,8 +12,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('account_id');
             $table->uuid('fixed_income_id');
-            $table->decimal('amount_earned', 19, 4);
-            $table->decimal('amount_investment', 19, 4);
+            $table->string('amount_earned');
+            $table->string('amount_investment');
             $table->timestamp('purchased_date')->nullable();
             $table->timestamp('sale_date')->nullable();
         });

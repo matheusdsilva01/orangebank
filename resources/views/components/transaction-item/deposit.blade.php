@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <div class="flex items-center rounded-md p-4 gap-4 border border-fuchsia-400 py-2">
     <div>
         <x-heroicon-o-arrow-down-tray class="size-4"/>
@@ -17,11 +18,11 @@
         @if (isset($transaction->isSender))
             <span
                 class="font-bold text-green-600">
-                {{ Number::currency($transaction->amount, in: 'BRL') }}
+                {{ MoneyHelper::format($transaction->amount) }}
             </span>
         @else
             <span class="font-bold text-blue-600">
-                {{ Number::currency($transaction->amount, in: 'BRL') }}
+                {{ MoneyHelper::format($transaction->amount) }}
             </span>
         @endif
         <p class="text-xs text-gray-600">

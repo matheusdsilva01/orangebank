@@ -2,10 +2,13 @@
 
 namespace App\Actions;
 
+use App\Dto\CreateTransactionDTO;
 use App\Dto\ExternalTransferDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
+use App\Support\MoneyHelper;
+use Brick\Math\RoundingMode;
 
 class CreateExternalTransfer
 {
@@ -26,21 +29,25 @@ class CreateExternalTransfer
         if (! $toAccount) {
             throw AccountException::accountNotFound();
         }
-        $amountDiscount = $amount + $tax;
+        $amountDiscount = MoneyHelper::of($amount)->dividedBy(1.0005, RoundingMode::HALF_EVEN);
 
-        if ($fromAccount->balance < $amountDiscount) {
+        if ($toAccount->user_id === $fromAccount->user_id) {
+            throw AccountException::cannotMakeExternalTransferToSameUser();
+        }
+
+        if ($fromAccount->balance->isLessThan($amountDiscount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->withdraw($amountDiscount);
+        $fromAccount->withdraw($amountDiscount->getAmount()->toFloat());
         $toAccount->deposit($amount);
 
-        return $this->createTransactionAction->handle([
-            'from_account_id' => $fromAccount->id,
-            'to_account_id' => $toAccount->id,
-            'amount' => $amount,
-            'type' => TransactionType::External,
-            'tax' => $tax,
-        ]);
+        return $this->createTransactionAction->handle(new CreateTransactionDTO(
+            $fromAccount->id,
+            $toAccount->id,
+            (string) MoneyHelper::of($amount)->getUnscaledAmount(),
+            TransactionType::External,
+            $tax,
+        ));
     }
 }

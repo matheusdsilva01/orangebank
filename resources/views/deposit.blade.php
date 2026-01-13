@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <x-layout.main title="Depósito" :back-to="route('dashboard')">
     <section class="max-w-lg mx-auto space-y-8">
         <div class="bg-fuchsia-200 p-6 flex flex-col gap-6 rounded-xl border border-gray-400 shadow-sm">
@@ -7,7 +8,7 @@
             </div>
             <div>
                 <h2 class="text-2xl font-bold text-primary">
-                    {{Number::currency($currentAccount->balance, in: 'BRL')}}
+                    {{MoneyHelper::format($currentAccount->balance)}}
                 </h2>
                 <p class="text-xs">Disponível em conta</p></div>
         </div>

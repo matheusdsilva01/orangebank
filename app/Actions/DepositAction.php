@@ -2,10 +2,12 @@
 
 namespace App\Actions;
 
+use App\Dto\CreateTransactionDTO;
 use App\Dto\DepositDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
+use App\Support\MoneyHelper;
 
 class DepositAction
 {
@@ -27,14 +29,12 @@ class DepositAction
         }
 
         $depositDTO->account->deposit($depositDTO->amount);
-        $transaction = [
-            'amount' => $depositDTO->amount,
-            'type' => TransactionType::Deposit,
-            'tax' => 0,
-            'from_account_id' => null,
-            'to_account_id' => $depositDTO->account->id,
-        ];
 
-        return $this->createTransactionAction->handle($transaction);
+        return $this->createTransactionAction->handle(new CreateTransactionDTO(
+            fromAccountId: null,
+            toAccountId: $depositDTO->account->id,
+            amount: (string) MoneyHelper::of($depositDTO->amount)->getUnscaledAmount(),
+            type: TransactionType::Deposit
+        ));
     }
 }

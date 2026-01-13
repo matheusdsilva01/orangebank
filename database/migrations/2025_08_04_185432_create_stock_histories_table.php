@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('stock_histories', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->float('daily_variation');
-            $table->float('daily_price');
+            $table->string('daily_variation');
+            $table->string('daily_price');
             $table->foreignUuid('stock_id')->constrained('stocks');
             $table->timestamps();
         });

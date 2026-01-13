@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Account\InvestmentAccount;
 use App\Models\Stock;
 use App\Models\User;
-use App\Models\Account\InvestmentAccount;
 
-test('attach stock to account', function () {
+test('attach stock to account', function (): void {
     //  Prepare
     $user = User::factory()->create();
     $account = InvestmentAccount::factory()->recycle($user)->create();

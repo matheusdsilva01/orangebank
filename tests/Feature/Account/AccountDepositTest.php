@@ -7,7 +7,7 @@ use App\Models\User;
 test('to be to do deposit to current account', function (): void {
     //  Prepare
     $user = User::factory()->create();
-    $account = CurrentAccount::factory()->for($user)->create();
+    $account = CurrentAccount::factory()->for($user)->create(['balance' => '5000000']);
     $previousBalance = $account->balance;
     $payload = [
         'amount' => 100.00,
@@ -18,7 +18,7 @@ test('to be to do deposit to current account', function (): void {
     $this->postJson(route('account.deposit'), $payload);
 
     //  Assert
-    $expectedBalance = $previousBalance + $payload['amount'];
+    $expectedBalance = $previousBalance->plus($payload['amount']);
     expect($account->refresh()->balance)->toEqual($expectedBalance);
     $this->assertDatabaseCount('transactions', 1);
 });

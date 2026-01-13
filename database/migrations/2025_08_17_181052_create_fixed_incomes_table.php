@@ -12,10 +12,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('type'); //  App\Enums\FixedIncomeType.php
-            $table->float('rate', 3);
+            $table->string('rate');
             $table->string('rateType'); //  App\Enums\FixedIncomeRateType
             $table->dateTime('maturity');
-            $table->float('minimumInvestment');
+            $table->string('minimumInvestment');
             $table->timestamps();
         });
     }

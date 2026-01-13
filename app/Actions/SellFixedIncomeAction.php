@@ -2,12 +2,14 @@
 
 namespace App\Actions;
 
+use App\Dto\SellFixedIncomeDTO;
+
 class SellFixedIncomeAction
 {
-    public function handle(array $attributes): void
+    public function handle(SellFixedIncomeDTO $attributes): void
     {
-        $fixedIncomePurchased = $attributes['fixedIncomePurchased'];
-        $investmentAccount = $attributes['account'];
+        $fixedIncomePurchased = $attributes->fixedIncomePurchased;
+        $investmentAccount = $attributes->account;
         // 22% IR on profit
         $value = ($fixedIncomePurchased->amount_earned - $fixedIncomePurchased->amount_investment) * 0.22;
         // truncate to 4 decimal places

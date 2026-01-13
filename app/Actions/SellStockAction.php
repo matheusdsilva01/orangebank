@@ -2,12 +2,14 @@
 
 namespace App\Actions;
 
+use App\Dto\SellStockDTO;
+
 class SellStockAction
 {
-    public function handle(array $attributes): void
+    public function handle(SellStockDTO $attributes): void
     {
-        $accountStock = $attributes['accountStock'];
-        $stock = $accountStock->stock;
+        $accountStock = $attributes->accountStock;
+        $stock = $attributes->stock;
         $profitLoss = $stock->current_price - $accountStock->purchase_price;
         $account = auth()->user()->investmentAccount;
 

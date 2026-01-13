@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\MoneyCast;
 use App\Enums\TransactionType;
 use App\Models\Account\Account;
+use Brick\Money\Money;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -11,6 +13,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Money $amount
+ */
 class Transaction extends Model
 {
     /** @use HasFactory<TransactionFactory> */
@@ -74,6 +79,7 @@ class Transaction extends Model
         'type' => TransactionType::class,
         'created_at' => 'custom_datetime',
         'updated_at' => 'custom_datetime',
+        'amount' => MoneyCast::class
     ];
 
     public function fromAccount(): BelongsTo

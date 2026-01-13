@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignUuid('account_id')->constrained('accounts', 'id');
             $table->foreignUuid('stock_id')->constrained('stocks', 'id');
             $table->integer('quantity');
-            $table->float('purchase_price', 4);
-            $table->float('sale_price', 4)->nullable();
+            $table->string('purchase_price');
+            $table->string('sale_price')->nullable();
             $table->timestamp('purchase_date')->nullable();
             $table->timestamp('sale_date')->nullable();
         });
