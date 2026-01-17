@@ -12,6 +12,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware('auth')->group(function (): void {
+    // Account
     Route::get('/dashboard', [AccountController::class, 'dashboard'])->name('dashboard');
     Route::get('/transfer', [AccountController::class, 'transferForm'])->name('transfer');
     Route::post('/internal-transfer', [AccountController::class, 'internalTransfer'])->name('transfer.internal');
@@ -21,17 +22,24 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/deposit', [AccountController::class, 'depositForm'])->name('deposit-form');
     Route::post('/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
     Route::get('/my-assets', [AssetController::class, 'myAssets'])->name('my-assets');
+
+    // Assets
     Route::get('/assets', [AssetController::class, 'index'])->name('assets');
+
+    // Stock
     Route::get('/stock/{id}', [StockController::class, 'detail'])->name('stock.detail');
     Route::get('/stock-purchased/{id}', [StockController::class, 'detailPurchased'])->name('stock.detail-purchased');
     Route::post('/stock/{stock}', [StockController::class, 'buy'])->name('stock.buy');
     Route::post('/stock-purchased/{accountStock}/sell', [StockController::class, 'sell'])->name('stock.sell-purchased');
-    Route::get('/fixed-income/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail');
+
+    // Fixed Income
+    Route::get('/fixed-income/{fixedIncome}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail');
     Route::get('/fixed-purchased/{id}', [FixedIncomeController::class, 'detail'])->name('fixed-income.detail-purchased');
     Route::post('/fixed-income/{id}', [FixedIncomeController::class, 'buy'])->name('fixed-income.buy');
     Route::post('fixed-purchased/{accountFixedIncome}/sell', [FixedIncomeController::class, 'sell'])->name('fixed-income.sell');
 });
 
+// Auth
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

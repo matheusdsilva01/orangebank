@@ -24,8 +24,8 @@ class StockFactory extends Factory
             'name' => $this->faker->name(),
             'symbol' => $this->faker->word(),
             'sector' => $this->faker->word(),
-            'current_price' => $this->faker->randomFloat(),
-            'daily_variation' => $this->faker->randomFloat(),
+            'current_price' => (string) $this->faker->numberBetween(100000, 2000000),
+            'daily_variation' => $this->faker->numberBetween(0.5, 0.9),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

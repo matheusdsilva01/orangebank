@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 <x-layout.main back-to="{{ route('my-assets', ['type' => 'stocks']) }}" title="Detalhes da Ação">
     <div class="min-h-screen bg-fuchsia-50 py-8">
         <div class="px-4 sm:px-6">
@@ -9,7 +10,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-2xl font-bold text-gray-900">
-                            {{ Number::currency($stock->current_price, in: 'BRL') }}</p>
+                            {{ MoneyHelper::format($stock->current_price) }}</p>
                         <p class="text-sm {{ $stock->daily_variation >= 0 ? 'text-green-600' : 'text-red-600' }}">
                             {{ $stock->daily_variation >= 0 ? '+' : '' }}{{ $stock->daily_variation }}
                             %
@@ -45,7 +46,7 @@
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Valor Investido</p>
                             <p class="text-2xl font-bold text-gray-900">
-                                {{ Number::currency($investedValue, in: 'BRL') }}</p>
+                                {{ MoneyHelper::format($investedValue) }}</p>
                         </div>
                     </div>
                 </div>
@@ -61,17 +62,17 @@
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Valor Atual</p>
                             <p class="text-2xl font-bold text-gray-900">
-                                {{ Number::currency($currentValue, in: 'BRL') }}</p>
+                                {{ MoneyHelper::format($currentValue) }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-fuchsia-100 rounded-xl shadow-sm p-6 border border-gray-200">
                     <div class="flex items-center">
-                        <div class="p-3 rounded-full {{ $profitLoss >= 0 ? 'bg-green-100' : 'bg-red-100' }}">
-                            <svg class="w-6 h-6 {{ $profitLoss >= 0 ? 'text-green-600' : 'text-red-600' }}" fill="none"
+                        <div class="p-3 rounded-full {{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'bg-green-100' : 'bg-red-100' }}">
+                            <svg class="w-6 h-6 {{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'text-green-600' : 'text-red-600' }}" fill="none"
                                  stroke="currentColor" viewBox="0 0 24 24">
-                                @if($profitLoss >= 0)
+                                @if($profitLoss->isGreaterThanOrEqualTo(0))
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M7 11l5-5m0 0l5 5m-5-5v12"></path>
                                 @else
@@ -81,12 +82,12 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">{{ $profitLoss >= 0 ? 'Lucro' : 'Prejuízo' }}</p>
-                            <p class="text-2xl font-bold {{ $profitLoss >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                                {{ Number::currency(abs($profitLoss), in: 'BRL') }}
+                            <p class="text-sm font-medium text-gray-600">{{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'Lucro' : 'Prejuízo' }}</p>
+                            <p class="text-2xl font-bold {{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'text-green-600' : 'text-red-600' }}">
+                                {{ MoneyHelper::format($profitLoss) }}
                             </p>
-                            <p class="text-sm {{ $profitLoss >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $profitLoss >= 0 ? '+' : '-' }}{{ round(abs($profitLossPercentage), 2) }}%
+                            <p class="text-sm {{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $profitLoss->isGreaterThanOrEqualTo(0) ? '+' : '-' }}{{ $profitLossPercentage }}%
                             </p>
                         </div>
                     </div>
@@ -116,7 +117,7 @@
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                 <span class="text-gray-600">Preço de Compra</span>
                                 <span class="font-medium text-gray-900">
-                                    {{ Number::currency($stockPurchaseDetail->purchase_price, in: 'BRL') }}
+                                    {{ MoneyHelper::format($stockPurchaseDetail->purchase_price) }}
                                 </span>
                             </div>
                             <div class="flex justify-between items-center py-2 border-b border-gray-100">
@@ -128,7 +129,7 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-gray-600">Total Investido</span>
                                 <span class="font-medium text-gray-900">
-                                     {{ Number::currency($investedValue, in: 'BRL') }}
+                                     {{ MoneyHelper::format($investedValue) }}
                                 </span>
                             </div>
                         </div>
@@ -148,7 +149,7 @@
                             <div class="flex justify-between items-center py-2">
                                 <span class="text-gray-600">Preço Atual</span>
                                 <span class="font-medium text-gray-900">
-                                     {{ Number::currency($stock->current_price, in: 'BRL') }}
+                                     {{ MoneyHelper::format($stock->current_price) }}
                                 </span>
                             </div>
                         </div>
@@ -185,15 +186,14 @@
                         </div>
                         <div class="text-center p-4 bg-fuchsia-50 rounded-lg">
                             <p class="text-sm text-gray-600 mb-1">Variação desde Compra</p>
-                            <p class="text-2xl font-bold {{ $profitLoss >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $profitLoss >= 0 ? '+' : '' }}{{ Number::currency($profitLossPercentage, in: 'BRL') }}
-                                %
+                            <p class="text-2xl font-bold {{ $profitLoss->isGreaterThanOrEqualTo(0) ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $profitLoss->isGreaterThanOrEqualTo(0) ? '+' : '' }}{{ $profitLossPercentage }} %
                             </p>
                         </div>
                         <div class="text-center p-4 bg-fuchsia-50 rounded-lg">
                             <p class="text-sm text-gray-600 mb-1">Preço Médio</p>
                             <p class="text-2xl font-bold text-gray-900">
-                                {{ Number::currency($stockPurchaseDetail->purchase_price, in: 'BRL') }}
+                                {{ MoneyHelper::format($stockPurchaseDetail->purchase_price) }}
                             </p>
                         </div>
                     </div>

@@ -1,16 +1,17 @@
+@php use App\Support\MoneyHelper; @endphp
 <div
     class="relative isolate flex flex-col gap-6 rounded-xl border border-zinc-400 px-4 py-6 shadow-sm transition-colors hover:bg-fuchsia-50/30">
     <header class="flex justify-between">
         <div>
             <span class="text-xs">Valor atual: </span>
             <p class="text-lg font-bold">
-                {{Number::currency($stock->current_price, in: 'BRL')}}
+                {{MoneyHelper::format($stock->current_price)}}
             </p>
         </div>
         <div class="text-right">
             <span class="text-xs">Preço na compra: </span>
             <div class="flex gap-1">
-                <p class="text-sm font-semibold">{{Number::currency($stock->pivot->purchase_price, in: 'BRL')}}</p>
+                <p class="text-sm font-semibold">{{MoneyHelper::format($stock->pivot->purchase_price)}}</p>
                 @if($variation > 0)
                     <div class="flex text-xs items-center text-green-600">
                         <p>{{$variation}}%</p>
@@ -46,7 +47,7 @@
                 <div>
                     <span class="text-xs">Rentabilidade: </span>
                     <p class="text-lg font-bold">
-                        {{Number::currency($stock->current_price - $stock->pivot->purchase_price, in: 'BRL')}}
+                        {{MoneyHelper::format($stock->current_price->minus($stock->pivot->purchase_price))}}
                     </p>
                 </div>
                 <div>

@@ -1,12 +1,14 @@
+@php use App\Models\FixedIncome;use App\Support\MoneyHelper; @endphp
 @props([
-    'fixedIncome' => null
+     /** @var FixedIncome $fixedIncome */
+    'fixedIncome'
 ])
 <div
     class="relative isolate flex flex-col gap-6 rounded-xl border border-zinc-400 py-6 shadow-sm transition-colors hover:bg-fuchsia-50/30">
     <div class="p-4">
         <div class="space-y-2">
             <div class="flex items-center justify-between">
-                <a href="{{route('fixed-income.detail', ['id' => $fixedIncome->id])}}">
+                <a href="{{route('fixed-income.detail', ['fixedIncome' => $fixedIncome->id])}}">
                     <span class="absolute inset-0"></span>
                     <p class="font-semibold">{{$fixedIncome->name}}</p>
                     <p class="text-sm text-muted-foreground">{{$fixedIncome->type->getLabel()}}</p>
@@ -22,7 +24,7 @@
                 <div>
                     <div>
                         <span class="text-xs">Investimento mínimo:</span>
-                        <p class="text-lg font-bold">{{Number::currency($fixedIncome->minimumInvestment, in: 'BRL')}}</p>
+                        <p class="text-lg font-bold">{{MoneyHelper::format($fixedIncome->minimumInvestment)}}</p>
                     </div>
                     <div>
                         <span class="text-xs">Tipo de renda:</span>

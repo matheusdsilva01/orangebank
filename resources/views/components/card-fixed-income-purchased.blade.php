@@ -1,10 +1,11 @@
+@php use App\Support\MoneyHelper; @endphp
 <div
     class="relative isolate flex flex-col gap-6 rounded-xl border border-zinc-400 px-4 py-6 shadow-sm transition-colors hover:bg-fuchsia-50/30">
     <header class="flex justify-between">
         <div>
             <span class="text-xs">Valor investido: </span>
             <p class="text-lg font-bold">
-                {{Number::currency($fixedIncome->pivot->amount_investment, in: 'BRL')}}
+                {{MoneyHelper::format($fixedIncome->pivot->amount_investment)}}
             </p>
         </div>
         <div class="text-right">
@@ -26,7 +27,7 @@
             </div>
             <div>
                 <span class="text-xs">Renda obtida:</span>
-                <p class="font-semibold">{{Number::currency($fixedIncome->pivot->amount_earned, in: 'BRL')}}</p>
+                <p class="font-semibold">{{MoneyHelper::format($fixedIncome->pivot->amount_earned)}}</p>
             </div>
         </div>
         <div class="text-right">

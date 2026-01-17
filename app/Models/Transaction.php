@@ -79,7 +79,7 @@ class Transaction extends Model
         'type' => TransactionType::class,
         'created_at' => 'custom_datetime',
         'updated_at' => 'custom_datetime',
-        'amount' => MoneyCast::class
+        'amount' => MoneyCast::class,
     ];
 
     public function fromAccount(): BelongsTo

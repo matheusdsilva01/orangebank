@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Dto\BuyFixedIncomeDTO;
 use App\Exceptions\AccountException;
+use App\Support\MoneyHelper;
 
 class BuyFixedIncomeAction
 {
@@ -26,8 +27,8 @@ class BuyFixedIncomeAction
         $account->fixedIncomes()->attach(
             $stock->id,
             [
-                'amount_investment' => $amount,
-                'amount_earned' => $amount,
+                'amount_investment' => (string) MoneyHelper::of($amount)->getUnscaledAmount(),
+                'amount_earned' => (string) MoneyHelper::of($amount)->getUnscaledAmount(),
                 'purchased_date' => now(),
             ]
         );

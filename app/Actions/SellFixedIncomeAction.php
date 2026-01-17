@@ -2,23 +2,22 @@
 
 namespace App\Actions;
 
-use App\Dto\SellFixedIncomeDTO;
+use App\Models\AccountFixedIncome;
+use Brick\Math\RoundingMode;
 
 class SellFixedIncomeAction
 {
-    public function handle(SellFixedIncomeDTO $attributes): void
+    public function handle(AccountFixedIncome $fixedIncomePurchased): void
     {
-        $fixedIncomePurchased = $attributes->fixedIncomePurchased;
-        $investmentAccount = $attributes->account;
-        // 22% IR on profit
-        $value = ($fixedIncomePurchased->amount_earned - $fixedIncomePurchased->amount_investment) * 0.22;
-        // truncate to 4 decimal places
-        $taxOnProfit = floor($value * 10000) / 10000;
+        $tax = config('finance.tax_ir_fixed_income_profit'); // 22% tax on earnings
+
+        $investmentAccount = $fixedIncomePurchased->account;
+        $totalYield = $fixedIncomePurchased->amount_earned->minus($fixedIncomePurchased->amount_investment);
+        $amountEarnedDiscounted = $totalYield->multipliedBy($tax, RoundingMode::HALF_EVEN);
+
+        $investmentAccount->credit($fixedIncomePurchased->amount_earned->minus($amountEarnedDiscounted)->getAmount()->toFloat());
+
         $fixedIncomePurchased->sale_date = now();
         $fixedIncomePurchased->save();
-
-        $moneyEarned = $fixedIncomePurchased->amount_earned - $taxOnProfit;
-        $investmentAccount->increment('balance', $moneyEarned);
-        $investmentAccount->save();
     }
 }

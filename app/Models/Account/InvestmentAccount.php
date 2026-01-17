@@ -30,13 +30,7 @@ class InvestmentAccount extends Account
     {
         return $this->belongsToMany(FixedIncome::class, 'account_fixed_income', 'account_id')
             ->using(AccountFixedIncome::class)
-            ->withPivot([
-                'id',
-                'amount_earned',
-                'amount_investment',
-                'purchased_date',
-                'sale_date',
-            ]);
+            ->withPivot(['id', 'amount_investment', 'amount_earned', 'purchased_date', 'sale_date']);
     }
 
     public function stocks(): BelongsToMany

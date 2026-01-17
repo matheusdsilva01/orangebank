@@ -29,7 +29,7 @@ class CalculateVariationFixedIncome extends Command
     public function handle(): void
     {
         $fixedIncomes = FixedIncome::query()->where('maturity', '<', now())->get();
-        $progressBar = progress(label: 'Calculating stock variations', steps: count($fixedIncomes));
+        $progressBar = progress(label: 'Calculating fixed income variations', steps: count($fixedIncomes));
         foreach ($fixedIncomes as $fixedIncome) {
             $fixedIncome->calculateVolatility();
             $progressBar->advance();

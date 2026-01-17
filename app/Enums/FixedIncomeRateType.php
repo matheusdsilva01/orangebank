@@ -2,6 +2,10 @@
 
 namespace App\Enums;
 
+use App\Interfaces\FixedIncomeCalculatorStrategy;
+use App\Strategies\FixedIncome\PostFixedIncomeCalculator;
+use App\Strategies\FixedIncome\PreFixedIncomeCalculator;
+
 enum FixedIncomeRateType: string
 {
     case Post = 'post';
@@ -14,4 +18,13 @@ enum FixedIncomeRateType: string
             FixedIncomeRateType::Pre => 'Pré-fixado',
         };
     }
+
+    public function getYieldStrategy(): FixedIncomeCalculatorStrategy
+    {
+        return match ($this) {
+            FixedIncomeRateType::Post => new PostFixedIncomeCalculator(),
+            FixedIncomeRateType::Pre => new PreFixedIncomeCalculator(),
+        };
+    }
+
 }

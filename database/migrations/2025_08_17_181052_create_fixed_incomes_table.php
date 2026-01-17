@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('type'); //  App\Enums\FixedIncomeType.php
-            $table->string('rate');
+            $table->decimal('rate', 8, 4); // de 0.0001 to 9999.9999
             $table->string('rateType'); //  App\Enums\FixedIncomeRateType
             $table->dateTime('maturity');
             $table->string('minimumInvestment');

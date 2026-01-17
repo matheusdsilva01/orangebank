@@ -1,3 +1,4 @@
+@php use App\Support\MoneyHelper; @endphp
 @props([
     'stock' => null
 ])
@@ -12,8 +13,10 @@
                     <p class="text-sm text-muted-foreground">{{$stock->name}}</p>
                 </a>
             </div>
-            <div class="flex items-center justify-between"><p class="text-lg font-bold">
-                    {{Number::currency($stock->current_price, in: 'BRL')}}</p>
+            <div class="flex items-center justify-between">
+                <p class="text-lg font-bold">
+                    {{MoneyHelper::format($stock->current_price)}}
+                </p>
                 @if($stock->daily_variation > 0)
                     <div class="flex items-center text-green-600">
                         <x-heroicon-c-arrow-trending-up class="size-6"/>

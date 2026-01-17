@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Stock;
+use App\Support\MoneyHelper;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
@@ -49,7 +50,7 @@ class SeedStocks extends Command
                         'symbol' => $stock['symbol'],
                         'name' => $stock['name'],
                         'sector' => $stock['sector'],
-                        'current_price' => $stock['currentPrice'],
+                        'current_price' => (string) MoneyHelper::of($stock['currentPrice'])->getUnscaledAmount(),
                         'daily_variation' => $stock['dailyVariation'],
                     ]);
                 $progressBar->advance();

@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Dto\SellStockDTO;
+use Brick\Math\RoundingMode;
 
 class SellStockAction
 {
@@ -10,23 +11,27 @@ class SellStockAction
     {
         $accountStock = $attributes->accountStock;
         $stock = $attributes->stock;
-        $profitLoss = $stock->current_price - $accountStock->purchase_price;
-        $account = auth()->user()->investmentAccount;
-
-        if ($profitLoss > 0) {
+        $hasProfit = $stock->current_price->isGreaterThan($accountStock->purchase_price);
+        $investmentAccount = auth()->user()->investmentAccount;
+        $purchasePrice = $accountStock->purchase_price;
+        if ($hasProfit) {
+            $profitPerShare = $stock->current_price->minus($purchasePrice);
             // IR 15% sobre o lucro
-            $tax = ($profitLoss * $accountStock->quantity) * config('finance.tax_ir_stock_profit');
+            $totalProfit = $profitPerShare->multipliedBy($stock->quantity);
+            $incomeTax = $totalProfit->multipliedBy(config('finance.tax_ir_stock_profit'), RoundingMode::HALF_EVEN);
 
-            $salePrice = ($stock->current_price * $accountStock->quantity) - $tax;
-            $account->balance += $salePrice * $accountStock->quantity;
+            $salePrice = $stock->current_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN)->minus($incomeTax);
+
+            $moneyAfterTax = $salePrice->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
+            $investmentAccount->credit($moneyAfterTax->getAmount()->toFloat());
         } else {
-            $salePrice = $stock->current_price * $accountStock->quantity;
-            $account->balance += $salePrice;
+            $salePrice = $stock->current_price->multipliedBy($stock->quantity, RoundingMode::HALF_EVEN);
+            $investmentAccount->credit($salePrice->getAmount()->toFloat());
         }
 
         $accountStock->sale_price = $salePrice;
         $accountStock->sale_date = now();
-        $account->save();
+        $investmentAccount->save();
         $accountStock->save();
     }
 }

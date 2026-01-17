@@ -83,15 +83,15 @@ class AccountController extends Controller
                 ];
             }
 
-            $attributes = new InternalTransferDTO(
+            $transferData = new InternalTransferDTO(
                 $attributes['amount'],
                 $attributes['fromAccount'],
                 $attributes['toAccount'],
             );
 
-            $createInternalTransfer->handle($attributes);
+            $createInternalTransfer->handle($transferData);
         } catch (AccountException $e) {
-            return response()->json(['message' => $e->getMessage()], $e->getCode());
+            return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
 
         return redirect(route('dashboard'));

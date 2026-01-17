@@ -9,6 +9,7 @@ use App\Dto\SellStockDTO;
 use App\Http\Requests\BuyStockRequest;
 use App\Models\AccountStock;
 use App\Models\Stock;
+use Brick\Math\RoundingMode;
 use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class StockController extends Controller
     {
         $stock = Stock::findOrFail($id);
         $stockHistory = Stock::findOrFail($id)->histories;
-        $data = $stockHistory->pluck('daily_price');
+        $data = $stockHistory->pluck(fn ($item) => $item->daily_price->getAmount()->toFloat());
         $labels = $stockHistory->pluck('created_at')->map(fn ($item) => $item->format('d/m/Y'))->toArray();
         $chart = Chartjs::build()
             ->name('line_chart_test')
@@ -72,15 +73,19 @@ class StockController extends Controller
         $user = auth()->user();
         $investmentAccount = $user->investmentAccount;
 
-        $currentValue = $stock->current_price * $stockPurchaseDetail->quantity;
-        $investedValue = $stockPurchaseDetail->purchase_price * $stockPurchaseDetail->quantity;
-        $profitLoss = $currentValue - $investedValue;
-        $profitLossPercentage = ($profitLoss / $investedValue) * 100;
-        $stockSalePriceDiscount = $profitLoss > 0
-            ? ($profitLoss * $stockPurchaseDetail->quantity) * 0.22
-            : $stock->current_price * $stockPurchaseDetail->quantity;
+        $currentValue = $stock->current_price->multipliedBy($stockPurchaseDetail->quantity, RoundingMode::HALF_EVEN);
+        $investedValue = $stockPurchaseDetail->purchase_price->multipliedBy($stockPurchaseDetail->quantity, RoundingMode::HALF_EVEN);
+        $profitLoss = $currentValue->minus($investedValue);
+        $profitLossPercentage = $investedValue->isZero()
+            ? 0.0
+            : $profitLoss->dividedBy($investedValue->getAmount(), RoundingMode::HALF_EVEN)
+                ->getAmount()
+                ->toFloat() * 100;
+        $stockSalePriceDiscount = $profitLoss->isGreaterThan(0)
+            ? $profitLoss->multipliedBy($stockPurchaseDetail->quantity)->multipliedBy(0.22, RoundingMode::HALF_EVEN)
+            : $stock->current_price->multipliedBy($stockPurchaseDetail->quantity);
         $stockHistory = $stock->histories()->orderBy('created_at')->get();
-        $data = $stockHistory->pluck('daily_price');
+        $data = $stockHistory->pluck(fn ($item) => $item->daily_price->getAmount()->toFloat());
         $labels = $stockHistory->pluck('created_at')->map(fn ($item) => $item->format('d/m/Y'))->toArray();
 
         $chart = Chartjs::build()
@@ -123,11 +128,6 @@ class StockController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
-    }
-
-    public function index()
-    {
-        return Stock::query()->paginate();
     }
 
     public function sell(AccountStock $accountStock, SellStockAction $sellStockAction)

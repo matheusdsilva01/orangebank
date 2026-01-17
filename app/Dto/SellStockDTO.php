@@ -12,4 +12,3 @@ final class SellStockDTO
         public Stock $stock,
     ) {}
 }
-

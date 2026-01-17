@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use Brick\Math\RoundingMode;
-use Brick\Money\Context\CustomContext;
 use Brick\Money\Currency;
 use Brick\Money\Money;
 use Illuminate\Support\Arr;
@@ -14,15 +13,24 @@ class MoneyHelper
     {
         return Money::ofMinor($amount, self::getCustomCurrency($currency), null, RoundingMode::HALF_EVEN);
     }
+
     public static function of(string|float|int $amount, string $currency = 'BRL'): Money
     {
         return Money::of($amount, self::getCustomCurrency($currency), null, RoundingMode::HALF_EVEN);
     }
+
     public static function getCustomCurrency(?string $currency): string|Currency
     {
         return Arr::has(config('finance.currencies'), $currency)
             ? new Currency(...config('finance.currencies')[$currency])
             : $currency;
+    }
+
+    public static function applyTax(Money $money, float $taxPercent): Money
+    {
+        $taxMultiplier = 1 + $taxPercent / 100; // ex: 0.5% -> 1.005
+
+        return $money->multipliedBy($taxMultiplier, RoundingMode::HALF_EVEN);
     }
 
     public static function format(Money $money): string

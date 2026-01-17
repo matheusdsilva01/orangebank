@@ -15,7 +15,7 @@ class StockHistoryFactory extends Factory
     {
         return [
             'daily_variation' => $this->faker->randomFloat(),
-            'daily_price' => $this->faker->randomFloat(),
+            'daily_price' => (string) $this->faker->numberBetween(100000, 2000000),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

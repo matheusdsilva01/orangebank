@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Models\FixedIncome;
+use App\Support\MoneyHelper;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
@@ -53,7 +54,7 @@ class SeedFixedIncome extends Command
                         'rate' => $item['rate'],
                         'rateType' => FixedIncomeRateType::from($item['rateType']),
                         'maturity' => $item['maturity'],
-                        'minimumInvestment' => $item['minimumInvestment'],
+                        'minimumInvestment' => (string) MoneyHelper::of($item['minimumInvestment'])->getUnscaledAmount(),
                     ]);
                 $progressBar->advance();
             }

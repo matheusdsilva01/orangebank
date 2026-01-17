@@ -25,7 +25,7 @@ class TransactionFactory extends Factory
         return [
             'from_account_id' => Account::factory()->create()->id,
             'to_account_id' => Account::factory()->create()->id,
-            'amount' => fake()->randomFloat(2, 1, 100),
+            'amount' => (string) $this->faker->numberBetween(100000, 2000000),
             'type' => $type,
             'tax' => $tax,
         ];

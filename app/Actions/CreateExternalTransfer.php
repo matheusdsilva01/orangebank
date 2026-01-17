@@ -29,17 +29,19 @@ class CreateExternalTransfer
         if (! $toAccount) {
             throw AccountException::accountNotFound();
         }
-        $amountDiscount = MoneyHelper::of($amount)->dividedBy(1.0005, RoundingMode::HALF_EVEN);
 
         if ($toAccount->user_id === $fromAccount->user_id) {
             throw AccountException::cannotMakeExternalTransferToSameUser();
         }
 
-        if ($fromAccount->balance->isLessThan($amountDiscount)) {
+        if ($fromAccount->balance->isLessThan(MoneyHelper::of($amount))) {
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->withdraw($amountDiscount->getAmount()->toFloat());
+        $totalTax = MoneyHelper::of($amount)->multipliedBy($tax, RoundingMode::HALF_EVEN);
+        $totalDiscount = MoneyHelper::of($amount)->plus($totalTax);
+
+        $fromAccount->withdraw($totalDiscount->getAmount()->toFloat());
         $toAccount->deposit($amount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(

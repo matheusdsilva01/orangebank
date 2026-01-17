@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Dto\BuyStockDTO;
 use App\Exceptions\AccountException;
-use Carbon\Carbon;
+use Brick\Math\RoundingMode;
 
 class BuyStockAction
 {
@@ -17,14 +17,18 @@ class BuyStockAction
         $stock = $dto->stock;
         $quantity = $dto->quantity;
 
-        $amount = round($stock->current_price * $quantity, 2);
+        $amount = $stock->current_price->multipliedBy($quantity, RoundingMode::HALF_EVEN);
 
-        if ($account->balance < $amount) {
+        if ($account->balance->isLessThan($amount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $account->stocks()->attach($stock->id, ['quantity' => $quantity, 'purchase_price' => $stock->current_price, 'purchase_date' => Carbon::now()]);
-        $account->decrement('balance', $amount);
+        $account->stocks()->attach($stock->id, [
+            'quantity' => $quantity,
+            'purchase_price' => (string) $stock->current_price->getUnscaledAmount(),
+            'purchase_date' => now(),
+        ]);
+        $account->debit($amount->getAmount()->toFloat());
         $account->save();
     }
 }

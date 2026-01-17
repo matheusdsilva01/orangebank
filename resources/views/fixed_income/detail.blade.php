@@ -7,7 +7,7 @@
                 <div>
                     <span class="text-sm">Investimento Mínimo:</span>
                     <h2 class="text-3xl font-bold">
-                        {{Number::currency($fixedIncome->minimumInvestment, in: 'BRL')}}
+                        {{MoneyHelper::format($fixedIncome->minimumInvestment)}}
                     </h2>
                 </div>
                 <div class="col-start-1">

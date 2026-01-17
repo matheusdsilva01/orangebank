@@ -2,19 +2,14 @@
 
 use App\Models\Account\CurrentAccount;
 use App\Models\User;
-use App\Support\MoneyHelper;
-use Brick\Math\RoundingMode;
 
 test('should to do external transaction between current account to another current account of different users', function (): void {
     // Prepare
     $userSender = User::factory()->create();
     $userReceiver = User::factory()->create();
 
-    $currentAccountUserSender = CurrentAccount::factory()->for($userSender)->create();
-    $currentAccountUserReceiver = CurrentAccount::factory()->for($userReceiver)->create();
-
-    $oldBalanceSender = $currentAccountUserSender->balance;
-    $oldBalanceReceiver = $currentAccountUserReceiver->balance;
+    $currentAccountUserSender = CurrentAccount::factory()->for($userSender)->create(['balance' => '3000000']);
+    $currentAccountUserReceiver = CurrentAccount::factory()->for($userReceiver)->create(['balance' => '3000000']);
 
     $this->actingAs($userSender);
 
@@ -27,16 +22,13 @@ test('should to do external transaction between current account to another curre
     $this->postJson(route('transfer.external'), $payload);
 
     // Assert
-    // (50 / 100) 0,5% tax discount
-    $amountWithTaxDiscount = MoneyHelper::of($payload['amount'])->dividedBy(1.0005, RoundingMode::HALF_EVEN)->getAmount();
-
     $expected = [
         'from_account_id' => $currentAccountUserSender->id,
         'to_account_id' => $currentAccountUserReceiver->id,
         'amount' => '1000000',
     ];
 
-    expect($currentAccountUserSender->refresh()->balance)->toEqual($oldBalanceSender->minus($amountWithTaxDiscount))
-        ->and($currentAccountUserReceiver->refresh()->balance)->toEqual($oldBalanceReceiver->plus(MoneyHelper::of($payload['amount'])->getAmount()));
+    expect((string) $currentAccountUserSender->refresh()->balance->getUnscaledAmount())->toEqual('1995000')
+        ->and((string) $currentAccountUserReceiver->refresh()->balance->getUnscaledAmount())->toEqual('4000000');
     $this->assertDatabaseHas('transactions', $expected);
 });

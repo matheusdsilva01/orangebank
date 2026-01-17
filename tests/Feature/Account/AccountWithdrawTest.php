@@ -28,7 +28,7 @@ test('to be to do withdraw from current account when account has sufficient bala
         'to_account_id' => null,
         'type' => TransactionType::Withdraw,
         'tax' => 0,
-        'amount' => "1005000",
+        'amount' => '1005000',
     ];
 
     expect($accountCurrent->refresh()->balance)->toEqual($expectedBalance);
