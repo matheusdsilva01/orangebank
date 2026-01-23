@@ -20,10 +20,6 @@ class WithdrawAction
      */
     public function handle(WithdrawDTO $withdrawDTO): Transaction
     {
-        if (! $withdrawDTO->account) {
-            throw AccountException::accountNotFound();
-        }
-
         if ($withdrawDTO->account->balance->isLessThan($withdrawDTO->amount)) {
             throw AccountException::insufficientBalance();
         }

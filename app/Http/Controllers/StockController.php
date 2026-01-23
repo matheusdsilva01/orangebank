@@ -11,11 +11,13 @@ use App\Models\AccountStock;
 use App\Models\Stock;
 use Brick\Math\RoundingMode;
 use IcehouseVentures\LaravelChartjs\Facades\Chartjs;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class StockController extends Controller
 {
-    public function detail(string $id)
+    public function detail(string $id): View
     {
         $stock = Stock::findOrFail($id);
         $stockHistory = Stock::findOrFail($id)->histories;
@@ -65,7 +67,7 @@ class StockController extends Controller
         return view('stock-detail', compact('stock', 'stockHistory', 'chart'));
     }
 
-    public function detailPurchased(Request $request)
+    public function detailPurchased(Request $request): View
     {
         $stockPurchaseDetail = AccountStock::query()->findOrFail($request->route('id'));
 
@@ -113,7 +115,7 @@ class StockController extends Controller
         return view('stock-detail-purchased', compact('stock', 'user', 'investmentAccount', 'stockPurchaseDetail', 'currentValue', 'investedValue', 'profitLoss', 'profitLossPercentage', 'stockSalePriceDiscount', 'chart'));
     }
 
-    public function buy(BuyStockRequest $request, Stock $stock, BuyStockAction $buyStockAction)
+    public function buy(BuyStockRequest $request, Stock $stock, BuyStockAction $buyStockAction): RedirectResponse
     {
         $params = $request->validated();
         try {
@@ -130,7 +132,7 @@ class StockController extends Controller
         }
     }
 
-    public function sell(AccountStock $accountStock, SellStockAction $sellStockAction)
+    public function sell(AccountStock $accountStock, SellStockAction $sellStockAction): RedirectResponse
     {
         $payload = new SellStockDTO(
             $accountStock,

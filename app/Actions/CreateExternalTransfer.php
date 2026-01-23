@@ -26,10 +26,6 @@ class CreateExternalTransfer
         $amount = $externalTransferDTO->amount;
         $tax = config('finance.tax_external_transfer');
 
-        if (! $toAccount) {
-            throw AccountException::accountNotFound();
-        }
-
         if ($toAccount->user_id === $fromAccount->user_id) {
             throw AccountException::cannotMakeExternalTransferToSameUser();
         }

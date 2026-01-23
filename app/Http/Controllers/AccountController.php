@@ -17,14 +17,17 @@ use App\Http\Requests\ExternalTransferRequest;
 use App\Http\Requests\InternalTransferRequest;
 use App\Models\Account\CurrentAccount;
 use App\Models\Transaction;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AccountController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): View
     {
-        $currentAccount = auth()->user()->currentAccount()->get()->first();
-        $investmentAccount = auth()->user()->investmentAccount()->get()->first();
+        $currentAccount = auth()->user()->currentAccount()->first();
+        $investmentAccount = auth()->user()->investmentAccount()->first();
         $accountIds = auth()->user()->accounts()->pluck('id');
 
         $transactions = Transaction::where(function ($query) use ($accountIds): void {
@@ -37,24 +40,29 @@ class AccountController extends Controller
         return view('dashboard', compact('currentAccount', 'investmentAccount', 'transactions'));
     }
 
-    public function transferForm(Request $request)
+    public function transferForm(Request $request): View
     {
         $type = $request->query('type', 'external');
 
         return view('transfer', compact('type'));
     }
 
-    public function externalTransfer(ExternalTransferRequest $request, CreateExternalTransfer $createExternalTransfer)
+    public function externalTransfer(ExternalTransferRequest $request, CreateExternalTransfer $createExternalTransfer): RedirectResponse|JsonResponse
     {
         $payload = $request->validated();
         $user = auth()->user();
-        $attributes = new ExternalTransferDTO(
-            $payload['amount'],
-            $user->currentAccount,
-            CurrentAccount::query()->where('number', $payload['destination'])->first(),
-        );
 
         try {
+            if (! $user->currentAccount) {
+                throw AccountException::accountNotFound();
+            }
+
+            $attributes = new ExternalTransferDTO(
+                $payload['amount'],
+                $user->currentAccount,
+                CurrentAccount::query()->where('number', $payload['destination'])->first(),
+            );
+
             $createExternalTransfer->handle($attributes);
         } catch (AccountException $e) {
             return response()->json(['message' => $e->getMessage()], $e->getCode());
@@ -63,7 +71,7 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function internalTransfer(InternalTransferRequest $request, CreateInternalTransfer $createInternalTransfer)
+    public function internalTransfer(InternalTransferRequest $request, CreateInternalTransfer $createInternalTransfer): RedirectResponse
     {
         $params = $request->validated();
         $user = auth()->user();
@@ -97,7 +105,7 @@ class AccountController extends Controller
         return redirect(route('dashboard'));
     }
 
-    public function withdraw(AccountWithdrawRequest $request, WithdrawAction $withdrawAction)
+    public function withdraw(AccountWithdrawRequest $request, WithdrawAction $withdrawAction): RedirectResponse|JsonResponse
     {
         $attributes = $request->validated();
 
@@ -122,7 +130,7 @@ class AccountController extends Controller
         }
     }
 
-    public function deposit(AccountDepositRequest $request, DepositAction $depositAction)
+    public function deposit(AccountDepositRequest $request, DepositAction $depositAction): RedirectResponse|JsonResponse
     {
         $payload = $request->validated();
 
@@ -146,14 +154,14 @@ class AccountController extends Controller
         }
     }
 
-    public function withdrawForm()
+    public function withdrawForm(): View
     {
         $currentAccount = auth()->user()->currentAccount;
 
         return view('withdraw', compact('currentAccount'));
     }
 
-    public function depositForm()
+    public function depositForm(): View
     {
         $currentAccount = auth()->user()->currentAccount;
 

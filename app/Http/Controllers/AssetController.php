@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\FixedIncome;
 use App\Models\Stock;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AssetController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): RedirectResponse|View
     {
         $type = $request->query('type', 'stocks');
         if (! in_array($type, ['stocks', 'fixed_income'])) {
@@ -21,7 +23,7 @@ class AssetController extends Controller
         return view('assets.index', compact('stocks', 'type', 'fixedIncomes', 'investmentAccount'));
     }
 
-    public function myAssets(Request $request)
+    public function myAssets(Request $request): RedirectResponse|View
     {
         $investmentAccount = auth()->user()->investmentAccount;
         $stocks = $investmentAccount->stocks()->wherePivotNull('sale_date')->get();

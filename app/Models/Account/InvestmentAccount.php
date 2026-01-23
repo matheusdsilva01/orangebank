@@ -7,8 +7,14 @@ use App\Models\AccountFixedIncome;
 use App\Models\AccountStock;
 use App\Models\FixedIncome;
 use App\Models\Stock;
+use Database\Factories\Account\InvestmentAccountFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property AccountFixedIncome $pivot
+ * @use HasFactory<InvestmentAccountFactory>
+ */
 class InvestmentAccount extends Account
 {
     public static function boot(): void
@@ -26,6 +32,9 @@ class InvestmentAccount extends Account
         });
     }
 
+    /**
+     * @return BelongsToMany<FixedIncome, $this, AccountFixedIncome, 'pivot'>
+     */
     public function fixedIncomes(): BelongsToMany
     {
         return $this->belongsToMany(FixedIncome::class, 'account_fixed_income', 'account_id')
@@ -33,6 +42,9 @@ class InvestmentAccount extends Account
             ->withPivot(['id', 'amount_investment', 'amount_earned', 'purchased_date', 'sale_date']);
     }
 
+    /**
+     * @return BelongsToMany<Stock, $this, AccountStock, 'pivot'>
+     */
     public function stocks(): BelongsToMany
     {
         return $this->belongsToMany(Stock::class, 'account_stock', 'account_id')

@@ -20,10 +20,6 @@ class DepositAction
      */
     public function handle(DepositDTO $depositDTO): Transaction
     {
-        if (! $depositDTO->account) {
-            throw AccountException::accountNotFound();
-        }
-
         if ($depositDTO->amount <= 0) {
             throw AccountException::invalidDepositAmount();
         }

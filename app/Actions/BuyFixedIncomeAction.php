@@ -17,9 +17,6 @@ class BuyFixedIncomeAction
         $account = $attributes->account;
         $amount = $attributes->amount;
 
-        if (! $account) {
-            throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
-        }
         if ($account->balance->isLessThan($amount)) {
             throw AccountException::insufficientBalance();
         }

@@ -7,6 +7,9 @@ use Brick\Money\Money;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @implements CastsAttributes<Money, string>
+ */
 class MoneyCast implements CastsAttributes
 {
     /**
@@ -22,7 +25,8 @@ class MoneyCast implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
-     * @param  array<string, mixed>  $attributes
+     * @param Money|string $value
+     * @param array<string, mixed> $attributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {

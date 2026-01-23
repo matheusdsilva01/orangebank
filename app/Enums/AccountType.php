@@ -23,6 +23,7 @@ enum AccountType: string
         return match ($model) {
             CurrentAccount::class => AccountType::Current,
             InvestmentAccount::class => AccountType::Investment,
+            default => null
         };
     }
 

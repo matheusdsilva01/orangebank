@@ -14,6 +14,11 @@ final class CreateTransactionDTO
         public ?float $tax = 0,
     ) {}
 
+    /**
+     * Convert the DTO to an associative array.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [

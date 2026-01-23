@@ -7,8 +7,8 @@ use App\Enums\FixedIncomeRateType;
 use App\Enums\FixedIncomeType;
 use App\Interfaces\Investable;
 use App\Models\Account\InvestmentAccount;
-use Brick\Math\RoundingMode;
 use Brick\Money\Money;
+use Database\Factories\FixedIncomeFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,9 +16,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property Money $minimumInvestment
+ * @property FixedIncomeType $type
+ * @property FixedIncomeRateType $rateType
  */
 class FixedIncome extends Model implements Investable
 {
+    /** @use HasFactory<FixedIncomeFactory> */
     use HasFactory, HasUuids;
 
     protected $guarded = ['id'];
@@ -42,6 +45,7 @@ class FixedIncome extends Model implements Investable
         ];
     }
 
+    /** @return BelongsToMany<InvestmentAccount, $this, AccountFixedIncome> */
     public function accounts(): BelongsToMany
     {
         return $this

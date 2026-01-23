@@ -45,7 +45,9 @@ class AccountStock extends Pivot
 
     public $timestamps = false;
 
-    /** @returns BelongsTo<Stock> */
+    /**
+     * @return BelongsTo<Stock, $this>
+     */
     public function stock(): BelongsTo
     {
         return $this->belongsTo(Stock::class, 'stock_id');

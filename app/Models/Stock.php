@@ -8,11 +8,13 @@ use App\Interfaces\Investable;
 use App\Models\Account\Account;
 use Brick\Math\RoundingMode;
 use Brick\Money\Money;
+use Database\Factories\StockFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property-read AccountStock $pivot
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Stock extends Model implements Investable
 {
+    /** @use HasFactory<StockFactory> */
     use HasFactory, HasUuids;
 
     protected $guarded = ['id'];
@@ -43,7 +46,7 @@ class Stock extends Model implements Investable
     ];
 
     /**
-     * @return BelongsToMany<Account>
+     * @return BelongsToMany<Account, $this, AccountStock>
      */
     public function accounts(): BelongsToMany
     {
@@ -63,7 +66,7 @@ class Stock extends Model implements Investable
     }
 
     /**
-     * @return HasMany<StockHistory>
+     * @return HasMany<StockHistory, $this>
      */
     public function histories(): HasMany
     {
@@ -91,7 +94,7 @@ class Stock extends Model implements Investable
             $randomNumber <= 4 => rand(1, 20) / 1000,
             $randomNumber <= 7 => rand(2, 3) / 100,
             $randomNumber <= 9 => rand(3, 4) / 100,
-            $randomNumber <= 10 => rand(4, 5) / 100,
+            default => rand(4, 5) / 100,
         };
 
         return 1 + ($novaVariacao * $sign);

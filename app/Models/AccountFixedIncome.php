@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Casts\MoneyCast;
 use App\Models\Account\InvestmentAccount;
 use Brick\Money\Money;
+use Database\Factories\AccountFixedIncomeFactory;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class AccountFixedIncome extends Pivot
 {
+    /** @use HasFactory<AccountFixedIncomeFactory> */
     use HasFactory, HasUuids;
 
     protected $table = 'account_fixed_income';
@@ -38,11 +41,13 @@ class AccountFixedIncome extends Pivot
 
     public $timestamps = false;
 
+    /** @return BelongsTo<FixedIncome, $this> */
     public function fixedIncome(): BelongsTo
     {
         return $this->belongsTo(FixedIncome::class, 'fixed_income_id');
     }
 
+    /** @return BelongsTo<InvestmentAccount, $this> */
     public function account(): BelongsTo
     {
         return $this->belongsTo(InvestmentAccount::class, 'account_id');

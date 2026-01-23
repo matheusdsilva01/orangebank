@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Support\MoneyHelper;
 use Brick\Money\Money;
+use Database\Factories\Account\AccountFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +18,11 @@ use Illuminate\Support\Arr;
 
 /**
  * @property Money $balance
+ * @property string $id
  */
 class Account extends Model
 {
+    /** @use HasFactory<AccountFactory> */
     use HasFactory, HasUuids;
 
     protected $guarded = ['id'];
@@ -69,6 +72,7 @@ class Account extends Model
 
     public function newInstance($attributes = [], $exists = false): static
     {
+        /** @var static $model */
         $model = ! isset($attributes['type']) ?
             new static($attributes) :
             new (AccountType::from($attributes['type'])->getModel())($attributes);
@@ -104,12 +108,16 @@ class Account extends Model
         return $model;
     }
 
+    /**
+     * @return HasMany<Transaction, $this>
+     */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'from_account_id')
             ->orWhere('to_account_id', $this->id);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

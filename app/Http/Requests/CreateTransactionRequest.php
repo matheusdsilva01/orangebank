@@ -18,14 +18,14 @@ class CreateTransactionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, ValidationRule|list<string>|string>
      */
     public function rules(): array
     {
         return [
-            'fromAccountId' => 'required|string|exists:accounts,id',
-            'toAccountId' => 'required|string|exists:accounts,id',
-            'amount' => 'required|numeric|min:0',
+            'fromAccountId' => ['required', 'string', 'exists:accounts,id'],
+            'toAccountId' => ['required', 'string', 'exists:accounts,id'],
+            'amount' => ['required', 'numeric', 'min:0'],
         ];
     }
 }

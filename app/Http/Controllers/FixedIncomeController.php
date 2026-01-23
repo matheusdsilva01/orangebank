@@ -5,26 +5,33 @@ namespace App\Http\Controllers;
 use App\Actions\BuyFixedIncomeAction;
 use App\Actions\SellFixedIncomeAction;
 use App\Dto\BuyFixedIncomeDTO;
+use App\Exceptions\AccountException;
 use App\Http\Requests\BuyFixedIncomeRequest;
 use App\Models\AccountFixedIncome;
 use App\Models\FixedIncome;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class FixedIncomeController extends Controller
 {
-    public function detail(FixedIncome $fixedIncome)
+    public function detail(FixedIncome $fixedIncome): View
     {
         $investmentAccount = auth()->user()->investmentAccount;
 
         return view('fixed_income.detail', compact('fixedIncome', 'investmentAccount'));
     }
 
-    public function buy(BuyFixedIncomeRequest $request, BuyFixedIncomeAction $buyFixedIncomeAction)
+    public function buy(BuyFixedIncomeRequest $request, BuyFixedIncomeAction $buyFixedIncomeAction): RedirectResponse
     {
         $params = $request->validated();
         $fixedIncome = $request->route('id');
 
         try {
             $account = auth()->user()->investmentAccount;
+
+            if (! $account) {
+                throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
+            }
 
             $payload = new BuyFixedIncomeDTO(FixedIncome::findOrFail($fixedIncome), $params['amount'], $account);
             $buyFixedIncomeAction->handle($payload);
@@ -35,7 +42,7 @@ class FixedIncomeController extends Controller
         }
     }
 
-    public function sell(AccountFixedIncome $accountFixedIncome, SellFixedIncomeAction $sellFixedIncomeAction)
+    public function sell(AccountFixedIncome $accountFixedIncome, SellFixedIncomeAction $sellFixedIncomeAction): RedirectResponse
     {
         try {
             $sellFixedIncomeAction->handle($accountFixedIncome);

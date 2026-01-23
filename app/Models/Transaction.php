@@ -33,6 +33,9 @@ class Transaction extends Model
         };
     }
 
+    /**
+     * @return Attribute<User, void>
+     */
     protected function sender(): Attribute
     {
         return Attribute::make(
@@ -40,6 +43,9 @@ class Transaction extends Model
         );
     }
 
+    /**
+     * @return Attribute<User, void>
+     */
     protected function receive(): Attribute
     {
         return Attribute::make(
@@ -47,6 +53,9 @@ class Transaction extends Model
         );
     }
 
+    /**
+     * @return Attribute<bool|null, void>
+     */
     protected function isSender(): Attribute
     {
 
@@ -82,11 +91,13 @@ class Transaction extends Model
         'amount' => MoneyCast::class,
     ];
 
+    /** @return BelongsTo<Account, $this> */
     public function fromAccount(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'from_account_id');
     }
 
+    /** @return BelongsTo<Account, $this> */
     public function toAccount(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'to_account_id');

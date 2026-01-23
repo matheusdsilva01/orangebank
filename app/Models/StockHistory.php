@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\MoneyCast;
 use Brick\Money\Money;
+use Database\Factories\StockHistoryFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class StockHistory extends Model
 {
+    /** @use HasFactory<StockHistoryFactory> */
     use HasFactory, HasUuids;
 
     protected $fillable = [
@@ -27,6 +29,9 @@ class StockHistory extends Model
         'daily_price' => MoneyCast::class,
     ];
 
+    /**
+     * @return BelongsTo<Stock, $this>
+     */
     public function stock(): BelongsTo
     {
         return $this->belongsTo(Stock::class);
