@@ -1,48 +1,24 @@
-# 🍊 OrangeJuiceBank - Hackathon de Investimentos
+# OrangeJuiceBank - Hackathon de Investimentos
 
 Boas vindas ao desafio do Orange Hackathon!  
 **API de um mini banco de investimentos**, simulando operações comuns do mercado financeiro.
 
----
-
-## 🎯 Objetivo
-
+## Objetivo
 Uma **API RESTful** que simula as operações de uma plataforma de investimentos digital, além de uma interface **frontend** (web ou mobile) para interação com a API. O objetivo é representar o fluxo real de um banco de investimentos, incluindo movimentações financeiras, aplicações em diferentes tipos de ativos e a visualização dessas operações pelo usuário. O frontend deve permitir que os usuários consultem saldos, realizem operações financeiras e acompanhem seus investimentos de forma intuitiva, proporcionando uma experiência próxima à de uma plataforma real de investimentos.
 
----
+## Funcionalidades
 
-## 🧠 Contexto de Negócio
-
-A Empresa atende bancos de investimentos e multiplos que possuem expressão a nível Global. Este desafio foi inspirado no domínio de negócio real que atuamos diariamente com nossos clientes, tornando esta uma oportunidade de exercitar habilidades técnicas em um cenário próximo da realidade.
-
----
-
-## 📌 Funcionalidades Obrigatórias
-
-API deve conter funcionalidades que permitam:
-
-- Criar contas de usuários
-- Consultar saldo
+- Acessar contas de usuário
 - Realizar **depósitos**, **saques** e **transferências** entre contas
-- Investir em ativos(sem testes):
-  - Renda variável (ações fictícias)
-  - Fundos de investimento
+- Investir em ativos:
+  - Ações
   - Renda fixa:
     - CDB
     - Tesouro Direto
 - Realizar **compra e venda de ativos**
-- Cálculo automático de taxas e tributos por operação
+- Cálculo automático de taxas e tributos por operação(caso aplicável a operação)
 
----
-
-## 💸 Regras de Negócio
-
-## 💼 Regras de Negócio
-
-As regras de negócio detalhadas para este desafio estão disponíveis no arquivo [`regradenegocio`](public/regradenegocio.md) localizado neste mesmo diretório.  
-Consulte esse arquivo para entender todos os requisitos e restrições que sua solução deve atender.
-
-## ⚙️ Instalação e Execução
+## Instalação e Execução
 ### Pré-requisitos
 - Node.js (versão 20 ou superior)
 - npm (gerenciador de pacotes do Node.js)
@@ -66,22 +42,18 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
    ```
 4. Inicie o servidor de desenvolvimento:
    ```bash
-   composer dev
+   composer run dev
    ```
 
-### Melhorias Futuras
-- [ ] Adicionar livewire para melhorar a interatividade na camada de view
-  - [ ] Mover redirecionamento após requisições para a camada de view
-  - [ ] Adicionar feedback visual(toast, helpers messages) para operações bem-sucedidas ou falhas
-- [ ] Adicionar tratamento de erros para as exceções disparadas
-- [ ] Corrigir redirecionamento após compras de ativos
-- [ ] Adicionar Taxa de corretagem na compra de ações
-- [ ] Adicionar testes unitários para as funcionalidades de investimentos(Ações, e Renda Fixa)
-- [ ] Agrupamento de rotas no arquivo de rotas(web.php)
-- [ ] Corrigir ci de testes para SQLite
-- [ ] Adicionar UML de classes ao projeto
-- [ ] Adicionar Dockerfile e docker-compose para facilitar a configuração do ambiente de desenvolvimento
-- [ ] Melhorar a separação de responsabilidades entre as camadas do projeto (Controllers, Repositories, View)
+---
+
+## Regras de Negócio
+
+As regras de negócio detalhadas para este desafio estão disponíveis no arquivo [`regradenegocio`](public/regradenegocio.md) localizado neste mesmo diretório.  
+Consulte esse arquivo para entender todos os requisitos e restrições que sua solução deve atender.
+
+## Contas
+- A modelagem das contas foi pensada para seguir o modelo de Single Table Inheritance (STI), onde todas as contas (corrente, investimento) são armazenadas em uma única tabela chamada "accounts". Sendo seu tipo de model no sistema definido pelo um "type".
 
 ## Ativos
 - Ações
@@ -94,3 +66,6 @@ Consulte esse arquivo para entender todos os requisitos e restrições que sua s
 
   #### Venda
     Taxa de imposto de renda sobre lucro na venda de ativos: 15% para ações e 22% para renda fixa
+
+## Diagrama de Entidades e Relacionamentos
+![diagram](./diagram.png)
