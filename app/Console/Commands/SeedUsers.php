@@ -46,7 +46,6 @@ class SeedUsers extends Command
                 User::updateOrCreate(
                     ['email' => $user['email'], 'cpf' => $user['cpf']],
                     [
-                        'id' => $user['id'],
                         'cpf' => $user['cpf'],
                         'name' => $user['name'],
                         'email' => $user['email'],
