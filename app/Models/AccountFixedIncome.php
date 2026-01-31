@@ -6,7 +6,6 @@ use App\Casts\MoneyCast;
 use App\Models\Account\InvestmentAccount;
 use Brick\Money\Money;
 use Database\Factories\AccountFixedIncomeFactory;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

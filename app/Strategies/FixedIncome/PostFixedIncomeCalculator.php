@@ -8,8 +8,7 @@ use Brick\Math\RoundingMode;
 
 class PostFixedIncomeCalculator implements FixedIncomeCalculatorStrategy
 {
-
-    public function calculate(FixedIncome $fixedIncome, ): float
+    public function calculate(FixedIncome $fixedIncome): float
     {
         $randomVariation = $this->randomFactor();
         $annualTax = $fixedIncome->rate;

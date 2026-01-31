@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property AccountFixedIncome $pivot
+ *
  * @use HasFactory<InvestmentAccountFactory>
  */
 class InvestmentAccount extends Account

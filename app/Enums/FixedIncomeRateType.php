@@ -22,9 +22,8 @@ enum FixedIncomeRateType: string
     public function getYieldStrategy(): FixedIncomeCalculatorStrategy
     {
         return match ($this) {
-            FixedIncomeRateType::Post => new PostFixedIncomeCalculator(),
-            FixedIncomeRateType::Pre => new PreFixedIncomeCalculator(),
+            FixedIncomeRateType::Post => new PostFixedIncomeCalculator,
+            FixedIncomeRateType::Pre => new PreFixedIncomeCalculator,
         };
     }
-
 }

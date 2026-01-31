@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Account\InvestmentAccount;
 use App\Models\Stock;
-use App\Models\User;
 
 test('should calculate stock volatility and create history', function (): void {
     //  Prepare
