@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\FixedIncomeController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/deposit', [AccountController::class, 'depositForm'])->name('deposit-form');
     Route::post('/deposit', [AccountController::class, 'deposit'])->name('account.deposit');
     Route::get('/my-assets', [AssetController::class, 'myAssets'])->name('my-assets');
+
+    // Goals
+    Route::get('/goals', [GoalController::class, 'index'])->name('goals');
 
     // Assets
     Route::get('/assets', [AssetController::class, 'index'])->name('assets');

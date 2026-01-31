@@ -73,6 +73,14 @@ class User extends Authenticatable
     }
 
     /**
+     * @return HasMany<GoalProgress, $this>
+     */
+    public function goalProgress(): HasMany
+    {
+        return $this->hasMany(GoalProgress::class, 'entity_id');
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
