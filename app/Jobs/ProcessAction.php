@@ -46,9 +46,13 @@ class ProcessAction implements ShouldQueue
                     'entity_id' => $this->actionDTO->entity->getKey(),
                     'goal_id' => $goal->id,
                     'progress' => 1,
+                    'completed' => 1 >= $goal->threshold,
                 ]);
             } else {
                 $progress->increment('progress');
+                if (!$progress->completed && $progress->progress >= $goal->threshold) {
+                    $progress->update(['completed' => true]);
+                }
             }
         }
     }

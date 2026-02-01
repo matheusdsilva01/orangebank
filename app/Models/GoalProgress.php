@@ -20,7 +20,15 @@ class GoalProgress extends Model
         'progress',
         'goal_id',
         'entity_id',
+        'completed',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'completed' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Goal, $this>

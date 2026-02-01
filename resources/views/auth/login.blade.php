@@ -28,6 +28,7 @@
                             <label class="text-sm font-medium mb-2 block" for="identifier">E-mail ou CPF</label>
                             <input class="w-full rounded-md border px-3 py-1.5 shadow-xs" id="identifier"
                                    name="identifier"
+                                   value="user@mail.com"
                                    placeholder="Digite seu e-mail ou CPF" type="text">
                             @error('identifier')
                             <p class="text-red-700 text-sm">{{$message}}</p>
@@ -35,7 +36,7 @@
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block" for="password">Senha</label>
-                            <input class="w-full rounded-md border px-3 py-1.5 shadow-xs" id="password"
+                            <input value="password" class="w-full rounded-md border px-3 py-1.5 shadow-xs" id="password"
                                    name="password"
                                    placeholder="Digite sua senha" type="password">
                             @error('password')
