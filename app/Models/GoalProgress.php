@@ -20,6 +20,7 @@ class GoalProgress extends Model
         'progress',
         'goal_id',
         'entity_id',
+        'entity_type',
         'completed',
     ];
 

@@ -16,8 +16,10 @@ class GoalProgressFactory extends Factory
     public function definition(): array
     {
         return [
-            'progress' => $this->faker->randomNumber(),
-            'entity_id' => $this->faker->randomElement([User::factory(), Stock::factory()]),
+            'progress' => $this->faker->numberBetween(0, 10),
+            'entity_id' => User::factory(),
+            'entity_type' => User::class,
+            'completed' => false,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
 

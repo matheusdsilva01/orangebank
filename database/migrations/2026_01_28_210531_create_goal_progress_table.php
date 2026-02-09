@@ -12,6 +12,7 @@ return new class extends Migration
             $table->integer('progress');
             $table->foreignId('goal_id')->constrained('goals');
             $table->string('entity_id');
+            $table->string('entity_type');
             $table->boolean('completed')->default(false);
             $table->timestamps();
         });

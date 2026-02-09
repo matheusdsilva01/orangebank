@@ -8,7 +8,6 @@ use App\Models\Goal;
 use App\Models\GoalProgress;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use function _PHPStan_e7eb9612d\React\Async\delay;
 
 class ProcessAction implements ShouldQueue
 {
@@ -32,10 +31,11 @@ class ProcessAction implements ShouldQueue
             'entity_id' => $this->actionDTO->entity->getKey(),
         ]);
 
-        $goal = Goal::query()->whereRaw('attributes = ?::jsonb',
+        $goal = Goal::query()->where('attributes', '=',
             json_encode(
                 $this->actionDTO->attributes,
             ))->first();
+        
         if (!is_null($goal)) {
             $progress = GoalProgress::where([
                 'entity_id' => $this->actionDTO->entity->getKey(),
@@ -44,6 +44,7 @@ class ProcessAction implements ShouldQueue
             if (is_null($progress)) {
                 GoalProgress::create([
                     'entity_id' => $this->actionDTO->entity->getKey(),
+                    'entity_type' => $this->actionDTO->entity->getMorphClass(),
                     'goal_id' => $goal->id,
                     'progress' => 1,
                     'completed' => 1 >= $goal->threshold,
