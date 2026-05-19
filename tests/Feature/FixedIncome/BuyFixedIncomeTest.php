@@ -31,7 +31,7 @@ test('attach fixed income to account', function (): void {
         'amount_earned' => '10000000',
         'amount_investment' => '10000000',
     ]);
-    
+
     expect($account->refresh()->balance->getUnscaledAmount()->toInt())->toEqual(490000000);
 });
 

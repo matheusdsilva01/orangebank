@@ -7,7 +7,6 @@ use App\Dto\InternalTransferDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
-use App\Support\MoneyHelper;
 
 class CreateInternalTransfer
 {
@@ -22,7 +21,6 @@ class CreateInternalTransfer
     {
         $fromAccount = $attributes->fromAccount;
         $toAccount = $attributes->toAccount;
-        $moneyAmount = MoneyHelper::of($attributes->amount);
 
         if ($fromAccount->id === $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
@@ -32,18 +30,18 @@ class CreateInternalTransfer
             throw AccountException::cannotTransferBetweenSameTypeAccounts();
         }
 
-        if ($fromAccount->balance->isLessThan($moneyAmount)) {
+        if ($fromAccount->balance->isLessThan($attributes->amount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->debit($moneyAmount);
-        $toAccount->credit($moneyAmount);
+        $fromAccount->debit($attributes->amount);
+        $toAccount->credit($attributes->amount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
-            $fromAccount->id,
-            $toAccount->id,
-            (string) $moneyAmount->getUnscaledAmount(),
-            TransactionType::Internal
+            fromAccountId: $fromAccount->id,
+            toAccountId: $toAccount->id,
+            amount: $attributes->amount,
+            type: TransactionType::Internal
         ));
     }
 }

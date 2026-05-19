@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Goal;
 use App\Models\GoalProgress;
-use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;

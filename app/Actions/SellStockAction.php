@@ -16,7 +16,7 @@ class SellStockAction
 
         $investedValue = $accountStock->purchase_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
         $currentValue = $stock->current_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
-        
+
         $profit = $currentValue->minus($investedValue);
         $amountToCredit = $currentValue;
 

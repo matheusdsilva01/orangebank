@@ -2,10 +2,9 @@
 
 namespace App\Actions;
 
-use App\Models\AccountStock;
-use App\Models\Stock;
 use App\Dto\BuyStockDTO;
 use App\Exceptions\AccountException;
+use App\Models\AccountStock;
 use Brick\Math\RoundingMode;
 
 class BuyStockAction

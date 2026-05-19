@@ -7,7 +7,7 @@ use App\Dto\WithdrawDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
-use App\Support\MoneyHelper;
+use Brick\Money\Exception\MoneyMismatchException;
 
 class WithdrawAction
 {
@@ -17,21 +17,24 @@ class WithdrawAction
 
     /**
      * @throws AccountException
+     * @throws MoneyMismatchException
      */
     public function handle(WithdrawDTO $withdrawDTO): Transaction
     {
-        $money = MoneyHelper::of($withdrawDTO->amount);
+        if ($withdrawDTO->amount->isLessThanOrEqualTo(0)) {
+            throw AccountException::invalidWithdrawAmount();
+        }
 
-        if ($withdrawDTO->account->balance->isLessThan($money)) {
+        if ($withdrawDTO->account->balance->isLessThan($withdrawDTO->amount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $withdrawDTO->account->debit($money);
+        $withdrawDTO->account->debit($withdrawDTO->amount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             fromAccountId: $withdrawDTO->account->id,
             toAccountId: null,
-            amount: (string) $money->getUnscaledAmount(),
+            amount: $withdrawDTO->amount,
             type: TransactionType::Withdraw
         ));
     }

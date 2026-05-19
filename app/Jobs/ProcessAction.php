@@ -35,8 +35,8 @@ class ProcessAction implements ShouldQueue
             json_encode(
                 $this->actionDTO->attributes,
             ))->first();
-        
-        if (!is_null($goal)) {
+
+        if (! is_null($goal)) {
             $progress = GoalProgress::where([
                 'entity_id' => $this->actionDTO->entity->getKey(),
                 'goal_id' => $goal->id,
@@ -47,11 +47,11 @@ class ProcessAction implements ShouldQueue
                     'entity_type' => $this->actionDTO->entity->getMorphClass(),
                     'goal_id' => $goal->id,
                     'progress' => 1,
-                    'completed' => 1 >= $goal->threshold,
+                    'completed' => $goal->threshold <= 1,
                 ]);
             } else {
                 $progress->increment('progress');
-                if (!$progress->completed && $progress->progress >= $goal->threshold) {
+                if (! $progress->completed && $progress->progress >= $goal->threshold) {
                     $progress->update(['completed' => true]);
                 }
             }

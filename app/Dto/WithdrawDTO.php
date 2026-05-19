@@ -3,11 +3,17 @@
 namespace App\Dto;
 
 use App\Models\Account\CurrentAccount;
+use App\Support\MoneyHelper;
+use Brick\Money\Money;
 
-final class WithdrawDTO
+final readonly class WithdrawDTO
 {
+    public Money $amount;
+
     public function __construct(
-        public float $amount,
+        int|float|string|Money $amount,
         public CurrentAccount $account,
-    ) {}
+    ) {
+        $this->amount = $amount instanceof Money ? $amount : MoneyHelper::of($amount);
+    }
 }

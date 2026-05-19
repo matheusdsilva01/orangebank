@@ -9,7 +9,6 @@ use App\Exceptions\AccountException;
 use App\Http\Requests\BuyFixedIncomeRequest;
 use App\Models\AccountFixedIncome;
 use App\Models\FixedIncome;
-use App\Support\MoneyHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -35,9 +34,8 @@ class FixedIncomeController extends Controller
             }
 
             $fixedIncome = FixedIncome::findOrFail($fixedIncomeId);
-            $moneyAmount = MoneyHelper::of($params['amount']);
 
-            $payload = new BuyFixedIncomeDTO($fixedIncome, $moneyAmount, $account);
+            $payload = new BuyFixedIncomeDTO($fixedIncome, $params['amount'], $account);
             $buyFixedIncomeAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'fixed_income']);

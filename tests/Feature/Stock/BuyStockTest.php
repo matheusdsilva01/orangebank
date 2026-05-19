@@ -23,7 +23,7 @@ test('buy stock', function (): void {
     $response->assertRedirect();
     $this->assertDatabaseHas('account_stock', ['account_id' => $account->id, 'stock_id' => $stock->id, 'quantity' => 1]);
     $this->assertDatabaseCount('account_stock', 1);
-    
+
     $expectedBalance = 100000 - 15000;
     expect($account->refresh()->balance->getUnscaledAmount()->toInt())->toEqual($expectedBalance);
 });

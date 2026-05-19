@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Dto\BuyFixedIncomeDTO;
 use App\Exceptions\AccountException;
-use App\Support\MoneyHelper;
+use App\Models\AccountFixedIncome;
 
 class BuyFixedIncomeAction
 {
@@ -21,7 +21,7 @@ class BuyFixedIncomeAction
             throw AccountException::insufficientBalance();
         }
 
-        \App\Models\AccountFixedIncome::create([
+        AccountFixedIncome::create([
             'account_id' => $account->id,
             'fixed_income_id' => $fixedIncome->id,
             'amount_investment' => $amount,

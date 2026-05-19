@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Account\InvestmentAccount;
+use App\Models\AccountFixedIncome;
 use App\Models\FixedIncome;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AccountFixedIncome>
+ * @extends Factory<AccountFixedIncome>
  */
 class AccountFixedIncomeFactory extends Factory
 {

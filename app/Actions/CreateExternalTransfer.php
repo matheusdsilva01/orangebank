@@ -7,7 +7,6 @@ use App\Dto\ExternalTransferDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
-use App\Support\MoneyHelper;
 use Brick\Math\RoundingMode;
 
 class CreateExternalTransfer
@@ -23,29 +22,28 @@ class CreateExternalTransfer
     {
         $fromAccount = $externalTransferDTO->fromAccount;
         $toAccount = $externalTransferDTO->toAccount;
-        $moneyAmount = MoneyHelper::of($externalTransferDTO->amount);
         $tax = config('finance.tax_external_transfer');
 
         if ($toAccount->user_id === $fromAccount->user_id) {
             throw AccountException::cannotMakeExternalTransferToSameUser();
         }
 
-        $totalTax = $moneyAmount->multipliedBy($tax, RoundingMode::HALF_EVEN);
-        $totalDiscount = $moneyAmount->plus($totalTax);
+        $totalTax = $externalTransferDTO->amount->multipliedBy($tax, RoundingMode::HALF_EVEN);
+        $totalDiscount = $externalTransferDTO->amount->plus($totalTax);
 
         if ($fromAccount->balance->isLessThan($totalDiscount)) {
             throw AccountException::insufficientBalance();
         }
 
         $fromAccount->debit($totalDiscount);
-        $toAccount->credit($moneyAmount);
+        $toAccount->credit($externalTransferDTO->amount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
-            $fromAccount->id,
-            $toAccount->id,
-            (string) $moneyAmount->getUnscaledAmount(),
-            TransactionType::External,
-            $tax,
+            fromAccountId: $fromAccount->id,
+            toAccountId: $toAccount->id,
+            amount: $externalTransferDTO->amount,
+            type: TransactionType::External,
+            tax: $tax,
         ));
     }
 }

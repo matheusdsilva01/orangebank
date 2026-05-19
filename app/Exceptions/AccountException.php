@@ -62,6 +62,11 @@ class AccountException extends Exception
         return new self('Cannot make external transfer to the same user.', Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public static function invalidWithdrawAmount(): self
+    {
+        return new self('Invalid withdraw amount.', Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
     /**
      * Report the exception.
      */

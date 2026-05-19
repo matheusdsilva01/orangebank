@@ -7,7 +7,6 @@ use App\Dto\DepositDTO;
 use App\Enums\TransactionType;
 use App\Exceptions\AccountException;
 use App\Models\Transaction;
-use App\Support\MoneyHelper;
 
 class DepositAction
 {
@@ -20,17 +19,16 @@ class DepositAction
      */
     public function handle(DepositDTO $depositDTO): Transaction
     {
-        if ($depositDTO->amount <= 0) {
+        if ($depositDTO->amount->isLessThanOrEqualTo(0)) {
             throw AccountException::invalidDepositAmount();
         }
 
-        $money = MoneyHelper::of($depositDTO->amount);
-        $depositDTO->account->credit($money);
+        $depositDTO->account->credit($depositDTO->amount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             fromAccountId: null,
             toAccountId: $depositDTO->account->id,
-            amount: (string) $money->getUnscaledAmount(),
+            amount: $depositDTO->amount,
             type: TransactionType::Deposit
         ));
     }
