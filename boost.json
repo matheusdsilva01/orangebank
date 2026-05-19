@@ -1,12 +1,13 @@
 {
     "agents": [
-        "opencode"
+        "gemini"
     ],
-    "guidelines": true,
-    "herd_mcp": false,
+    "cloud": false,
     "mcp": true,
+    "nightwatch": false,
     "sail": false,
     "skills": [
+        "laravel-best-practices",
         "pest-testing",
         "tailwindcss-development"
     ]

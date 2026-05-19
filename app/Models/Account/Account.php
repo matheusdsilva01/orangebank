@@ -55,18 +55,18 @@ class Account extends Model
     /**
      * Debit the account by a given amount.
      */
-    public function debit(float $amount): void
+    public function debit(Money $amount): void
     {
-        $this->balance = $this->balance->minus(MoneyHelper::of($amount));
+        $this->balance = $this->balance->minus($amount);
         $this->save();
     }
 
     /**
      * Credit the account by a given amount.
      */
-    public function credit(float $amount): void
+    public function credit(Money $amount): void
     {
-        $this->balance = $this->balance->plus(MoneyHelper::of($amount));
+        $this->balance = $this->balance->plus($amount);
         $this->save();
     }
 

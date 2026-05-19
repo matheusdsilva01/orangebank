@@ -13,9 +13,15 @@ class SellFixedIncomeAction
 
         $investmentAccount = $fixedIncomePurchased->account;
         $totalYield = $fixedIncomePurchased->amount_earned->minus($fixedIncomePurchased->amount_investment);
-        $amountEarnedDiscounted = $totalYield->multipliedBy($tax, RoundingMode::HALF_EVEN);
+        
+        $amountEarnedDiscounted = $fixedIncomePurchased->amount_earned;
+        
+        if ($totalYield->isGreaterThan(0)) {
+            $taxAmount = $totalYield->multipliedBy($tax, RoundingMode::HALF_EVEN);
+            $amountEarnedDiscounted = $fixedIncomePurchased->amount_earned->minus($taxAmount);
+        }
 
-        $investmentAccount->credit($fixedIncomePurchased->amount_earned->minus($amountEarnedDiscounted)->getAmount()->toFloat());
+        $investmentAccount->credit($amountEarnedDiscounted);
 
         $fixedIncomePurchased->sale_date = now();
         $fixedIncomePurchased->save();

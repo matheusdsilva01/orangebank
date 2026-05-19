@@ -22,7 +22,7 @@ class CreateInternalTransfer
     {
         $fromAccount = $attributes->fromAccount;
         $toAccount = $attributes->toAccount;
-        $amount = $attributes->amount;
+        $moneyAmount = MoneyHelper::of($attributes->amount);
 
         if ($fromAccount->id === $toAccount->id) {
             throw AccountException::cannotTransferToSelfAccount();
@@ -32,17 +32,17 @@ class CreateInternalTransfer
             throw AccountException::cannotTransferBetweenSameTypeAccounts();
         }
 
-        if ($fromAccount->balance->isLessThan(MoneyHelper::of($amount))) {
+        if ($fromAccount->balance->isLessThan($moneyAmount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $fromAccount->debit($amount);
-        $toAccount->credit($amount);
+        $fromAccount->debit($moneyAmount);
+        $toAccount->credit($moneyAmount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             $fromAccount->id,
             $toAccount->id,
-            (string) MoneyHelper::of($amount)->getUnscaledAmount(),
+            (string) $moneyAmount->getUnscaledAmount(),
             TransactionType::Internal
         ));
     }

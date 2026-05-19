@@ -24,12 +24,13 @@ class DepositAction
             throw AccountException::invalidDepositAmount();
         }
 
-        $depositDTO->account->deposit($depositDTO->amount);
+        $money = MoneyHelper::of($depositDTO->amount);
+        $depositDTO->account->credit($money);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             fromAccountId: null,
             toAccountId: $depositDTO->account->id,
-            amount: (string) MoneyHelper::of($depositDTO->amount)->getUnscaledAmount(),
+            amount: (string) $money->getUnscaledAmount(),
             type: TransactionType::Deposit
         ));
     }

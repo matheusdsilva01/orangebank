@@ -20,16 +20,18 @@ class WithdrawAction
      */
     public function handle(WithdrawDTO $withdrawDTO): Transaction
     {
-        if ($withdrawDTO->account->balance->isLessThan($withdrawDTO->amount)) {
+        $money = MoneyHelper::of($withdrawDTO->amount);
+
+        if ($withdrawDTO->account->balance->isLessThan($money)) {
             throw AccountException::insufficientBalance();
         }
 
-        $withdrawDTO->account->withdraw($withdrawDTO->amount);
+        $withdrawDTO->account->debit($money);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             fromAccountId: $withdrawDTO->account->id,
             toAccountId: null,
-            amount: (string) MoneyHelper::of($withdrawDTO->amount)->getUnscaledAmount(),
+            amount: (string) $money->getUnscaledAmount(),
             type: TransactionType::Withdraw
         ));
     }

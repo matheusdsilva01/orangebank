@@ -13,7 +13,7 @@ class BuyFixedIncomeAction
      */
     public function handle(BuyFixedIncomeDTO $attributes): void
     {
-        $stock = $attributes->stock;
+        $fixedIncome = $attributes->fixedIncome;
         $account = $attributes->account;
         $amount = $attributes->amount;
 
@@ -21,14 +21,14 @@ class BuyFixedIncomeAction
             throw AccountException::insufficientBalance();
         }
 
-        $account->fixedIncomes()->attach(
-            $stock->id,
-            [
-                'amount_investment' => (string) MoneyHelper::of($amount)->getUnscaledAmount(),
-                'amount_earned' => (string) MoneyHelper::of($amount)->getUnscaledAmount(),
-                'purchased_date' => now(),
-            ]
-        );
+        \App\Models\AccountFixedIncome::create([
+            'account_id' => $account->id,
+            'fixed_income_id' => $fixedIncome->id,
+            'amount_investment' => $amount,
+            'amount_earned' => $amount,
+            'purchased_date' => now(),
+        ]);
+
         $account->debit($amount);
     }
 }

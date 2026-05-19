@@ -11,27 +11,24 @@ class SellStockAction
     {
         $accountStock = $attributes->accountStock;
         $stock = $attributes->stock;
-        $hasProfit = $stock->current_price->isGreaterThan($accountStock->purchase_price);
-        $investmentAccount = auth()->user()->investmentAccount;
-        $purchasePrice = $accountStock->purchase_price;
-        if ($hasProfit) {
-            $profitPerShare = $stock->current_price->minus($purchasePrice);
-            // IR 15% sobre o lucro
-            $totalProfit = $profitPerShare->multipliedBy($stock->quantity);
-            $incomeTax = $totalProfit->multipliedBy(config('finance.tax_ir_stock_profit'), RoundingMode::HALF_EVEN);
+        $account = $accountStock->account;
+        $tax = config('finance.tax_ir_stock_profit'); // 15%
 
-            $salePrice = $stock->current_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN)->minus($incomeTax);
+        $investedValue = $accountStock->purchase_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
+        $currentValue = $stock->current_price->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
+        
+        $profit = $currentValue->minus($investedValue);
+        $amountToCredit = $currentValue;
 
-            $moneyAfterTax = $salePrice->multipliedBy($accountStock->quantity, RoundingMode::HALF_EVEN);
-            $investmentAccount->credit($moneyAfterTax->getAmount()->toFloat());
-        } else {
-            $salePrice = $stock->current_price->multipliedBy($stock->quantity, RoundingMode::HALF_EVEN);
-            $investmentAccount->credit($salePrice->getAmount()->toFloat());
+        if ($profit->isGreaterThan(0)) {
+            $taxAmount = $profit->multipliedBy($tax, RoundingMode::HALF_EVEN);
+            $amountToCredit = $currentValue->minus($taxAmount);
         }
 
-        $accountStock->sale_price = $salePrice;
+        $account->credit($amountToCredit);
+
+        $accountStock->sale_price = $stock->current_price;
         $accountStock->sale_date = now();
-        $investmentAccount->save();
         $accountStock->save();
     }
 }

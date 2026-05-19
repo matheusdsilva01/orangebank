@@ -28,7 +28,7 @@ test('should to do external transaction between current account to another curre
         'amount' => '1000000',
     ];
 
-    expect((string) $currentAccountUserSender->refresh()->balance->getUnscaledAmount())->toEqual('1995000')
-        ->and((string) $currentAccountUserReceiver->refresh()->balance->getUnscaledAmount())->toEqual('4000000');
+    expect($currentAccountUserSender->refresh()->balance->getUnscaledAmount()->toInt())->toEqual(1995000)
+        ->and($currentAccountUserReceiver->refresh()->balance->getUnscaledAmount()->toInt())->toEqual(4000000);
     $this->assertDatabaseHas('transactions', $expected);
 });

@@ -20,7 +20,7 @@ test('attach fixed income to account', function (): void {
     ]);
 
     // Act
-    $this->post(route('fixed-income.buy', ['id' => $fixedIncome->id]), [
+    $this->postJson(route('fixed-income.buy', ['id' => $fixedIncome->id]), [
         'amount' => 1000.00,
     ]);
 
@@ -31,13 +31,15 @@ test('attach fixed income to account', function (): void {
         'amount_earned' => '10000000',
         'amount_investment' => '10000000',
     ]);
+    
+    expect($account->refresh()->balance->getUnscaledAmount()->toInt())->toEqual(490000000);
 });
 
 test('pre fixed income calculates daily earnings with 12 percentage rate', function (): void {
     // Prepare
     $user = User::factory()->create();
     $this->actingAs($user);
-    $account = InvestmentAccount::factory()->for($user)->create();
+    $account = InvestmentAccount::factory()->for($user)->create(['balance' => '100000000']);
 
     $fixedIncome = FixedIncome::factory()->create([
         'name' => 'CDB Test 12%',
@@ -49,7 +51,7 @@ test('pre fixed income calculates daily earnings with 12 percentage rate', funct
 
     // Act
     $amountInvested = 1000.00;
-    $this->post(route('fixed-income.buy', ['id' => $fixedIncome->id]), [
+    $this->postJson(route('fixed-income.buy', ['id' => $fixedIncome->id]), [
         'amount' => $amountInvested,
     ]);
 

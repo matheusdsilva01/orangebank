@@ -23,27 +23,27 @@ class CreateExternalTransfer
     {
         $fromAccount = $externalTransferDTO->fromAccount;
         $toAccount = $externalTransferDTO->toAccount;
-        $amount = $externalTransferDTO->amount;
+        $moneyAmount = MoneyHelper::of($externalTransferDTO->amount);
         $tax = config('finance.tax_external_transfer');
 
         if ($toAccount->user_id === $fromAccount->user_id) {
             throw AccountException::cannotMakeExternalTransferToSameUser();
         }
 
-        if ($fromAccount->balance->isLessThan(MoneyHelper::of($amount))) {
+        $totalTax = $moneyAmount->multipliedBy($tax, RoundingMode::HALF_EVEN);
+        $totalDiscount = $moneyAmount->plus($totalTax);
+
+        if ($fromAccount->balance->isLessThan($totalDiscount)) {
             throw AccountException::insufficientBalance();
         }
 
-        $totalTax = MoneyHelper::of($amount)->multipliedBy($tax, RoundingMode::HALF_EVEN);
-        $totalDiscount = MoneyHelper::of($amount)->plus($totalTax);
-
-        $fromAccount->withdraw($totalDiscount->getAmount()->toFloat());
-        $toAccount->deposit($amount);
+        $fromAccount->debit($totalDiscount);
+        $toAccount->credit($moneyAmount);
 
         return $this->createTransactionAction->handle(new CreateTransactionDTO(
             $fromAccount->id,
             $toAccount->id,
-            (string) MoneyHelper::of($amount)->getUnscaledAmount(),
+            (string) $moneyAmount->getUnscaledAmount(),
             TransactionType::External,
             $tax,
         ));

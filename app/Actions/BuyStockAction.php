@@ -2,6 +2,8 @@
 
 namespace App\Actions;
 
+use App\Models\AccountStock;
+use App\Models\Stock;
 use App\Dto\BuyStockDTO;
 use App\Exceptions\AccountException;
 use Brick\Math\RoundingMode;
@@ -23,12 +25,14 @@ class BuyStockAction
             throw AccountException::insufficientBalance();
         }
 
-        $account->stocks()->attach($stock->id, [
+        AccountStock::create([
+            'account_id' => $account->id,
+            'stock_id' => $stock->id,
             'quantity' => $quantity,
-            'purchase_price' => (string) $stock->current_price->getUnscaledAmount(),
+            'purchase_price' => $stock->current_price,
             'purchase_date' => now(),
         ]);
-        $account->debit($amount->getAmount()->toFloat());
-        $account->save();
+
+        $account->debit($amount);
     }
 }

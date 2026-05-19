@@ -4,6 +4,7 @@ use App\Enums\TransactionType;
 use App\Models\Account\CurrentAccount;
 use App\Models\Account\InvestmentAccount;
 use App\Models\User;
+use App\Support\MoneyHelper;
 
 test('to be to do withdraw from current account when account has sufficient balance', function (): void {
     //  Prepare
@@ -18,10 +19,10 @@ test('to be to do withdraw from current account when account has sufficient bala
     ];
 
     //  Act
-    $this->postJson(route('account.withdraw', $payload));
+    $this->postJson(route('account.withdraw'), $payload);
 
     //  Assert
-    $expectedBalance = $oldBalance->minus($payload['amount']);
+    $expectedBalance = $oldBalance->minus(MoneyHelper::of($payload['amount']));
 
     $expectedTransaction = [
         'from_account_id' => $accountCurrent->id,
@@ -31,7 +32,7 @@ test('to be to do withdraw from current account when account has sufficient bala
         'amount' => '1005000',
     ];
 
-    expect($accountCurrent->refresh()->balance)->toEqual($expectedBalance);
+    expect($accountCurrent->refresh()->balance->isEqualTo($expectedBalance))->toBeTrue();
     $this->assertDatabaseHas('transactions', $expectedTransaction);
 });
 

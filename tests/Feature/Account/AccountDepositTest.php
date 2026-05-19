@@ -3,6 +3,7 @@
 use App\Models\Account\CurrentAccount;
 use App\Models\Account\InvestmentAccount;
 use App\Models\User;
+use App\Support\MoneyHelper;
 
 test('to be to do deposit to current account', function (): void {
     //  Prepare
@@ -18,8 +19,8 @@ test('to be to do deposit to current account', function (): void {
     $this->postJson(route('account.deposit'), $payload);
 
     //  Assert
-    $expectedBalance = $previousBalance->plus($payload['amount']);
-    expect($account->refresh()->balance)->toEqual($expectedBalance);
+    $expectedBalance = $previousBalance->plus(MoneyHelper::of($payload['amount']));
+    expect($account->refresh()->balance->isEqualTo($expectedBalance))->toBeTrue();
     $this->assertDatabaseCount('transactions', 1);
 });
 
@@ -34,7 +35,7 @@ test('to not deposit without current account', function (): void {
     ];
 
     //  Act
-    $response = $this->postJson(route('account.deposit', $payload));
+    $response = $this->postJson(route('account.deposit'), $payload);
 
     //  Assert
     $response->assertNotFound();

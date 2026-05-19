@@ -3,6 +3,7 @@
 use App\Models\Account\CurrentAccount;
 use App\Models\Account\InvestmentAccount;
 use App\Models\User;
+use App\Support\MoneyHelper;
 
 test('should to do transaction between current account to investment account of same user', function (): void {
     // Prepare
@@ -23,8 +24,9 @@ test('should to do transaction between current account to investment account of 
     $this->postJson(route('transfer.internal'), $payload);
 
     // Assert
-    expect($oldCurrentBalance->minus($payload['amount'])->isEqualTo($currentAccount->refresh()->balance))
-        ->and($oldInvestmentBalance->plus($payload['amount']))->toEqual($investmentAccount->refresh()->balance);
+    $moneyAmount = MoneyHelper::of($payload['amount']);
+    expect($oldCurrentBalance->minus($moneyAmount)->isEqualTo($currentAccount->refresh()->balance))->toBeTrue()
+        ->and($oldInvestmentBalance->plus($moneyAmount)->isEqualTo($investmentAccount->refresh()->balance))->toBeTrue();
 
     $expected = [
         'from_account_id' => $currentAccount->id,

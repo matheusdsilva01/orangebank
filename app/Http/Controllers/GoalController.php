@@ -11,6 +11,10 @@ class GoalController extends Controller
     {
         $user = Auth::user();
 
+        if (! $user) {
+            abort(401);
+        }
+
         $goalProgress = $user->goalProgress()->with('goal')->get();
 
         return view('goals.index', [

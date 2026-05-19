@@ -17,19 +17,27 @@ class MoneyCast implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): Money
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?Money
     {
-        return MoneyHelper::ofMinor($value);
+        if ($value === null) {
+            return null;
+        }
+
+        return MoneyHelper::ofMinor((string) $value);
     }
 
     /**
      * Prepare the given value for storage.
      *
-     * @param  Money|string  $value
+     * @param  Money|string|null  $value
      * @param  array<string, mixed>  $attributes
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        return $value instanceof Money ? (string) $value->getUnscaledAmount() : $value;
+        if ($value === null) {
+            return null;
+        }
+
+        return $value instanceof Money ? (string) $value->getUnscaledAmount() : (string) $value;
     }
 }

@@ -9,6 +9,7 @@ use App\Exceptions\AccountException;
 use App\Http\Requests\BuyFixedIncomeRequest;
 use App\Models\AccountFixedIncome;
 use App\Models\FixedIncome;
+use App\Support\MoneyHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -24,7 +25,7 @@ class FixedIncomeController extends Controller
     public function buy(BuyFixedIncomeRequest $request, BuyFixedIncomeAction $buyFixedIncomeAction): RedirectResponse
     {
         $params = $request->validated();
-        $fixedIncome = $request->route('id');
+        $fixedIncomeId = $request->route('id');
 
         try {
             $account = auth()->user()->investmentAccount;
@@ -33,7 +34,10 @@ class FixedIncomeController extends Controller
                 throw AccountException::cannotBuyStockWithoutAnInvestmentAccount();
             }
 
-            $payload = new BuyFixedIncomeDTO(FixedIncome::findOrFail($fixedIncome), $params['amount'], $account);
+            $fixedIncome = FixedIncome::findOrFail($fixedIncomeId);
+            $moneyAmount = MoneyHelper::of($params['amount']);
+
+            $payload = new BuyFixedIncomeDTO($fixedIncome, $moneyAmount, $account);
             $buyFixedIncomeAction->handle($payload);
 
             return redirect()->route('my-assets', ['type' => 'fixed_income']);
