@@ -45,7 +45,11 @@
             </form>
         </div>
         <div class="bg-fuchsia-200 col-span-2 row-span-3 p-6 gap-6 rounded-xl border border-gray-400 shadow-sm">
-            {{$chart->render()}}
+            <canvas id="stock-price-chart" data-chart-config="stock-price-chart" aria-label="Histórico do preço diário" role="img"></canvas>
+            <script>
+                window.chartConfigs = window.chartConfigs || {};
+                window.chartConfigs['stock-price-chart'] = {{ Illuminate\Support\Js::from($chart) }};
+            </script>
         </div>
     </section>
 </x-layout.main>

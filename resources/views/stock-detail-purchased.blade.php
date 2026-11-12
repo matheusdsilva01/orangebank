@@ -99,7 +99,11 @@
                     <div class="bg-fuchsia-100 rounded-xl shadow-sm p-6 border border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Performance da Ação</h2>
                         <div class="h-80">
-                            {!! $chart->render() !!}
+                            <canvas id="stock-performance-chart" data-chart-config="stock-performance-chart" aria-label="Performance histórica da ação" role="img"></canvas>
+                            <script>
+                                window.chartConfigs = window.chartConfigs || {};
+                                window.chartConfigs['stock-performance-chart'] = {{ Illuminate\Support\Js::from($chart) }};
+                            </script>
                         </div>
                     </div>
                 </div>

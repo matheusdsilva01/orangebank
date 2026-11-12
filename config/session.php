@@ -214,4 +214,16 @@ return [
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Session Serialization
+    |--------------------------------------------------------------------------
+    |
+    | JSON serialization avoids unserializing arbitrary PHP objects from the
+    | session. Use PHP serialization only when object sessions are required.
+    |
+    */
+
+    'serialization' => 'json',
+
 ];
